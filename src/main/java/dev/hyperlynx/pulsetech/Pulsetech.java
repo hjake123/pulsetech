@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 @Mod(Pulsetech.MODID)
 public class Pulsetech {
     public static final String MODID = "pulsetech";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public Pulsetech(IEventBus bus, ModContainer container) {
         bus.addListener(this::commonSetup);

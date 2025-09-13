@@ -12,9 +12,11 @@ public class Protocol {
     public static final Glyph ERR = new Glyph("ERR");
 
     private final BiMap<Glyph, Sequence> sequence_map = HashBiMap.create();
+    private int max_sequence_length = 0;
 
-    public void set(Glyph glyph, Sequence sequence) {
+    public void define(Glyph glyph, Sequence sequence) {
         sequence_map.forcePut(glyph, sequence);
+        max_sequence_length = Math.max(max_sequence_length, sequence.size());
     }
 
     public @Nullable Sequence sequenceFor(Glyph glyph) {
@@ -23,5 +25,9 @@ public class Protocol {
 
     public @Nullable Glyph glyphFor(Sequence sequence) {
         return sequence_map.inverse().getOrDefault(sequence, null);
+    }
+
+    public int maxSequenceLength() {
+        return max_sequence_length;
     }
 }
