@@ -20,7 +20,12 @@ public class Sequence {
     }
 
     public Sequence(BitSet bits) {
-        this.bits = bits;
+        this.bits = (BitSet) bits.clone();
+    }
+
+    public Sequence(Sequence other) {
+        this.bits = (BitSet) other.bits.clone();
+        this.write_cursor = other.write_cursor;
     }
 
     public boolean get(int index) {

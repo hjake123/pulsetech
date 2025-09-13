@@ -1,23 +1,32 @@
 package dev.hyperlynx.pulsetech.pulse;
 
-import dev.hyperlynx.pulsetech.Pulsetech;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class ProtocolBlockEntity extends BlockEntity {
-    private Protocol protocol = null;
-    private final Sequence input_buffer = new Sequence();
-    protected int input_delay_timer = 0;
+    protected Protocol protocol = null;
+    protected Sequence buffer = new Sequence();
+    protected int delay_timer = 0;
+    private boolean active = false;
 
-    // abstract @Nullable Consumer<? super SequenceMatchingBlockEntity> getVerb(Glyph glyph);
-    protected abstract boolean isReading();
-    protected abstract void setReading(boolean reading);
-    protected abstract boolean input();
+    /// Performs some action whenever this entity is in an active state.
+    /// The boolean value is whether it should stop being active.
+    /// For example, this might check for matches with the buffer, output the buffer, or anything else.
+    protected abstract boolean run();
 
     public ProtocolBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public void setProtocol(Protocol protocol) {
@@ -28,12 +37,12 @@ public abstract class ProtocolBlockEntity extends BlockEntity {
         return protocol;
     }
 
-    public void clearInputBuffer() {
-        input_buffer.clear();
+    public void delay(int amount) {
+        delay_timer = amount;
     }
 
-    public void delayInput(int amount) {
-        input_delay_timer = amount;
+    public void reset() {
+        buffer.clear();
     }
 
     public void tick() {
@@ -41,41 +50,23 @@ public abstract class ProtocolBlockEntity extends BlockEntity {
         if(level.isClientSide) {
             return;
         }
-        if(isReading()){
-            if(input_delay_timer > 0) {
-                input_delay_timer--;
+        if(isActive()){
+            if(delay_timer > 0) {
+                delay_timer--;
                 return;
             }
-            setReading(listen());
-            delayInput(1);
+            setActive(run());
+            delay(1);
         } else {
-            if(input_buffer.length() > 0) {
-                clearInputBuffer();
+            if(buffer.length() > 0) {
+                reset();
             }
         }
     }
 
-    /// Scans for input and check against the input buffer against the sequences of the protocol.
-    /// If a glyph is matched, it runs that glyph's verb. TODO: verbs not implemented
-    ///
-    /// Returns: true iff reading should continue
-    private boolean listen() {
-        if(protocol == null) {
-            return false;
-        }
-        input_buffer.append(input());
-        if(input_buffer.length() > protocol.sequenceLength()) {
-            input_buffer.clear();
-            Pulsetech.LOGGER.debug("No match found");
-            return false;
-        } else if (input_buffer.length() == protocol.sequenceLength()) {
-            Pulsetech.LOGGER.debug("Checking for match with {}", input_buffer);
-            Glyph glyph = protocol.glyphFor(input_buffer);
-            if(glyph != null) {
-                Pulsetech.LOGGER.debug("Matched glyph {}", glyph.id());
-                return false;
-            }
-        }
-        return true;
+    public void output(boolean bit) {
+        assert level != null;
+        level.setBlock(getBlockPos(), getBlockState().setValue(ProtocolBlock.OUTPUT, bit), Block.UPDATE_CLIENTS);
+        level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
     }
 }

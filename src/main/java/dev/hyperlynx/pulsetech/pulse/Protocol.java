@@ -28,7 +28,7 @@ public class Protocol {
     }
 
     public @Nullable Sequence sequenceFor(Glyph glyph) {
-        return sequence_map.getOrDefault(glyph, null);
+        return new Sequence(sequence_map.getOrDefault(glyph, null));
     }
 
     public @Nullable Glyph glyphFor(Sequence sequence) {

@@ -17,7 +17,7 @@ public class ModCreativeTab {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = TABS.register("tab",
             () -> CreativeModeTab.builder().title(Component.translatable("pulsetech.tab"))
                     .withTabsBefore(CreativeModeTabs.COMBAT)
-                    .icon(() -> ModItems.EXAMPLE_ITEM.get().getDefaultInstance())
+                    .icon(() -> ModItems.PATTERN_DETECTOR.get().getDefaultInstance())
                     .displayItems((parameters, output) ->
                             ModItems.ITEMS.getEntries().forEach(holder ->
                                     output.accept(holder.get())

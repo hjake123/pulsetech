@@ -1,18 +1,13 @@
 package dev.hyperlynx.pulsetech.block.entity;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
-import dev.hyperlynx.pulsetech.block.PatternDetectorBlock;
-import dev.hyperlynx.pulsetech.pulse.Glyph;
-import dev.hyperlynx.pulsetech.pulse.Protocol;
-import dev.hyperlynx.pulsetech.pulse.ProtocolBlockEntity;
-import dev.hyperlynx.pulsetech.pulse.Sequence;
+import dev.hyperlynx.pulsetech.pulse.*;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class PatternDetectorBlockEntity extends ProtocolBlockEntity {
-    private boolean reading = false;
-
     public PatternDetectorBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.PATTERN_DETECTOR.get(), pos, blockState);
         Protocol test_protocol = new Protocol(4);
@@ -22,19 +17,31 @@ public class PatternDetectorBlockEntity extends ProtocolBlockEntity {
         this.setProtocol(test_protocol);
     }
 
-    @Override
-    public boolean isReading() {
-        return reading;
-    }
-
-    @Override
-    public void setReading(boolean reading) {
-        this.reading = reading;
-    }
-
-    @Override
     protected boolean input() {
         assert level != null;
         return level.getDirectSignalTo(getBlockPos()) > 0;
+    }
+
+    @Override
+    protected boolean run() {
+        if(protocol == null) {
+            return false;
+        }
+        buffer.append(input());
+        if(buffer.length() > protocol.sequenceLength()) {
+            buffer.clear();
+            Pulsetech.LOGGER.debug("No match found");
+            output(false);
+            return false;
+        } else if (buffer.length() == protocol.sequenceLength()) {
+            Pulsetech.LOGGER.debug("Checking for match with {}", buffer);
+            Glyph glyph = protocol.glyphFor(buffer);
+            if(glyph != null) {
+                Pulsetech.LOGGER.debug("Matched glyph {}", glyph.id());
+                output(glyph.id().equals("A"));
+                return false;
+            }
+        }
+        return true;
     }
 }
