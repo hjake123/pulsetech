@@ -3,22 +3,21 @@ package dev.hyperlynx.pulsetech.pulse;
 import java.util.BitSet;
 
 /// Contains a single pulse sequence -- a sequence of on and off that is used by various features.
-/// The sequence is stored as a {@link BitSet}, and the Sequence also contains cursors used to traverse itself.
+/// The sequence is stored as a {@link BitSet}.
 public class Sequence {
-    private final BitSet bits = new BitSet();
-    private int read_cursor = 0;
+    private final BitSet bits;
     private int write_cursor = 0;
+
+    public Sequence() {
+        this(new BitSet());
+    }
+
+    public Sequence(BitSet bits) {
+        this.bits = bits;
+    }
 
     public boolean get(int index) {
         return bits.get(index);
-    }
-
-    public boolean next() {
-        return bits.get(read_cursor++);
-    }
-
-    public void resetCursor() {
-        read_cursor = 0;
     }
 
     public void append(boolean bit) {
@@ -40,5 +39,27 @@ public class Sequence {
             return false;
         }
         return bits.equals(other_seq.bits);
+    }
+
+    /// Returns a little endian Sequence containing the bits of the provided integer with all leading zeros truncated.
+    public static Sequence fromInt(int n) {
+        Sequence sequence = new Sequence();
+        while(n > 0) {
+            boolean b = n % 2 == 1;
+            n = n >> 1;
+            sequence.append(b);
+        }
+        return sequence;
+    }
+
+    /// Returns the integer value of this Sequence as a little endian number.
+    /// Affects the read cursor.
+    public int toInt() {
+        int n = 0;
+        for(int i = size() - 1; i >= 0; i--) {
+            boolean b = get(i);
+            n = n << 1 | (b ? 1 : 0);
+        }
+        return n;
     }
 }
