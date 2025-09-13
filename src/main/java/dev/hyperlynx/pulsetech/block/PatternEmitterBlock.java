@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.block;
 
+import com.mojang.serialization.MapCodec;
 import dev.hyperlynx.pulsetech.block.entity.PatternDetectorBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.ProtocolBlock;
 import dev.hyperlynx.pulsetech.pulse.ProtocolBlockEntity;
@@ -12,6 +13,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -30,5 +32,12 @@ public class PatternEmitterBlock extends ProtocolBlock implements EntityBlock {
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return ModBlockEntityTypes.PATTERN_EMITTER.get().create(pos, state);
+    }
+
+    public static final MapCodec<ProtocolBlock> CODEC = simpleCodec(PatternEmitterBlock::new);
+
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return CODEC;
     }
 }
