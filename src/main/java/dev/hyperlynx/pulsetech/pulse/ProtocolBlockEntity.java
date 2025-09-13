@@ -56,7 +56,7 @@ public abstract class ProtocolBlockEntity extends BlockEntity {
                 return;
             }
             setActive(run());
-            delay(1);
+            delay(2);
         } else {
             if(buffer.length() > 0) {
                 reset();
