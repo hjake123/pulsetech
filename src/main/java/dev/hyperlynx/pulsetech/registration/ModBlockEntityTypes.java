@@ -1,0 +1,17 @@
+package dev.hyperlynx.pulsetech.registration;
+
+import com.mojang.datafixers.types.Type;
+import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.block.entity.PatternDetectorBlockEntity;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+public class ModBlockEntityTypes {
+    public static final DeferredRegister<BlockEntityType<?>> TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Pulsetech.MODID);
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PatternDetectorBlockEntity>> PATTERN_DETECTOR =
+            TYPES.register("pattern_detector", () ->
+            BlockEntityType.Builder.of(PatternDetectorBlockEntity::new, ModBlocks.PATTERN_DETECTOR.get()).build(null));
+}

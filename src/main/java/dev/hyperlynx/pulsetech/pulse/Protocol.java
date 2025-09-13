@@ -2,6 +2,7 @@ package dev.hyperlynx.pulsetech.pulse;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import dev.hyperlynx.pulsetech.Pulsetech;
 
 import javax.annotation.Nullable;
 
@@ -12,11 +13,18 @@ public class Protocol {
     public static final Glyph ERR = new Glyph("ERR");
 
     private final BiMap<Glyph, Sequence> sequence_map = HashBiMap.create();
-    private int max_sequence_length = 0;
+    private int sequence_length;
+
+    public Protocol(int sequence_length) {
+        this.sequence_length = sequence_length;
+    }
 
     public void define(Glyph glyph, Sequence sequence) {
+        if(sequence.length() != sequence_length) {
+            Pulsetech.LOGGER.error("Sequence of invalid length {} was defined for protocol (length is {})", sequence.length(), sequence_length);
+        }
         sequence_map.forcePut(glyph, sequence);
-        max_sequence_length = Math.max(max_sequence_length, sequence.size());
+
     }
 
     public @Nullable Sequence sequenceFor(Glyph glyph) {
@@ -27,7 +35,7 @@ public class Protocol {
         return sequence_map.inverse().getOrDefault(sequence, null);
     }
 
-    public int maxSequenceLength() {
-        return max_sequence_length;
+    public int sequenceLength() {
+        return sequence_length;
     }
 }

@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech;
 
 import com.mojang.logging.LogUtils;
+import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModBlocks;
 import dev.hyperlynx.pulsetech.registration.ModCreativeTab;
 import dev.hyperlynx.pulsetech.registration.ModItems;
@@ -20,9 +21,9 @@ public class Pulsetech {
     public Pulsetech(IEventBus bus, ModContainer container) {
         bus.addListener(this::commonSetup);
         ModBlocks.BLOCKS.register(bus);
+        ModBlockEntityTypes.TYPES.register(bus);
         ModItems.ITEMS.register(bus);
         ModCreativeTab.TABS.register(bus);
-
         container.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
