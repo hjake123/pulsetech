@@ -43,6 +43,7 @@ public abstract class ProtocolBlockEntity extends BlockEntity {
 
     public void reset() {
         buffer.clear();
+        output(false);
     }
 
     public void tick() {
@@ -50,11 +51,11 @@ public abstract class ProtocolBlockEntity extends BlockEntity {
         if(level.isClientSide) {
             return;
         }
+        if(delay_timer > 0) {
+            delay_timer--;
+            return;
+        }
         if(isActive()){
-            if(delay_timer > 0) {
-                delay_timer--;
-                return;
-            }
             setActive(run());
             delay(2);
         } else {
