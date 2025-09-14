@@ -1,12 +1,26 @@
 package dev.hyperlynx.pulsetech.pulse;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 
 /// Contains a single pulse sequence -- a sequence of on and off that is used by various features.
 /// The sequence is stored as a {@link BitSet}.
 public class Sequence {
     private final BitSet bits;
     private int write_cursor = 0;
+
+    public static final Codec<Sequence> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(
+                    Codec.INT.fieldOf("id").forGetter(Sequence::length),
+                    Codec.list(Codec.LONG).fieldOf("bit_set_longs").xmap(
+                            longs -> BitSet.valueOf(longs.stream().mapToLong(Long::longValue).toArray()),
+                            bits -> bits.stream().mapToObj(Long::valueOf).toList()).forGetter(Sequence::bitSet)
+            ).apply(instance, Sequence::new)
+    );
 
     public Sequence() {
         this(new BitSet());
@@ -26,6 +40,15 @@ public class Sequence {
     public Sequence(Sequence other) {
         this.bits = (BitSet) other.bits.clone();
         this.write_cursor = other.write_cursor;
+    }
+
+    private Sequence(int length, BitSet bits) {
+        this.write_cursor = length;
+        this.bits = (BitSet) bits.clone();
+    }
+
+    private BitSet bitSet() {
+        return bits;
     }
 
     public boolean get(int index) {

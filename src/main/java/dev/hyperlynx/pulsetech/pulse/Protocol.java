@@ -2,9 +2,12 @@ package dev.hyperlynx.pulsetech.pulse;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.Pulsetech;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 
 /// Contains a set of associations between {@link Sequence}s and {@link Glyph}s.
 /// These associations allow the Sequences to be used by players to configure various blocks.
@@ -12,11 +15,28 @@ public class Protocol {
     public static final Glyph ACK = new Glyph("ACK");
     public static final Glyph ERR = new Glyph("ERR");
 
-    private final BiMap<Glyph, Sequence> sequence_map = HashBiMap.create();
-    private int sequence_length;
+    private final BiMap<Glyph, Sequence> sequence_map;
+    private final int sequence_length;
+
+    public static final Codec<Protocol> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(
+                    Codec.INT.fieldOf("sequence_length").forGetter(Protocol::sequenceLength),
+                    Codec.unboundedMap(Glyph.CODEC, Sequence.CODEC).fieldOf("sequence_map").forGetter(Protocol::getSequenceMap)
+            ).apply(instance, Protocol::new)
+    );
 
     public Protocol(int sequence_length) {
         this.sequence_length = sequence_length;
+        sequence_map = HashBiMap.create();
+    }
+
+    public Protocol(int sequence_length, Map<Glyph, Sequence> existing) {
+        this.sequence_length = sequence_length;
+        sequence_map = HashBiMap.create(existing);
+    }
+
+    private Map<Glyph, Sequence> getSequenceMap() {
+        return sequence_map;
     }
 
     public void define(Glyph glyph, Sequence sequence) {

@@ -1,10 +1,7 @@
 package dev.hyperlynx.pulsetech;
 
 import com.mojang.logging.LogUtils;
-import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
-import dev.hyperlynx.pulsetech.registration.ModBlocks;
-import dev.hyperlynx.pulsetech.registration.ModCreativeTab;
-import dev.hyperlynx.pulsetech.registration.ModItems;
+import dev.hyperlynx.pulsetech.registration.*;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -24,6 +21,7 @@ public class Pulsetech {
         ModBlockEntityTypes.TYPES.register(bus);
         ModItems.ITEMS.register(bus);
         ModCreativeTab.TABS.register(bus);
+        ModComponentTypes.TYPES.register(bus);
         container.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
