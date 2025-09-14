@@ -1,5 +1,5 @@
 {
   "pulsetech.tab": "Pulsetech",
-  "block.pulsetech.example_block": "Example Block",
-  "item.pulsetech.example_item": "Example Item"
+  "block.pulsetech.pattern_detector": "Pattern Detector",
+  "block.pulsetech.pattern_emitter": "Pattern Emitter"
 }
