@@ -45,6 +45,10 @@ public class PatternEmitterBlock extends ProtocolBlock implements EntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if(level.isClientSide) {
+            return InteractionResult.FAIL;
+        }
+
         // Clicking without an item changes which pattern from the protocol is selected.
         if(level.getBlockEntity(pos) instanceof PatternEmitterBlockEntity detector) {
             if(detector.getProtocol() == null) {

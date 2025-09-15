@@ -16,7 +16,6 @@ public class Sequence {
 
     public static final Codec<Sequence> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    Codec.INT.fieldOf("length").forGetter(Sequence::length),
                     Codec.list(Codec.BOOL).fieldOf("bools").forGetter(Sequence::getAsBooleans)
             ).apply(instance, Sequence::new)
     );
@@ -49,8 +48,7 @@ public class Sequence {
         this.write_cursor = other.write_cursor;
     }
 
-    public Sequence(int length, List<Boolean> booleans) {
-        this.write_cursor = length;
+    public Sequence(List<Boolean> booleans) {
         this.bits = new BitSet();
         for(boolean bool : booleans) {
             append(bool);

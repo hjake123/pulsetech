@@ -7,6 +7,7 @@ import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -35,6 +36,10 @@ public class PatternDetectorBlock extends ProtocolBlock implements EntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if(level.isClientSide) {
+            return InteractionResult.FAIL;
+        }
+
         // Clicking without an item changes which pattern from the protocol is selected.
         if(level.getBlockEntity(pos) instanceof PatternDetectorBlockEntity detector) {
             if(detector.getProtocol() == null) {

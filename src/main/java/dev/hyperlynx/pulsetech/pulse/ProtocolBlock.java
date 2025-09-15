@@ -80,6 +80,10 @@ public abstract class ProtocolBlock extends HorizontalDirectionalBlock implement
 
     @Override
     protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if(level.isClientSide) {
+            return ItemInteractionResult.FAIL;
+        }
+
         // Clicking with an item that contains a protocol component updates the protocol.
         if(stack.has(ModComponentTypes.PROTOCOL) && level.getBlockEntity(pos) instanceof ProtocolBlockEntity be) {
             be.setProtocol(stack.get(ModComponentTypes.PROTOCOL));

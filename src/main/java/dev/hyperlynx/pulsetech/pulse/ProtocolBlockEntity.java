@@ -1,6 +1,10 @@
 package dev.hyperlynx.pulsetech.pulse;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -31,6 +35,7 @@ public abstract class ProtocolBlockEntity extends BlockEntity {
 
     public void setProtocol(Protocol protocol) {
         this.protocol = protocol;
+        setChanged();
     }
 
     public Protocol getProtocol() {
@@ -69,5 +74,27 @@ public abstract class ProtocolBlockEntity extends BlockEntity {
         assert level != null;
         level.setBlock(getBlockPos(), getBlockState().setValue(ProtocolBlock.OUTPUT, bit), Block.UPDATE_CLIENTS);
         level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        if(protocol != null) {
+            tag.put("Protocol", Protocol.CODEC.encodeStart(NbtOps.INSTANCE, getProtocol()).getOrThrow());
+        }
+        tag.put("Buffer", Sequence.CODEC.encodeStart(NbtOps.INSTANCE, buffer).getOrThrow());
+        tag.putBoolean("Active", active);
+        tag.putInt("DelayTimer", delay_timer);
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        if(tag.contains("Protocol")) {
+            setProtocol(Protocol.CODEC.decode(NbtOps.INSTANCE, tag.getCompound("Protocol")).getOrThrow().getFirst());
+        }
+        buffer = Sequence.CODEC.decode(NbtOps.INSTANCE, tag.getCompound("Buffer")).getOrThrow().getFirst();
+        active = tag.getBoolean("Active");
+        delay_timer = tag.getInt("DelayTimer");
     }
 }

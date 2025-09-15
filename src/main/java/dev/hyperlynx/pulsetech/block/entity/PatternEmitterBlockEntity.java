@@ -1,8 +1,11 @@
 package dev.hyperlynx.pulsetech.block.entity;
 
+import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.pulse.*;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -36,7 +39,8 @@ public class PatternEmitterBlockEntity extends ProtocolBlockEntity {
         if(!output_initialized) {
             buffer = protocol.sequenceFor(emission);
             if(buffer == null) {
-                throw new RuntimeException("Glyph has no sequence. This should never happen!");
+                Pulsetech.LOGGER.error("No sequence for pattern {}. If this keeps repeating, report it!", emission);
+                return true;
             }
             output_cursor = 0;
             output_initialized = true;
@@ -57,5 +61,17 @@ public class PatternEmitterBlockEntity extends ProtocolBlockEntity {
     public void reset() {
         super.reset();
         output(false);
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        emission = tag.getString("Emission");
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        tag.putString("Emission", emission);
     }
 }
