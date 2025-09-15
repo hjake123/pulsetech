@@ -42,7 +42,6 @@ public class PatternDetectorBlockEntity extends ProtocolBlockEntity {
         buffer.append(input());
         if(buffer.length() > protocol.sequenceLength()) {
             buffer.clear();
-            Pulsetech.LOGGER.debug("No match found");
             output(false);
             return false;
         } else if (buffer.length() == protocol.sequenceLength()) {
@@ -51,7 +50,8 @@ public class PatternDetectorBlockEntity extends ProtocolBlockEntity {
             if(key != null) {
                 Pulsetech.LOGGER.debug("Matched pattern with key {}", key);
                 output(key.equals(trigger));
-                return false;
+                // We don't return false right away to
+                // allow one extra pulse to be absorbed to help with timing.
             }
         }
         return true;

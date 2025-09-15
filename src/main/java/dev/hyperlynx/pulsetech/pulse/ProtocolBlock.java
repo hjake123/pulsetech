@@ -19,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.RepeaterBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -95,7 +94,7 @@ public abstract class ProtocolBlock extends HorizontalDirectionalBlock implement
 
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if(level.getBlockEntity(pos) instanceof ProtocolBlockEntity entity && !entity.isActive()) {
+        if(level.getBlockEntity(pos) instanceof ProtocolBlockEntity entity) {
             entity.setActive(true);
         }
     }
