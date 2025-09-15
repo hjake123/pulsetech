@@ -2,7 +2,6 @@ package dev.hyperlynx.pulsetech.block.entity;
 
 import dev.hyperlynx.pulsetech.pulse.*;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
-import jdk.jshell.Snippet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
@@ -14,19 +13,19 @@ public class PatternEmitterBlockEntity extends ProtocolBlockEntity {
 
     private int output_cursor = 0;
     private boolean output_initialized = false;
-    private Glyph emission;
+    private String emission = "";
 
-    public void setEmission(Glyph emission) {
+    public void setEmission(String emission) {
         this.emission = emission;
     }
 
-    public Glyph getEmission() {
+    public String getEmission() {
         return emission;
     }
 
-    public void rotateEmission(RandomSource random) {
+    public void rotateEmission() {
         // TODO temporary logic
-        emission = protocol.randomGlyph(random);
+        emission = protocol.nextKey(emission);
     }
 
     @Override

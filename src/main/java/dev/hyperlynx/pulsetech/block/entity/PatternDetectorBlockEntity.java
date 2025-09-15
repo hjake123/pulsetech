@@ -12,19 +12,19 @@ public class PatternDetectorBlockEntity extends ProtocolBlockEntity {
         super(ModBlockEntityTypes.PATTERN_DETECTOR.get(), pos, blockState);
     }
 
-    private Glyph trigger;
+    private String trigger;
 
-    public void setTrigger(Glyph trigger) {
+    public void setTrigger(String trigger) {
         this.trigger = trigger;
     }
 
-    public Glyph getTrigger() {
+    public String getTrigger() {
         return trigger;
     }
 
-    public void rotateTrigger(RandomSource random) {
+    public void rotateTrigger() {
         // TODO temporary logic
-        trigger = protocol.randomGlyph(random);
+        trigger = protocol.nextKey(trigger);
     }
 
     protected boolean input() {
@@ -45,10 +45,10 @@ public class PatternDetectorBlockEntity extends ProtocolBlockEntity {
             return false;
         } else if (buffer.length() == protocol.sequenceLength()) {
             Pulsetech.LOGGER.debug("Checking for match with {}", buffer);
-            Glyph glyph = protocol.glyphFor(buffer);
-            if(glyph != null) {
-                Pulsetech.LOGGER.debug("Matched glyph {}", glyph.id());
-                output(glyph.equals(trigger));
+            String key = protocol.keyFor(buffer);
+            if(key != null) {
+                Pulsetech.LOGGER.debug("Matched pattern with key {}", key);
+                output(key.equals(trigger));
                 return false;
             }
         }

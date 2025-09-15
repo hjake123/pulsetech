@@ -84,8 +84,9 @@ public abstract class ProtocolBlock extends HorizontalDirectionalBlock implement
         if(stack.has(ModComponentTypes.PROTOCOL) && level.getBlockEntity(pos) instanceof ProtocolBlockEntity be) {
             be.setProtocol(stack.get(ModComponentTypes.PROTOCOL));
             player.displayClientMessage(Component.translatable("message.pulsetech.set_protocol"), true);
+            return ItemInteractionResult.CONSUME;
         }
-        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

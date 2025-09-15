@@ -51,8 +51,8 @@ public class PatternEmitterBlock extends ProtocolBlock implements EntityBlock {
                 player.displayClientMessage(Component.translatable("message.pulsetech.no_protocol"), true);
                 return InteractionResult.CONSUME;
             }
-            detector.rotateEmission(level.random);
-            player.displayClientMessage(Component.literal(detector.getEmission().id()), true);
+            detector.rotateEmission();
+            player.displayClientMessage(Component.literal(detector.getEmission()), true);
         }
         return super.useWithoutItem(state, level, pos, player, hitResult);
     }

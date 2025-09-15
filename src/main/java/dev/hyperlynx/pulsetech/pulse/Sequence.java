@@ -4,7 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 
 /// Contains a single pulse sequence -- a sequence of on and off that is used by various features.
 /// The sequence is stored as a {@link BitSet}.
@@ -14,12 +16,18 @@ public class Sequence {
 
     public static final Codec<Sequence> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    Codec.INT.fieldOf("id").forGetter(Sequence::length),
-                    Codec.list(Codec.LONG).fieldOf("bit_set_longs").xmap(
-                            longs -> BitSet.valueOf(longs.stream().mapToLong(Long::longValue).toArray()),
-                            bits -> bits.stream().mapToObj(Long::valueOf).toList()).forGetter(Sequence::bitSet)
+                    Codec.INT.fieldOf("length").forGetter(Sequence::length),
+                    Codec.list(Codec.BOOL).fieldOf("bools").forGetter(Sequence::getAsBooleans)
             ).apply(instance, Sequence::new)
     );
+
+    private List<Boolean> getAsBooleans() {
+        List<Boolean> bools = new ArrayList<>();
+        for(int i = 0; i < length(); i++) {
+            bools.add(bits.get(i));
+        }
+        return bools;
+    }
 
     public Sequence() {
         this(new BitSet());
@@ -41,10 +49,14 @@ public class Sequence {
         this.write_cursor = other.write_cursor;
     }
 
-    private Sequence(int length, BitSet bits) {
+    public Sequence(int length, List<Boolean> booleans) {
         this.write_cursor = length;
-        this.bits = (BitSet) bits.clone();
+        this.bits = new BitSet();
+        for(boolean bool : booleans) {
+            append(bool);
+        }
     }
+
 
     private BitSet bitSet() {
         return bits;

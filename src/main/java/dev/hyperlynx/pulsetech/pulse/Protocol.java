@@ -8,22 +8,25 @@ import dev.hyperlynx.pulsetech.Pulsetech;
 import net.minecraft.util.RandomSource;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/// Contains a set of associations between {@link Sequence}s and {@link Glyph}s.
+/// Contains a set of associations between {@link Sequence}s and String keys.
 /// These associations allow the Sequences to be used by players to configure various blocks.
 public class Protocol {
-    public static final Glyph ACK = new Glyph("ACK");
-    public static final Glyph ERR = new Glyph("ERR");
+    public static final String ACK = "ACK";
+    public static final String ERR = "ERR";
 
-    private final BiMap<Glyph, Sequence> sequence_map;
+    private final BiMap<String, Sequence> sequence_map;
     private final int sequence_length;
+    private final List<String> key_list = new ArrayList<>();
 
     public static final Codec<Protocol> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Codec.INT.fieldOf("sequence_length").forGetter(Protocol::sequenceLength),
-                    Codec.unboundedMap(Glyph.CODEC, Sequence.CODEC).fieldOf("sequence_map").forGetter(Protocol::getSequenceMap)
+                    Codec.unboundedMap(Codec.STRING, Sequence.CODEC).fieldOf("sequence_map").forGetter(Protocol::getSequenceMap)
             ).apply(instance, Protocol::new)
     );
 
@@ -32,32 +35,33 @@ public class Protocol {
         sequence_map = HashBiMap.create();
     }
 
-    public Protocol(int sequence_length, Map<Glyph, Sequence> existing) {
+    public Protocol(int sequence_length, Map<String, Sequence> existing) {
         this.sequence_length = sequence_length;
         sequence_map = HashBiMap.create(existing);
+        key_list.addAll(sequence_map.keySet());
     }
 
-    private Map<Glyph, Sequence> getSequenceMap() {
+    private Map<String, Sequence> getSequenceMap() {
         return sequence_map;
     }
 
-    public void define(Glyph glyph, Sequence sequence) {
+    public void define(String key, Sequence sequence) {
         if(sequence.length() != sequence_length) {
             Pulsetech.LOGGER.error("Sequence of invalid length {} was defined for protocol (length is {})", sequence.length(), sequence_length);
         }
-        sequence_map.forcePut(glyph, sequence);
-
+        sequence_map.forcePut(key, sequence);
+        key_list.add(key);
     }
 
-    public @Nullable Sequence sequenceFor(Glyph glyph) {
-        Sequence seq = sequence_map.getOrDefault(glyph, null);
+    public @Nullable Sequence sequenceFor(String key) {
+        Sequence seq = sequence_map.getOrDefault(key, null);
         if(seq == null) {
             return null;
         }
         return new Sequence(seq);
     }
 
-    public @Nullable Glyph glyphFor(Sequence sequence) {
+    public @Nullable String keyFor(Sequence sequence) {
         return sequence_map.inverse().getOrDefault(sequence, null);
     }
 
@@ -65,8 +69,16 @@ public class Protocol {
         return sequence_length;
     }
 
-    public Glyph randomGlyph(RandomSource random) {
-        return sequence_map.keySet().stream().toList().get(random.nextInt(0, sequence_map.size()));
+    public String nextKey(String current_key) {
+        for(int i = 0; i < key_list.size(); i++) {
+            if(key_list.get(i).equals(current_key)) {
+                if(i+1 >= key_list.size()) {
+                    return key_list.getFirst();
+                }
+                return key_list.get(i+1);
+            }
+        }
+        return key_list.getFirst();
     }
 
     @Override

@@ -41,8 +41,8 @@ public class PatternDetectorBlock extends ProtocolBlock implements EntityBlock {
                 player.displayClientMessage(Component.translatable("message.pulsetech.no_protocol"), true);
                 return InteractionResult.CONSUME;
             }
-            detector.rotateTrigger(level.random);
-            player.displayClientMessage(Component.literal(detector.getTrigger().id()), true);
+            detector.rotateTrigger();
+            player.displayClientMessage(Component.literal(detector.getTrigger()), true);
         }
         return super.useWithoutItem(state, level, pos, player, hitResult);
     }

@@ -2,7 +2,6 @@ package dev.hyperlynx.pulsetech.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import dev.hyperlynx.pulsetech.pulse.Glyph;
 import dev.hyperlynx.pulsetech.pulse.Protocol;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
 import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
@@ -38,8 +37,8 @@ public class ModCommands {
                 Map.of(
                         Protocol.ACK, new Sequence(false, false, false, false),
                         Protocol.ERR, new Sequence(true, true, true, true),
-                        new Glyph("A"), new Sequence(true, false, true, false),
-                        new Glyph("B"), new Sequence(false, true, true, false)
+                        "A", new Sequence(true, false, true, false),
+                        "B", new Sequence(false, true, true, false)
                 ))
         );
         player.addItem(paper);
