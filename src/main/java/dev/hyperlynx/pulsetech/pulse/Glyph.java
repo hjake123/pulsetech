@@ -11,4 +11,17 @@ public record Glyph(String id) {
                     Codec.STRING.fieldOf("id").forGetter(Glyph::id)
             ).apply(instance, Glyph::new)
     );
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Glyph(String other_id)) {
+            return other_id.equals(id);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }

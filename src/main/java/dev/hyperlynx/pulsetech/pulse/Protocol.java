@@ -5,9 +5,11 @@ import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.Pulsetech;
+import net.minecraft.util.RandomSource;
 
 import javax.annotation.Nullable;
 import java.util.Map;
+import java.util.Objects;
 
 /// Contains a set of associations between {@link Sequence}s and {@link Glyph}s.
 /// These associations allow the Sequences to be used by players to configure various blocks.
@@ -48,7 +50,11 @@ public class Protocol {
     }
 
     public @Nullable Sequence sequenceFor(Glyph glyph) {
-        return new Sequence(sequence_map.getOrDefault(glyph, null));
+        Sequence seq = sequence_map.getOrDefault(glyph, null);
+        if(seq == null) {
+            return null;
+        }
+        return new Sequence(seq);
     }
 
     public @Nullable Glyph glyphFor(Sequence sequence) {
@@ -57,5 +63,22 @@ public class Protocol {
 
     public int sequenceLength() {
         return sequence_length;
+    }
+
+    public Glyph randomGlyph(RandomSource random) {
+        return sequence_map.keySet().stream().toList().get(random.nextInt(0, sequence_map.size()));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Protocol other) {
+            return other.sequence_map.equals(sequence_map);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sequence_map, sequence_length);
     }
 }

@@ -2,10 +2,17 @@ package dev.hyperlynx.pulsetech.pulse;
 
 import com.mojang.serialization.MapCodec;
 import dev.hyperlynx.pulsetech.block.entity.PatternDetectorBlockEntity;
+import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -20,6 +27,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class ProtocolBlock extends HorizontalDirectionalBlock implements EntityBlock {
@@ -67,6 +76,16 @@ public abstract class ProtocolBlock extends HorizontalDirectionalBlock implement
         if(level.getDirectSignalTo(pos) > 0 && level.getBlockEntity(pos) instanceof ProtocolBlockEntity entity && !entity.isActive()) {
             level.scheduleTick(pos, this, 3);
         }
+    }
+
+    @Override
+    protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        // Clicking with an item that contains a protocol component updates the protocol.
+        if(stack.has(ModComponentTypes.PROTOCOL) && level.getBlockEntity(pos) instanceof ProtocolBlockEntity be) {
+            be.setProtocol(stack.get(ModComponentTypes.PROTOCOL));
+            player.displayClientMessage(Component.translatable("message.pulsetech.set_protocol"), true);
+        }
+        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
     @Override

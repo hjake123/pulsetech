@@ -1,5 +1,7 @@
 {
   "pulsetech.tab": "Pulsetech",
   "block.pulsetech.pattern_detector": "Pattern Detector",
-  "block.pulsetech.pattern_emitter": "Pattern Emitter"
+  "block.pulsetech.pattern_emitter": "Pattern Emitter",
+  "message.pulsetech.set_protocol": "Protocol has been updated",
+  "message.pulsetech.no_protocol": "Please set a Protocol first"
 }

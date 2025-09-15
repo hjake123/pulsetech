@@ -3,9 +3,8 @@ package dev.hyperlynx.pulsetech.pulse;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import java.util.ArrayList;
+import javax.annotation.Nullable;
 import java.util.BitSet;
-import java.util.List;
 
 /// Contains a single pulse sequence -- a sequence of on and off that is used by various features.
 /// The sequence is stored as a {@link BitSet}.

@@ -2,13 +2,17 @@ package dev.hyperlynx.pulsetech.block;
 
 import com.mojang.serialization.MapCodec;
 import dev.hyperlynx.pulsetech.block.entity.PatternDetectorBlockEntity;
+import dev.hyperlynx.pulsetech.block.entity.PatternEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.ProtocolBlock;
 import dev.hyperlynx.pulsetech.pulse.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -19,6 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -36,6 +41,20 @@ public class PatternEmitterBlock extends ProtocolBlock implements EntityBlock {
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        // Clicking without an item changes which pattern from the protocol is selected.
+        if(level.getBlockEntity(pos) instanceof PatternEmitterBlockEntity detector) {
+            if(detector.getProtocol() == null) {
+                player.displayClientMessage(Component.translatable("message.pulsetech.no_protocol"), true);
+                return InteractionResult.CONSUME;
+            }
+            detector.rotateEmission(level.random);
+            player.displayClientMessage(Component.literal(detector.getEmission().id()), true);
+        }
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override

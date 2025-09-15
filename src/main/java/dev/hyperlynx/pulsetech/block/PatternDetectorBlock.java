@@ -1,15 +1,21 @@
 package dev.hyperlynx.pulsetech.block;
 
 import com.mojang.serialization.MapCodec;
+import dev.hyperlynx.pulsetech.block.entity.PatternDetectorBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.ProtocolBlock;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -25,6 +31,20 @@ public class PatternDetectorBlock extends ProtocolBlock implements EntityBlock {
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        // Clicking without an item changes which pattern from the protocol is selected.
+        if(level.getBlockEntity(pos) instanceof PatternDetectorBlockEntity detector) {
+            if(detector.getProtocol() == null) {
+                player.displayClientMessage(Component.translatable("message.pulsetech.no_protocol"), true);
+                return InteractionResult.CONSUME;
+            }
+            detector.rotateTrigger(level.random);
+            player.displayClientMessage(Component.literal(detector.getTrigger().id()), true);
+        }
+        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
     @Override
