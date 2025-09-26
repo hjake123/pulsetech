@@ -1,4 +1,27 @@
 package dev.hyperlynx.pulsetech.client;
 
+import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.client.renderer.PatternBlockRenderer;
+import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+
+@Mod(value = Pulsetech.MODID, dist = Dist.CLIENT)
 public class PulsetechClient {
+
+    public PulsetechClient(ModContainer container) {
+        IEventBus bus = container.getEventBus();
+        if(bus == null) {
+            throw new IllegalStateException("Mod constructor needs event bus");
+        }
+        bus.addListener(this::registerEntityRenderers);
+    }
+
+    public void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(ModBlockEntityTypes.PATTERN_DETECTOR.get(), PatternBlockRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntityTypes.PATTERN_EMITTER.get(), PatternBlockRenderer::new);
+    }
 }

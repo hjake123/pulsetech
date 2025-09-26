@@ -7,7 +7,6 @@ import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -46,8 +45,8 @@ public class PatternDetectorBlock extends ProtocolBlock implements EntityBlock {
                 player.displayClientMessage(Component.translatable("message.pulsetech.no_protocol"), true);
                 return InteractionResult.CONSUME;
             }
-            detector.rotateTrigger();
-            player.displayClientMessage(Component.literal(detector.getTrigger()), true);
+            detector.rotatePattern();
+            level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
         }
         return super.useWithoutItem(state, level, pos, player, hitResult);
     }
