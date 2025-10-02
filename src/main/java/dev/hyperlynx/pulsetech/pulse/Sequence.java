@@ -3,7 +3,6 @@ package dev.hyperlynx.pulsetech.pulse;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -91,24 +90,27 @@ public class Sequence {
         return bits.hashCode();
     }
 
-    /// Returns a little endian Sequence containing the bits of the provided integer with all leading zeros truncated.
-    public static Sequence fromInt(int n) {
+    /// Returns a little endian Sequence containing the bits of the provided short
+    public static Sequence fromShort(short n) {
         Sequence sequence = new Sequence();
         while(n > 0) {
             boolean b = n % 2 == 1;
-            n = n >> 1;
+            n = (short) (n >> 1);
             sequence.append(b);
+        }
+        while(sequence.length() < 16) {
+            sequence.append(false);
         }
         return sequence;
     }
 
-    /// Returns the integer value of this Sequence as a little endian number.
+    /// Returns the short value of this Sequence as a little endian number.
     /// Affects the read cursor.
-    public int toInt() {
-        int n = 0;
+    public short toShort() {
+        short n = 0;
         for(int i = length() - 1; i >= 0; i--) {
             boolean b = get(i);
-            n = n << 1 | (b ? 1 : 0);
+            n = (short) (n << 1 | (b ? 1 : 0));
         }
         return n;
     }

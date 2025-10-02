@@ -42,10 +42,4 @@ public class PatternEmitterBlockEntity extends PatternBlockEntity {
         output_initialized = false;
         return false;
     }
-
-    @Override
-    public void reset() {
-        super.reset();
-        output(false);
-    }
 }

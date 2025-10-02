@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.client;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.client.renderer.NumberEmitterRenderer;
 import dev.hyperlynx.pulsetech.client.renderer.PatternBlockRenderer;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.neoforged.api.distmarker.Dist;
@@ -23,5 +24,6 @@ public class PulsetechClient {
     public void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntityTypes.PATTERN_DETECTOR.get(), PatternBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.PATTERN_EMITTER.get(), PatternBlockRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntityTypes.NUMBER_EMITTER.get(), NumberEmitterRenderer::new);
     }
 }
