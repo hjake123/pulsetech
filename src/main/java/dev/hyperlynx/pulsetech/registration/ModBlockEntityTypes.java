@@ -1,6 +1,5 @@
 package dev.hyperlynx.pulsetech.registration;
 
-import com.mojang.datafixers.types.Type;
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.block.entity.NumberEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.block.entity.NumberMonitorBlockEntity;

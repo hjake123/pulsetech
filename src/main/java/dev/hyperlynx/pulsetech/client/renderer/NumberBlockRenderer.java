@@ -1,7 +1,6 @@
 package dev.hyperlynx.pulsetech.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.hyperlynx.pulsetech.block.entity.NumberEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.block.entity.NumberKnower;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
