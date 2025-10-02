@@ -11,7 +11,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class NumberEmitterBlockEntity extends SequenceBlockEntity {
+public class NumberEmitterBlockEntity extends SequenceBlockEntity implements NumberKnower {
     public NumberEmitterBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.NUMBER_EMITTER.get(), pos, blockState);
     }
@@ -30,6 +30,8 @@ public class NumberEmitterBlockEntity extends SequenceBlockEntity {
             output_cursor = 0;
             output_initialized = true;
             buffer = Sequence.fromShort(number);
+            output(true);
+            delay(2);
         }
         output(buffer.get(output_cursor));
         output_cursor++;
@@ -42,7 +44,7 @@ public class NumberEmitterBlockEntity extends SequenceBlockEntity {
         output_initialized = false;
     }
 
-    public int getNumber() {
+    public short getNumber() {
         return number;
     }
 

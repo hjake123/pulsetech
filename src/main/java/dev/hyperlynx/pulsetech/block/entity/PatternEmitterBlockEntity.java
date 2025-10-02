@@ -31,7 +31,6 @@ public class PatternEmitterBlockEntity extends PatternBlockEntity {
             output_cursor = 0;
             output_initialized = true;
             output(true);
-            delay(1);
             return true;
         }
         output(buffer.get(output_cursor));

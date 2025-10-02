@@ -3,6 +3,7 @@ package dev.hyperlynx.pulsetech.registration;
 import com.mojang.datafixers.types.Type;
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.block.entity.NumberEmitterBlockEntity;
+import dev.hyperlynx.pulsetech.block.entity.NumberMonitorBlockEntity;
 import dev.hyperlynx.pulsetech.block.entity.PatternDetectorBlockEntity;
 import dev.hyperlynx.pulsetech.block.entity.PatternEmitterBlockEntity;
 import net.minecraft.core.registries.Registries;
@@ -24,4 +25,8 @@ public class ModBlockEntityTypes {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NumberEmitterBlockEntity>> NUMBER_EMITTER =
             TYPES.register("number_emitter", () ->
                     BlockEntityType.Builder.of(NumberEmitterBlockEntity::new, ModBlocks.NUMBER_EMITTER.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NumberMonitorBlockEntity>> NUMBER_MONITOR =
+            TYPES.register("number_monitor", () ->
+                    BlockEntityType.Builder.of(NumberMonitorBlockEntity::new, ModBlocks.NUMBER_MONITOR.get()).build(null));
 }

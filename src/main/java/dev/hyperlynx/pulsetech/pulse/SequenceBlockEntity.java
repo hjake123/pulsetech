@@ -32,7 +32,7 @@ public abstract class SequenceBlockEntity extends BlockEntity {
     }
 
     public void delay(int amount) {
-        delay_timer = amount;
+        delay_timer += amount;
     }
 
     public void reset() {
@@ -71,6 +71,11 @@ public abstract class SequenceBlockEntity extends BlockEntity {
         tag.put("Buffer", Sequence.CODEC.encodeStart(NbtOps.INSTANCE, buffer).getOrThrow());
         tag.putBoolean("Active", active);
         tag.putInt("DelayTimer", delay_timer);
+    }
+
+    protected boolean input() {
+        assert level != null;
+        return level.getDirectSignalTo(getBlockPos()) > 0;
     }
 
     @Override

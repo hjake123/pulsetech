@@ -1,33 +1,46 @@
 package dev.hyperlynx.pulsetech.block.entity;
 
-import dev.hyperlynx.pulsetech.pulse.ProtocolBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.Sequence;
+import dev.hyperlynx.pulsetech.pulse.SequenceBlockEntity;
+import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class PatternBlockEntity extends ProtocolBlockEntity {
-    public PatternBlockEntity(BlockEntityType<? extends PatternBlockEntity> type, BlockPos pos, BlockState blockState) {
-        super(type, pos, blockState);
+public class NumberMonitorBlockEntity extends SequenceBlockEntity implements NumberKnower {
+    public NumberMonitorBlockEntity(BlockPos pos, BlockState blockState) {
+        super(ModBlockEntityTypes.NUMBER_MONITOR.get(), pos, blockState);
     }
 
-    private String pattern = "";
+    private short number = 0;
 
-    public void setPattern(String trigger) {
-        this.pattern = trigger;
+    @Override
+    protected boolean run() {
+        if(buffer.length() < 16) {
+            number = 0;
+            buffer.append(input());
+            if(buffer.length() == 16) {
+                number = buffer.toShort();
+                assert getLevel() != null;
+                getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
+            }
+            return buffer.length() < 16;
+        }
+        return false;
     }
 
-    public String getPattern() {
-        return pattern;
+    @Override
+    public void reset() {
+        super.reset();
     }
 
-    public void rotatePattern() {
-        // TODO temporary logic
-        pattern = protocol.nextKey(pattern);
+    public short getNumber() {
+        return number;
     }
 
     // Create an update tag here, like above.
@@ -49,12 +62,12 @@ public abstract class PatternBlockEntity extends ProtocolBlockEntity {
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        pattern = tag.getString("Trigger");
+        number = (short) tag.getInt("Number");
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        tag.putString("Trigger", pattern);
+        tag.putInt("Number", number);
     }
 }

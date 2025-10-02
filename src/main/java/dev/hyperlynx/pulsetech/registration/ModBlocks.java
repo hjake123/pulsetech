@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.registration;
 
 import dev.hyperlynx.pulsetech.block.NumberEmitterBlock;
+import dev.hyperlynx.pulsetech.block.NumberMonitorBlock;
 import dev.hyperlynx.pulsetech.block.PatternDetectorBlock;
 import dev.hyperlynx.pulsetech.block.PatternEmitterBlock;
 import dev.hyperlynx.pulsetech.pulse.ProtocolBlock;
@@ -22,4 +23,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<SequenceBlock> NUMBER_EMITTER = BLOCKS.register("number_emitter", () ->
             new NumberEmitterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER)));
+
+    public static final DeferredBlock<SequenceBlock> NUMBER_MONITOR = BLOCKS.register("number_monitor", () ->
+            new NumberMonitorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER)));
 }
