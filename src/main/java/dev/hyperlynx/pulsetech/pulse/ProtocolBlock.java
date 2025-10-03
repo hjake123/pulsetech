@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
+/// See {@link ProtocolBlockEntity}
 public abstract class ProtocolBlock extends SequenceBlock {
     public ProtocolBlock(Properties properties) {
         super(properties);

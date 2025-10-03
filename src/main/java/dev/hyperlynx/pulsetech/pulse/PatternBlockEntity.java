@@ -1,6 +1,5 @@
-package dev.hyperlynx.pulsetech.block.entity;
+package dev.hyperlynx.pulsetech.pulse;
 
-import dev.hyperlynx.pulsetech.pulse.ProtocolBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -10,6 +9,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+/// A {@link ProtocolBlockEntity} that contains a specific single pattern to listen for or produce
 public abstract class PatternBlockEntity extends ProtocolBlockEntity {
     public PatternBlockEntity(BlockEntityType<? extends PatternBlockEntity> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -28,22 +28,6 @@ public abstract class PatternBlockEntity extends ProtocolBlockEntity {
     public void rotatePattern() {
         // TODO temporary logic
         pattern = protocol.nextKey(pattern);
-    }
-
-    // Create an update tag here, like above.
-    @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag tag = new CompoundTag();
-        saveAdditional(tag, registries);
-        return tag;
-    }
-
-    // Return our packet here. This method returning a non-null result tells the game to use this packet for syncing.
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        // The packet uses the CompoundTag returned by #getUpdateTag. An alternative overload of #create exists
-        // that allows you to specify a custom update tag, including the ability to omit data the client might not need.
-        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override

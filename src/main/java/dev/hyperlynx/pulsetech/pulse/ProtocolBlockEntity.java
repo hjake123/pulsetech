@@ -7,6 +7,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+/// A {@link SequenceBlockEntity} that also contains a particular {@link Protocol}
 public abstract class ProtocolBlockEntity extends SequenceBlockEntity {
     protected Protocol protocol = null;
 

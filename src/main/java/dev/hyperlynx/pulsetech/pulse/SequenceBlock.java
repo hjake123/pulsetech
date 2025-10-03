@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.Nullable;
 
+/// See {@link SequenceBlockEntity}
 public abstract class SequenceBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final BooleanProperty OUTPUT = BooleanProperty.create("output");
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
