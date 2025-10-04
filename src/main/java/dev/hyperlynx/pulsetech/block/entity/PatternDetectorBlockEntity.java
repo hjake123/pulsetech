@@ -31,7 +31,7 @@ public class PatternDetectorBlockEntity extends PatternBlockEntity {
         } else if (buffer.length() == protocol.sequenceLength()) {
             if(Objects.equals(protocol.sequenceFor(Protocol.NUM), buffer)) {
                 Pulsetech.LOGGER.debug("Matched NUM, sleeping...");
-                delay(32);
+                delay(46);
                 return false;
             }
             Pulsetech.LOGGER.debug("Checking for match with {}", buffer);

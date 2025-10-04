@@ -46,6 +46,11 @@ public class ConsoleScreen extends Screen {
             }
             command_box.setValue("");
         }
+        if(keyCode == GLFW.GLFW_KEY_UP) {
+            String last_line = prior_lines.getMessage().getString().lines().toList().getLast();
+            command_box.setValue(last_line);
+            return true;
+        }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 

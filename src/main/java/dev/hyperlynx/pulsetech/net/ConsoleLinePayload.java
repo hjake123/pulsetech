@@ -35,7 +35,7 @@ public record ConsoleLinePayload(BlockPos pos, String line) implements CustomPac
 
     public void serverHandler(IPayloadContext context) {
         if(!(context.player().level().getBlockEntity(pos) instanceof ConsoleBlockEntity console)) {
-            Pulsetech.LOGGER.error("Received command for nonexistent console at {}", pos);
+            Pulsetech.LOGGER.error("Received command {} for nonexistent console at {}", line, pos);
             return;
         }
         console.processLine(line, (ServerPlayer) context.player());

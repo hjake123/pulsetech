@@ -3,7 +3,6 @@ package dev.hyperlynx.pulsetech.block.entity;
 import dev.hyperlynx.pulsetech.net.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.net.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.pulse.ProtocolBlockEntity;
-import dev.hyperlynx.pulsetech.pulse.Sequence;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -19,10 +18,11 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class ConsoleBlockEntity extends ProtocolBlockEntity {
-    private Mode mode = Mode.LISTEN;
+    private Mode mode = Mode.OUTPUT;
     private String saved_lines = "";
 
     public ConsoleBlockEntity(BlockPos pos, BlockState blockState) {
@@ -37,8 +37,6 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         if(!output_initialized) {
             output_cursor = 0;
             output_initialized = true;
-//            output(true);
-//            return true;
         }
         output(buffer.get(output_cursor));
         output_cursor++;
@@ -77,6 +75,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.no_protocol").getString()));
             return;
         }
+        AtomicBoolean error = new AtomicBoolean(false);
         Arrays.stream(line.split(" ")).forEach(token -> {
             if(BUILT_IN_COMMANDS.containsKey(token.toLowerCase())) {
                 BUILT_IN_COMMANDS.get(token.toLowerCase()).accept(player);
@@ -90,16 +89,14 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                     buffer.append(true);
                     buffer.appendAll(protocol.fromShort(Short.parseShort(token)));
                     buffer.append(false);
-                    buffer.append(false);
-                    buffer.append(false);
-                    buffer.append(false);
                 } catch (NumberFormatException ignored) {
                     PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_token").getString() + token));
                     buffer.clear();
+                    error.set(true);
                 }
             }
         });
-        if(buffer.length() > 0) {
+        if(buffer.length() > 0 && !error.get()) {
             setActive(true);
         }
     }

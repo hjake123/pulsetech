@@ -115,7 +115,7 @@ public class Protocol {
             n = (short) (n >> 1);
             sequence.append(b);
         }
-        while(sequence.length() < 16) {
+        while(sequence.length() < numberSequenceLength()) {
             sequence.append(false);
         }
         return sequence;

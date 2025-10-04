@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.block.entity;
 
+import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.pulse.Protocol;
 import dev.hyperlynx.pulsetech.pulse.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
@@ -33,16 +34,19 @@ public class NumberMonitorBlockEntity extends ProtocolBlockEntity implements Num
                 // We can now test for the NUM sequence. If it's absent, we need to fail out.
                 if(!Objects.equals(protocol.sequenceFor(Protocol.NUM), buffer)) {
                     buffer.clear();
-                    delay(7);
+                    delay(6); // magic number!
                     return false;
                 }
+                Pulsetech.LOGGER.debug("Matched NUM, getting ready for input");
             }
             if(buffer.length() == protocol.numberSequenceLength()) {
+                Pulsetech.LOGGER.debug("Parsing sequence {} for short", buffer);
                 number = protocol.toShort(buffer);
                 assert getLevel() != null;
                 getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
+                return false;
             }
-            return buffer.length() < protocol.numberSequenceLength();
+            return true;
         }
         return false;
     }
