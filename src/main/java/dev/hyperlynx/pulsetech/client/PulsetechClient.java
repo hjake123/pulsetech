@@ -4,6 +4,7 @@ import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.client.renderer.NumberBlockRenderer;
 import dev.hyperlynx.pulsetech.client.renderer.PatternBlockRenderer;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
+import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -26,5 +27,9 @@ public class PulsetechClient {
         event.registerBlockEntityRenderer(ModBlockEntityTypes.PATTERN_EMITTER.get(), PatternBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.NUMBER_EMITTER.get(), NumberBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.NUMBER_MONITOR.get(), NumberBlockRenderer::new);
+    }
+
+    public static void openConsoleScreen() {
+        Minecraft.getInstance().setScreen(new ConsoleScreen());
     }
 }

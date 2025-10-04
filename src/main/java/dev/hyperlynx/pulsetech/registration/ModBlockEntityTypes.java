@@ -1,10 +1,7 @@
 package dev.hyperlynx.pulsetech.registration;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
-import dev.hyperlynx.pulsetech.block.entity.NumberEmitterBlockEntity;
-import dev.hyperlynx.pulsetech.block.entity.NumberMonitorBlockEntity;
-import dev.hyperlynx.pulsetech.block.entity.PatternDetectorBlockEntity;
-import dev.hyperlynx.pulsetech.block.entity.PatternEmitterBlockEntity;
+import dev.hyperlynx.pulsetech.block.entity.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -28,4 +25,8 @@ public class ModBlockEntityTypes {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NumberMonitorBlockEntity>> NUMBER_MONITOR =
             TYPES.register("number_monitor", () ->
                     BlockEntityType.Builder.of(NumberMonitorBlockEntity::new, ModBlocks.NUMBER_MONITOR.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ConsoleBlockEntity>> CONSOLE =
+            TYPES.register("console", () ->
+                    BlockEntityType.Builder.of(ConsoleBlockEntity::new, ModBlocks.CONSOLE.get()).build(null));
 }
