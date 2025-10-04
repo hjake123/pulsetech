@@ -50,7 +50,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             "help", player -> {
                 StringBuilder help_builder = new StringBuilder();
                 for(String key : protocol.keys()) {
-                    help_builder.append(key).append("\n");
+                    help_builder.append(key).append(": ").append(protocol.sequenceFor(key)).append("\n");
                 }
                 addBuiltInInfo(help_builder);
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), help_builder.toString()));
@@ -65,7 +65,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
 
     private void addBuiltInInfo(StringBuilder help_builder) {
         for (String built_in : BUILT_IN_COMMANDS.keySet()) {
-            help_builder.append(built_in).append(" - ").append(Component.translatable("help.pulsetech." + built_in).getString()).append("\n");
+            help_builder.append(built_in).append(": ").append(Component.translatable("help.pulsetech." + built_in).getString()).append("\n");
         }
     }
 
