@@ -3,17 +3,16 @@ package dev.hyperlynx.pulsetech.client;
 import dev.hyperlynx.pulsetech.net.ConsoleSendLinePayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.MultiLineEditBox;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.List;
-
 public class ConsoleScreen extends Screen {
-    private final MultiLineEditBox console;
+    private BetterFittingMultiLineTextWidget prior_lines;
+    private final EditBox command_box;
     private final boolean writing_mode = true;
     private final BlockPos pos;
 
@@ -21,21 +20,15 @@ public class ConsoleScreen extends Screen {
         super(Component.translatable("pulsetech.console"));
         this.pos = pos;
         Font font = Minecraft.getInstance().font;
-        console = new MultiLineEditBox(font, 10, 10, font.width(" ") * 80, font.lineHeight * 25, Component.empty(), Component.empty());
-        addRenderableWidget(console);
-    }
-
-    @Override
-    public void tick() {
-        if(writing_mode) {
-            setFocused(console);
-        } else {
-            console.setFocused(false);
-        }
+        command_box = new EditBox(font, 10, 226, font.width(" ") * 80, font.lineHeight * 2, Component.empty());
+        addRenderableWidget(command_box);
+        prior_lines = new BetterFittingMultiLineTextWidget(10, 10, font.width(" ") * 80, font.lineHeight * 22 + 6, Component.empty(), font);
+        addRenderableWidget(prior_lines);
+        setInitialFocus(command_box);
     }
 
     private String getLastLine() {
-        return console.getValue().lines().toList().getLast();
+        return command_box.getValue();
     }
 
     @Override
@@ -43,6 +36,11 @@ public class ConsoleScreen extends Screen {
         if(keyCode == GLFW.GLFW_KEY_ENTER) {
             assert Minecraft.getInstance().player != null;
             PacketDistributor.sendToServer(new ConsoleSendLinePayload(pos, getLastLine()));
+            removeWidget(prior_lines);
+            prior_lines = prior_lines.withMessage(prior_lines.getMessage().copy().append(prior_lines.getMessage().getString().isEmpty() ? getLastLine() : "\n" + getLastLine()));
+            prior_lines.scrollToBottom();
+            addRenderableWidget(prior_lines);
+            command_box.setValue("");
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
