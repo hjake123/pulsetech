@@ -9,6 +9,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -86,11 +89,14 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             } else {
                 try {
                     buffer.append(true);
-                    buffer.appendAll(Sequence.fromShort(Short.parseShort(token)));
+                    buffer.appendAll(protocol.fromShort(Short.parseShort(token)));
+                    buffer.append(false);
+                    buffer.append(false);
                     buffer.append(false);
                     buffer.append(false);
                 } catch (NumberFormatException ignored) {
                     PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_token").getString() + token));
+                    buffer.clear();
                 }
             }
         });
@@ -133,5 +139,21 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
     private enum Mode {
         OUTPUT,
         LISTEN
+    }
+
+    // Create an update tag here, like above.
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = new CompoundTag();
+        saveAdditional(tag, registries);
+        return tag;
+    }
+
+    // Return our packet here. This method returning a non-null result tells the game to use this packet for syncing.
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        // The packet uses the CompoundTag returned by #getUpdateTag. An alternative overload of #create exists
+        // that allows you to specify a custom update tag, including the ability to omit data the client might not need.
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 }

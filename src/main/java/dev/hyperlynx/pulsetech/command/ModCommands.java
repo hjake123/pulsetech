@@ -39,7 +39,8 @@ public class ModCommands {
                         Protocol.ERR, new Sequence(true, true, true, true),
                         "A", new Sequence(true, false, true, false),
                         "B", new Sequence(false, true, true, false),
-                        "C", new Sequence(false, false, true, true)
+                        "C", new Sequence(false, false, true, true),
+                        Protocol.NUM, new Sequence(true, true, false, true)
                 ))
         );
         player.addItem(paper);

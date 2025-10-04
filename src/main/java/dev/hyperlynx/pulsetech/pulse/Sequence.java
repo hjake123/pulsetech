@@ -90,31 +90,6 @@ public class Sequence {
         return bits.hashCode();
     }
 
-    /// Returns a little endian Sequence containing the bits of the provided short
-    public static Sequence fromShort(short n) {
-        Sequence sequence = new Sequence();
-        while(n > 0) {
-            boolean b = n % 2 == 1;
-            n = (short) (n >> 1);
-            sequence.append(b);
-        }
-        while(sequence.length() < 16) {
-            sequence.append(false);
-        }
-        return sequence;
-    }
-
-    /// Returns the short value of this Sequence as a little endian number.
-    /// Affects the read cursor.
-    public short toShort() {
-        short n = 0;
-        for(int i = length() - 1; i >= 0; i--) {
-            boolean b = get(i);
-            n = (short) (n << 1 | (b ? 1 : 0));
-        }
-        return n;
-    }
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(bits.length());

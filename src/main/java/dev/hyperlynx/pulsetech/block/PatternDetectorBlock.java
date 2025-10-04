@@ -36,7 +36,7 @@ public class PatternDetectorBlock extends ProtocolBlock implements EntityBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if(level.isClientSide) {
-            return InteractionResult.FAIL;
+            return InteractionResult.CONSUME;
         }
 
         // Clicking without an item changes which pattern from the protocol is selected.

@@ -9,6 +9,8 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Objects;
+
 /// A {@link ProtocolBlockEntity} that contains a specific single pattern to listen for or produce
 public abstract class PatternBlockEntity extends ProtocolBlockEntity {
     public PatternBlockEntity(BlockEntityType<? extends PatternBlockEntity> type, BlockPos pos, BlockState blockState) {
@@ -28,6 +30,9 @@ public abstract class PatternBlockEntity extends ProtocolBlockEntity {
     public void rotatePattern() {
         // TODO temporary logic
         pattern = protocol.nextKey(pattern);
+        if(Objects.equals(pattern, Protocol.NUM)) {
+            pattern = protocol.nextKey(pattern);
+        }
     }
 
     @Override

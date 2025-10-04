@@ -2,6 +2,7 @@ package dev.hyperlynx.pulsetech.block;
 
 import com.mojang.serialization.MapCodec;
 import dev.hyperlynx.pulsetech.block.entity.NumberEmitterBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.ProtocolBlock;
 import dev.hyperlynx.pulsetech.pulse.SequenceBlock;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -20,7 +21,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class NumberEmitterBlock extends SequenceBlock implements EntityBlock {
+public class NumberEmitterBlock extends ProtocolBlock implements EntityBlock {
     protected static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 2, 16), Block.box(4, 2, 4, 12, 6, 12));
 
     public NumberEmitterBlock(Properties properties) {
