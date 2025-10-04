@@ -77,7 +77,10 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                 buffer.append(false);
             } else {
                 try {
+                    buffer.append(true);
                     buffer.appendAll(Sequence.fromShort(Short.parseShort(token)));
+                    buffer.append(false);
+                    buffer.append(false);
                 } catch (NumberFormatException ignored) {
                     PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_token").getString() + token));
                 }
