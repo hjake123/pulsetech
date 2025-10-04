@@ -93,4 +93,12 @@ public class Protocol {
     public int hashCode() {
         return Objects.hash(sequence_map, sequence_length);
     }
+
+    public boolean hasKey(String token) {
+        return sequence_map.containsKey(token);
+    }
+
+    public List<String> keys() {
+        return key_list;
+    }
 }

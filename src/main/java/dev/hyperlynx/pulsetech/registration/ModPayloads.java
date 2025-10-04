@@ -1,10 +1,12 @@
 package dev.hyperlynx.pulsetech.registration;
 
-import dev.hyperlynx.pulsetech.net.ConsoleSendLinePayload;
+import dev.hyperlynx.pulsetech.net.ConsoleLinePayload;
+import dev.hyperlynx.pulsetech.net.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.net.OpenConsolePayload;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 @EventBusSubscriber
@@ -19,10 +21,22 @@ public class ModPayloads {
                 OpenConsolePayload::handler
         );
 
-        registrar.playToServer(
-                ConsoleSendLinePayload.TYPE,
-                ConsoleSendLinePayload.STREAM_CODEC,
-                ConsoleSendLinePayload::handler
+        registrar.playBidirectional(
+                ConsoleLinePayload.TYPE,
+                ConsoleLinePayload.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(
+                        ConsoleLinePayload::clientHandler,
+                        ConsoleLinePayload::serverHandler
+                )
+        );
+
+        registrar.playBidirectional(
+                ConsolePriorLinesPayload.TYPE,
+                ConsolePriorLinesPayload.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(
+                        ConsolePriorLinesPayload::clientHandler,
+                        ConsolePriorLinesPayload::serverHandler
+                )
         );
     }
 }

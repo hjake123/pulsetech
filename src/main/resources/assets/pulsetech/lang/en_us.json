@@ -3,5 +3,10 @@
   "block.pulsetech.pattern_detector": "Pattern Detector",
   "block.pulsetech.pattern_emitter": "Pattern Emitter",
   "message.pulsetech.set_protocol": "Protocol has been updated",
-  "message.pulsetech.no_protocol": "Please set a Protocol first"
+  "message.pulsetech.no_protocol": "Please set a Protocol first",
+  "console.pulsetech.no_protocol": "No protocol loaded",
+  "console.pulsetech.help_description": "Show this help readout",
+  "console.pulsetech.invalid_token": "Invalid command or number ",
+  "pulsetech.console": "Console",
+  "console.pulsetech.clear_description": "Clears the prior lines"
 }

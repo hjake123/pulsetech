@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.block;
 
 import com.mojang.serialization.MapCodec;
+import dev.hyperlynx.pulsetech.block.entity.ConsoleBlockEntity;
 import dev.hyperlynx.pulsetech.block.entity.PatternEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.client.PulsetechClient;
 import dev.hyperlynx.pulsetech.net.OpenConsolePayload;
@@ -34,8 +35,8 @@ public class ConsoleBlock extends ProtocolBlock implements EntityBlock {
 
     @Override
     protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if(player instanceof ServerPlayer splayer) {
-            PacketDistributor.sendToPlayer(splayer, new OpenConsolePayload(pos));
+        if(player instanceof ServerPlayer splayer && level.getBlockEntity(pos) instanceof ConsoleBlockEntity console) {
+            PacketDistributor.sendToPlayer(splayer, new OpenConsolePayload(pos, console.getPriorLinesOrEmpty()));
         }
         return InteractionResult.SUCCESS;
     }

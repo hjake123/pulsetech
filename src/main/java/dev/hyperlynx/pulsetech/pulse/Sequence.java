@@ -123,4 +123,10 @@ public class Sequence {
         }
         return builder.toString();
     }
+
+    public void appendAll(Sequence sequence) {
+        for(int i = 0; i < sequence.length(); i++) {
+            append(sequence.get(i));
+        }
+    }
 }
