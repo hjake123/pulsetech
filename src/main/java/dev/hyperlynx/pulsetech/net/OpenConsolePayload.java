@@ -7,12 +7,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
+/// S -> C payload that opens the Console screen
 public record OpenConsolePayload(BlockPos pos) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<OpenConsolePayload> TYPE = new CustomPacketPayload.Type<>(Pulsetech.location("open_console"));
     @Override
-    public Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 
@@ -22,6 +24,6 @@ public record OpenConsolePayload(BlockPos pos) implements CustomPacketPayload {
     );
 
     public void handler(IPayloadContext context) {
-        PulsetechClient.openConsoleScreen();
+        PulsetechClient.openConsoleScreen(pos);
     }
 }
