@@ -33,6 +33,7 @@ public class NumberMonitorBlockEntity extends ProtocolBlockEntity implements Num
                 // We can now test for the NUM sequence. If it's absent, we need to fail out.
                 if(!Objects.equals(protocol.sequenceFor(Protocol.NUM), buffer)) {
                     buffer.clear();
+                    delay(7);
                     return false;
                 }
             }

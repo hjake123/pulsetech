@@ -85,7 +85,6 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                 buffer.append(true);
                 buffer.appendAll(Objects.requireNonNull(protocol.sequenceFor(token)));
                 buffer.append(false);
-                buffer.append(false);
             } else {
                 try {
                     buffer.append(true);
