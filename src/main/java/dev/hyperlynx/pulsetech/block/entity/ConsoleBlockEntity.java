@@ -49,17 +49,25 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
     private final Map<String, Consumer<ServerPlayer>> BUILT_IN_COMMANDS = Map.of(
             "help", player -> {
                 StringBuilder help_builder = new StringBuilder();
-                help_builder.append("help").append(": ").append(Component.translatable("console.pulsetech.help_description").getString()).append("\n");
-                help_builder.append("clear").append(": ").append(Component.translatable("console.pulsetech.clear_description").getString()).append("\n");
                 for(String key : protocol.keys()) {
                     help_builder.append(key).append("\n");
                 }
+                addBuiltInInfo(help_builder);
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), help_builder.toString()));
             },
             "clear", player -> {
                 PacketDistributor.sendToPlayer(player, new ConsolePriorLinesPayload(getBlockPos(), ""));
+            },
+            "stop", player -> {
+                buffer.clear();
             }
     );
+
+    private void addBuiltInInfo(StringBuilder help_builder) {
+        for (String built_in : BUILT_IN_COMMANDS.keySet()) {
+            help_builder.append(built_in).append(" - ").append(Component.translatable("help.pulsetech." + built_in).getString()).append("\n");
+        }
+    }
 
     public void processLine(String line, ServerPlayer player) {
         if(protocol == null) {

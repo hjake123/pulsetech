@@ -25,6 +25,7 @@ public class ConsoleScreen extends Screen {
         command_box = new EditBox(font, 10, 226, font.width(" ") * 80, font.lineHeight * 2, Component.empty());
         addRenderableWidget(command_box);
         prior_lines = new BetterFittingMultiLineTextWidget(10, 10, font.width(" ") * 80, font.lineHeight * 22 + 6, Component.literal(lines), font);
+        prior_lines.scrollToBottom();
         addRenderableWidget(prior_lines);
         setInitialFocus(command_box);
     }
