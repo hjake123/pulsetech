@@ -19,8 +19,9 @@ public abstract class ProtocolBlockEntity extends SequenceBlockEntity {
     public void setProtocol(Protocol protocol) {
         this.protocol = protocol;
         setChanged();
-        assert getLevel() != null;
-        getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        if(getLevel() != null) {
+            getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        }
     }
 
     public Protocol getProtocol() {
