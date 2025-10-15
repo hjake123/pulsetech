@@ -21,7 +21,8 @@ public class NumberBlockRenderer<T extends BlockEntity & NumberKnower> implement
     public void render(T be, float v, PoseStack stack, MultiBufferSource buffers, int i, int i1) {
         stack.pushPose();
         stack.translate(0.5, 0.75, 0.5);
-        HyperNameTagRenderer.renderNameTag(dispatcher, Component.literal("" + be.getNumber()),
+        String override = be.getOverrideMessage();
+        HyperNameTagRenderer.renderNameTag(dispatcher, Component.literal(override == null ? "" + be.getNumber() : override),
                     stack, buffers, LightTexture.FULL_BRIGHT);
         stack.popPose();
     }

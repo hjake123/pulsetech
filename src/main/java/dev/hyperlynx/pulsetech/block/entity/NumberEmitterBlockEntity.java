@@ -5,6 +5,7 @@ import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -46,8 +47,17 @@ public class NumberEmitterBlockEntity extends ProtocolBlockEntity implements Num
         output_initialized = false;
     }
 
+    @Override
     public short getNumber() {
         return number;
+    }
+
+    @Override
+    public String getOverrideMessage() {
+        if(protocol == null) {
+            return Component.translatable("pulsetech.needs_protocol").getString();
+        }
+        return null;
     }
 
     @Override

@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -18,6 +19,8 @@ public abstract class ProtocolBlockEntity extends SequenceBlockEntity {
     public void setProtocol(Protocol protocol) {
         this.protocol = protocol;
         setChanged();
+        assert getLevel() != null;
+        getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
     public Protocol getProtocol() {
