@@ -5,6 +5,7 @@ import dev.hyperlynx.pulsetech.net.ConsolePriorLinesPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -15,16 +16,26 @@ import java.util.Arrays;
 
 public class ConsoleScreen extends Screen {
     private BetterFittingMultiLineTextWidget prior_lines;
-    private final EditBox command_box;
-    private final BlockPos pos;
+    private EditBox command_box;
+    private BlockPos pos;
+    private String prior_lines_str;
 
     protected ConsoleScreen(BlockPos pos, String lines) {
         super(Component.translatable("pulsetech.console"));
         this.pos = pos;
+        this.prior_lines_str = lines;
+    }
+
+    @Override
+    protected void init() {
+        super.init();
         Font font = Minecraft.getInstance().font;
-        command_box = new EditBox(font, 10, 226, font.width(" ") * 80, font.lineHeight * 2, Component.empty());
+        int console_width = font.width(" ") * 80;
+        int command_box_height = font.lineHeight * 2;
+        int console_height = font.lineHeight * 22 + 6;
+        command_box = new EditBox(font, this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (console_width / 2), this.getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + (console_height / 2) - 5, console_width, command_box_height, Component.empty());
         addRenderableWidget(command_box);
-        prior_lines = new BetterFittingMultiLineTextWidget(10, 10, font.width(" ") * 80, font.lineHeight * 22 + 6, Component.literal(lines), font);
+        prior_lines = new BetterFittingMultiLineTextWidget(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (console_width / 2),this.getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - (console_height / 2) - 10, console_width, console_height, Component.literal(prior_lines_str), font);
         prior_lines.scrollToBottom();
         addRenderableWidget(prior_lines);
         setInitialFocus(command_box);
