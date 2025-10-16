@@ -1,49 +1,53 @@
 package dev.hyperlynx.pulsetech.block.entity;
 
-import dev.hyperlynx.pulsetech.Pulsetech;
-import dev.hyperlynx.pulsetech.pulse.*;
+import dev.hyperlynx.pulsetech.pulse.block.PatternBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.module.PatternDetectorModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.Objects;
-
 public class PatternDetectorBlockEntity extends PatternBlockEntity {
+    private PatternDetectorModule detector = new PatternDetectorModule();
+
     public PatternDetectorBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.PATTERN_DETECTOR.get(), pos, blockState);
     }
 
     @Override
-    protected boolean run() {
-        if(protocol == null) {
-            return false;
+    public boolean isActive() {
+        return detector.isActive();
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        detector.setActive(active);
+    }
+
+    @Override
+    public void tick() {
+        if(!(level instanceof ServerLevel slevel)) {
+            return;
         }
-        buffer.append(input());
-        if(buffer.length() > protocol.sequenceLength()) {
-            buffer.clear();
-            output(false);
-            return false;
-        } else if (buffer.length() == protocol.sequenceLength()) {
-            if(Objects.equals(protocol.sequenceFor(Protocol.NUM), buffer)) {
-                Pulsetech.LOGGER.debug("Matched NUM, sleeping...");
-                delay(46);
-                return false;
-            }
-            Pulsetech.LOGGER.debug("Checking for match with {}", buffer);
-            String key = protocol.keyFor(buffer);
-            if(key != null) {
-                Pulsetech.LOGGER.debug("Matched pattern with key {}", key);
-                output(key.equals(getPattern()));
-                // We don't return false right away to
-                // allow one extra pulse to be absorbed to help with timing.
-            }
-        }
-        return true;
+        detector.tick(slevel, this);
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        tag.put("Detector", PatternDetectorModule.CODEC.encodeStart(NbtOps.INSTANCE, detector).getOrThrow());
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        PatternDetectorModule.CODEC.decode(NbtOps.INSTANCE, tag.get("Detector")).ifSuccess(success -> detector = success.getFirst());
     }
 
     // Create an update tag here, like above.

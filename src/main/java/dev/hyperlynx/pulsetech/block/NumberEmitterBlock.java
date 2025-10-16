@@ -2,8 +2,8 @@ package dev.hyperlynx.pulsetech.block;
 
 import com.mojang.serialization.MapCodec;
 import dev.hyperlynx.pulsetech.block.entity.NumberEmitterBlockEntity;
-import dev.hyperlynx.pulsetech.pulse.ProtocolBlock;
-import dev.hyperlynx.pulsetech.pulse.SequenceBlock;
+import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlock;
+import dev.hyperlynx.pulsetech.pulse.block.PulseBlock;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
@@ -52,7 +52,7 @@ public class NumberEmitterBlock extends ProtocolBlock implements EntityBlock {
         return ModBlockEntityTypes.NUMBER_EMITTER.get().create(pos, state);
     }
 
-    public static final MapCodec<SequenceBlock> CODEC = simpleCodec(NumberEmitterBlock::new);
+    public static final MapCodec<PulseBlock> CODEC = simpleCodec(NumberEmitterBlock::new);
 
     @Override
     protected MapCodec<? extends HorizontalDirectionalBlock> codec() {

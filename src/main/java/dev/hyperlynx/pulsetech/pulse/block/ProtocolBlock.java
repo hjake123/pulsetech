@@ -1,4 +1,4 @@
-package dev.hyperlynx.pulsetech.pulse;
+package dev.hyperlynx.pulsetech.pulse.block;
 
 import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
 import net.minecraft.core.BlockPos;
@@ -13,7 +13,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 /// See {@link ProtocolBlockEntity}
-public abstract class ProtocolBlock extends SequenceBlock {
+public abstract class ProtocolBlock extends PulseBlock {
     public ProtocolBlock(Properties properties) {
         super(properties);
     }

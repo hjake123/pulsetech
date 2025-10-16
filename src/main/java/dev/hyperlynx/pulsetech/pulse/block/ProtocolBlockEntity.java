@@ -1,5 +1,6 @@
-package dev.hyperlynx.pulsetech.pulse;
+package dev.hyperlynx.pulsetech.pulse.block;
 
+import dev.hyperlynx.pulsetech.pulse.Protocol;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -8,8 +9,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-/// A {@link SequenceBlockEntity} that also contains a particular {@link Protocol}
-public abstract class ProtocolBlockEntity extends SequenceBlockEntity {
+/// A {@link PulseBlockEntity} that also contains a particular {@link Protocol}
+public abstract class ProtocolBlockEntity extends PulseBlockEntity {
     protected Protocol protocol = null;
 
     public ProtocolBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {

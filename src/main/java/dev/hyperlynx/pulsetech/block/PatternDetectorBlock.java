@@ -2,7 +2,7 @@ package dev.hyperlynx.pulsetech.block;
 
 import com.mojang.serialization.MapCodec;
 import dev.hyperlynx.pulsetech.block.entity.PatternDetectorBlockEntity;
-import dev.hyperlynx.pulsetech.pulse.ProtocolBlock;
+import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlock;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

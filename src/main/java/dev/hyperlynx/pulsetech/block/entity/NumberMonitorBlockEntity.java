@@ -1,65 +1,47 @@
 package dev.hyperlynx.pulsetech.block.entity;
 
-import dev.hyperlynx.pulsetech.Pulsetech;
-import dev.hyperlynx.pulsetech.pulse.Protocol;
-import dev.hyperlynx.pulsetech.pulse.ProtocolBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.module.NumberSensorModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.Objects;
-
 public class NumberMonitorBlockEntity extends ProtocolBlockEntity implements NumberKnower {
+    private NumberSensorModule module = new NumberSensorModule();
+
     public NumberMonitorBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.NUMBER_MONITOR.get(), pos, blockState);
     }
 
-    private short number = 0;
-
     @Override
-    protected boolean run() {
-        if(protocol == null) {
-            return false;
-        }
-        if(buffer.length() < protocol.numberSequenceLength()) {
-            number = 0;
-            buffer.append(input());
-            if(buffer.length() == protocol.sequenceLength()) {
-                // We can now test for the NUM sequence. If it's absent, we need to fail out.
-                if(!Objects.equals(protocol.sequenceFor(Protocol.NUM), buffer)) {
-                    buffer.clear();
-                    delay(6); // magic number!
-                    return false;
-                }
-                Pulsetech.LOGGER.debug("Matched NUM, getting ready for input");
-            }
-            if(buffer.length() == protocol.numberSequenceLength()) {
-                Pulsetech.LOGGER.debug("Parsing sequence {} for short", buffer);
-                number = protocol.toShort(buffer);
-                assert getLevel() != null;
-                getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
-                return false;
-            }
-            return true;
-        }
-        return false;
+    public boolean isActive() {
+        return module.isActive();
     }
 
     @Override
-    public void reset() {
-        super.reset();
-        number = 0;
+    public void setActive(boolean active) {
+        module.setActive(active);
+    }
+
+    @Override
+    public void tick() {
+        if(!(level instanceof ServerLevel slevel)) {
+            return;
+        }
+        module.tick(slevel, this);
     }
 
     public short getNumber() {
-        return number;
+        return module.getNumber();
     }
 
     @Override
@@ -73,13 +55,13 @@ public class NumberMonitorBlockEntity extends ProtocolBlockEntity implements Num
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        number = (short) tag.getInt("Number");
+        NumberSensorModule.CODEC.decode(NbtOps.INSTANCE, tag.get("Sensor")).ifSuccess(success -> module = success.getFirst());
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        tag.putInt("Number", number);
+        tag.put("Sensor", NumberSensorModule.CODEC.encodeStart(NbtOps.INSTANCE, module).getOrThrow());
     }
 
     // Create an update tag here, like above.
@@ -96,5 +78,12 @@ public class NumberMonitorBlockEntity extends ProtocolBlockEntity implements Num
         // The packet uses the CompoundTag returned by #getUpdateTag. An alternative overload of #create exists
         // that allows you to specify a custom update tag, including the ability to omit data the client might not need.
         return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        if(level != null)
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
     }
 }

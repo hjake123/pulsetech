@@ -3,8 +3,10 @@ package dev.hyperlynx.pulsetech.block.entity;
 import com.mojang.serialization.Codec;
 import dev.hyperlynx.pulsetech.net.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.net.ConsolePriorLinesPayload;
-import dev.hyperlynx.pulsetech.pulse.PatternBlockEntity;
-import dev.hyperlynx.pulsetech.pulse.ProtocolBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.module.ConsoleEmitterModule;
+import dev.hyperlynx.pulsetech.pulse.module.EmitterModule;
+import dev.hyperlynx.pulsetech.pulse.module.NumberSensorModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -13,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -21,48 +24,19 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public class ConsoleBlockEntity extends ProtocolBlockEntity {
+    private ConsoleEmitterModule emitter = new ConsoleEmitterModule();
+
     private Mode mode = Mode.PARSE;
     private String saved_lines = "";
-    private boolean looping = false;
 
     private Map<String, List<String>> macros = new HashMap<>(); // Defined macros for this console. TODO better persistence?
     private static final Codec<Map<String, List<String>>> MACRO_CODEC = Codec.unboundedMap(Codec.STRING, Codec.STRING.listOf());
-
-    private Map<Integer, Short> delay_points = new HashMap<>();
-    private static final Codec<Map<Integer, Short>> DELAYS_CODEC = Codec.unboundedMap(Codec.INT, Codec.SHORT);
 
     public ConsoleBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.CONSOLE.get(), pos, blockState);
     }
 
-    private int output_cursor = 0;
-    private boolean output_initialized = false;
 
-    @Override
-    protected boolean run() {
-        if(!output_initialized) {
-            output_cursor = 0;
-            output_initialized = true;
-        }
-        if(delay_points.containsKey(output_cursor)) {
-            delay(delay_points.get(output_cursor));
-            output_cursor++;
-            return true;
-        }
-        output(buffer.get(output_cursor));
-        output_cursor++;
-        if(output_cursor < buffer.length()) {
-            return true;
-        }
-        if(looping) {
-            delay(4);
-            output_cursor = 0;
-            return true;
-        }
-        output_initialized = false;
-        delay_points.clear();
-        return false;
-    }
 
     private final Map<String, BiConsumer<ServerPlayer, ConsoleBlockEntity>> BUILT_IN_COMMANDS = Map.of(
             "help", (player, console) -> {
@@ -86,10 +60,10 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                 PacketDistributor.sendToPlayer(player, new ConsolePriorLinesPayload(getBlockPos(), ""));
             },
             "stop", (player, console) -> {
-                if(looping) {
+                if(emitter.looping) {
                     setLooping(false);
                 }
-                buffer.clear();
+                emitter.reset();
             },
             "define", (player, console) -> {
                 console.setMode(Mode.DEFINE);
@@ -148,8 +122,8 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                 }
                 case SET_DELAY -> {
                     try {
-                        delay_points.put(this.buffer.length(), Short.parseShort(token)); // Add a new delay to the sequence.
-                        buffer.append(false); // Add extra bit to be a placeholder for the delay.
+                        emitter.delay_points.put(emitter.getBuffer().length(), Short.parseShort(token)); // Add a new delay to the sequence.
+                        emitter.getBuffer().append(false); // Add extra bit to be a placeholder for the delay.
                     } catch (NumberFormatException e) {
                         error = true;
                     }
@@ -157,7 +131,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                 }
             }
         }
-        if(buffer.length() > 0 && !error) {
+        if(emitter.getBuffer().length() > 0 && !error) {
             setActive(true);
         }
         if(mode.equals(Mode.SET_DELAY)) {
@@ -185,17 +159,17 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             return false;
         }
         else if(protocol.hasKey(token)) {
-            buffer.append(true);
-            buffer.appendAll(Objects.requireNonNull(protocol.sequenceFor(token)));
-            buffer.append(false);
+            emitter.getBuffer().append(true);
+            emitter.getBuffer().appendAll(Objects.requireNonNull(protocol.sequenceFor(token)));
+            emitter.getBuffer().append(false);
         } else {
             try {
-                buffer.append(true);
-                buffer.appendAll(protocol.fromShort(Short.parseShort(token)));
-                buffer.append(false);
+                emitter.getBuffer().append(true);
+                emitter.getBuffer().appendAll(protocol.fromShort(Short.parseShort(token)));
+                emitter.getBuffer().append(false);
             } catch (NumberFormatException ignored) {
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_token").getString() + token));
-                buffer.clear();
+                emitter.reset();
                 return true;
             }
         }
@@ -205,8 +179,9 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        if(mode.equals(Mode.PARSE)) {
-            tag.putBoolean("output_mode", true);
+        var encode_result = ConsoleEmitterModule.CODEC.encodeStart(NbtOps.INSTANCE, emitter);
+        if(encode_result.hasResultOrPartial()) {
+            tag.put("Emitter", encode_result.getPartialOrThrow());
         }
         if(!saved_lines.isEmpty()) {
             tag.putString("saved_lines", saved_lines);
@@ -214,30 +189,21 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         if(!macros.isEmpty()) {
             MACRO_CODEC.encodeStart(NbtOps.INSTANCE, macros).ifSuccess(encoded -> tag.put("macros", encoded));
         }
-        if(!delay_points.isEmpty()) {
-            DELAYS_CODEC.encodeStart(NbtOps.INSTANCE, delay_points).ifSuccess(encoded -> tag.put("delays", encoded));
-        }
-        if(looping) {
-            tag.putBoolean("looping", true);
-        }
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        if(tag.contains("output_mode")) {
-            mode = Mode.PARSE;
+        var decode_result = ConsoleEmitterModule.CODEC.decode(NbtOps.INSTANCE, tag.get("Emitter"));
+        if(decode_result.hasResultOrPartial()) {
+            emitter = decode_result.getPartialOrThrow().getFirst();
         }
         if(tag.contains("saved_lines")) {
-            saved_lines = tag.getString(saved_lines);
+            saved_lines = tag.getString("saved_lines");
         }
         if(tag.contains("macros")) {
             MACRO_CODEC.decode(NbtOps.INSTANCE, tag.get("macros")).ifSuccess(pair -> macros = new HashMap<>(pair.getFirst()));
         }
-        if(tag.contains("delays")) {
-            DELAYS_CODEC.decode(NbtOps.INSTANCE, tag.get("delays")).ifSuccess(pair -> delay_points = new HashMap<>(pair.getFirst()));
-        }
-        looping = tag.contains("looping");
     }
 
     public void savePriorLines(String lines) {
@@ -249,11 +215,29 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         return saved_lines;
     }
 
+    @Override
+    public boolean isActive() {
+        return emitter.isActive();
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        emitter.setActive(active);
+    }
+
+    @Override
+    public void tick() {
+        if(level instanceof ServerLevel slevel) {
+            emitter.tick(slevel, this);
+        }
+    }
+
     private enum Mode {
         PARSE,
         DEFINE,
         SET_DELAY,
-        FORGET
+        FORGET,
+        LISTEN
     }
 
     private void setMode(Mode mode) {
@@ -261,9 +245,9 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
     }
 
     private void setLooping(boolean looping) {
-        this.looping = looping;
+        emitter.looping = looping;
         if(!looping) {
-            delay_points.clear();
+            emitter.delay_points.clear();
         }
         setChanged();
     }

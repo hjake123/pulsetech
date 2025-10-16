@@ -1,8 +1,8 @@
 package dev.hyperlynx.pulsetech.registration;
 
 import dev.hyperlynx.pulsetech.block.*;
-import dev.hyperlynx.pulsetech.pulse.ProtocolBlock;
-import dev.hyperlynx.pulsetech.pulse.SequenceBlock;
+import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlock;
+import dev.hyperlynx.pulsetech.pulse.block.PulseBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -18,10 +18,10 @@ public class ModBlocks {
     public static final DeferredBlock<ProtocolBlock> PATTERN_EMITTER = BLOCKS.register("pattern_emitter", () ->
             new PatternEmitterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER)));
 
-    public static final DeferredBlock<SequenceBlock> NUMBER_EMITTER = BLOCKS.register("number_emitter", () ->
+    public static final DeferredBlock<PulseBlock> NUMBER_EMITTER = BLOCKS.register("number_emitter", () ->
             new NumberEmitterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER)));
 
-    public static final DeferredBlock<SequenceBlock> NUMBER_MONITOR = BLOCKS.register("number_monitor", () ->
+    public static final DeferredBlock<PulseBlock> NUMBER_MONITOR = BLOCKS.register("number_monitor", () ->
             new NumberMonitorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER)));
 
     public static final DeferredBlock<ConsoleBlock> CONSOLE = BLOCKS.register("console", () ->

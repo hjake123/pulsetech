@@ -1,4 +1,4 @@
-package dev.hyperlynx.pulsetech.pulse;
+package dev.hyperlynx.pulsetech.pulse.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,12 +19,12 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.Nullable;
 
-/// See {@link SequenceBlockEntity}
-public abstract class SequenceBlock extends HorizontalDirectionalBlock implements EntityBlock {
+/// See {@link PulseBlockEntity}
+public abstract class PulseBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final BooleanProperty OUTPUT = BooleanProperty.create("output");
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
-    public SequenceBlock(Properties properties) {
+    public PulseBlock(Properties properties) {
         super(properties.isRedstoneConductor((state, getter, pos) -> false));
         registerDefaultState(defaultBlockState().setValue(OUTPUT, false).setValue(FACING, Direction.NORTH));
     }
@@ -62,14 +62,14 @@ public abstract class SequenceBlock extends HorizontalDirectionalBlock implement
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
         super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
-        if(level.getDirectSignalTo(pos) > 0 && level.getBlockEntity(pos) instanceof SequenceBlockEntity entity && !entity.isActive()) {
+        if(level.getDirectSignalTo(pos) > 0 && level.getBlockEntity(pos) instanceof PulseBlockEntity entity && !entity.isActive()) {
             level.scheduleTick(pos, this, 3);
         }
     }
 
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if(level.getBlockEntity(pos) instanceof SequenceBlockEntity entity) {
+        if(level.getBlockEntity(pos) instanceof PulseBlockEntity entity) {
             entity.setActive(true);
         }
     }
@@ -77,7 +77,7 @@ public abstract class SequenceBlock extends HorizontalDirectionalBlock implement
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         return (l, p, s, e) -> {
-            if(e instanceof SequenceBlockEntity entity) {
+            if(e instanceof PulseBlockEntity entity) {
                 entity.tick();
             }
         };
