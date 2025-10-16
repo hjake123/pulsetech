@@ -4,6 +4,7 @@
   "block.pulsetech.pattern_emitter": "Pattern Emitter",
   "block.pulsetech.number_emitter": "Number Emitter",
   "block.pulsetech.number_monitor": "Number Monitor",
+  "block.pulsetech.console": "Console",
   "message.pulsetech.set_protocol": "Protocol has been updated",
   "message.pulsetech.no_protocol": "Please set a Protocol first",
   "pulsetech.needs_protocol": "Needs protocol",
