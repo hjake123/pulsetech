@@ -34,6 +34,7 @@ public class ConsoleScreen extends Screen {
         int command_box_height = font.lineHeight * 2;
         int console_height = font.lineHeight * 22 + 6;
         command_box = new EditBox(font, this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (console_width / 2), this.getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + (console_height / 2) - 5, console_width, command_box_height, Component.empty());
+        command_box.setMaxLength(104);
         addRenderableWidget(command_box);
         prior_lines = new BetterFittingMultiLineTextWidget(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (console_width / 2),this.getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - (console_height / 2) - 10, console_width, console_height, Component.literal(prior_lines_str), font);
         prior_lines.scrollToBottom();
