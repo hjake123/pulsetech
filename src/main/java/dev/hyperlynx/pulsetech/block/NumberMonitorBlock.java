@@ -1,11 +1,13 @@
 package dev.hyperlynx.pulsetech.block;
 
 import com.mojang.serialization.MapCodec;
+import dev.hyperlynx.pulsetech.block.entity.NumberMonitorBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.ProtocolBlock;
 import dev.hyperlynx.pulsetech.pulse.SequenceBlock;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -31,6 +33,19 @@ public class NumberMonitorBlock extends ProtocolBlock implements EntityBlock {
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return ModBlockEntityTypes.NUMBER_MONITOR.get().create(pos, state);
+    }
+
+    @Override
+    protected boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        if(level.getBlockEntity(pos) instanceof NumberMonitorBlockEntity monitor) {
+            return Math.max(0, Math.min(15, monitor.getNumber()));
+        }
+        return 0;
     }
 
     public static final MapCodec<SequenceBlock> CODEC = simpleCodec(NumberMonitorBlock::new);
