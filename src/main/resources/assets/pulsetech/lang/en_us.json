@@ -20,5 +20,5 @@
   "console.pulsetech.defined": "Defined ",
   "console.pulsetech.forgot": "Forgot ",
   "console.pulsetech.stack_overflow": "Stack overflow",
-  "console.pulsetech.define_help": "Usage: define name def1 def2 ..."
+  "console.pulsetech.define_help": "Usage: define name def1 def2 ...\n"
 }

@@ -1,15 +1,13 @@
 package dev.hyperlynx.pulsetech.block.entity;
 
+import com.mojang.serialization.Codec;
 import dev.hyperlynx.pulsetech.net.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.net.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.pulse.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -26,6 +24,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
     private String saved_lines = "";
 
     private Map<String, List<String>> macros = new HashMap<>(); // Defined macros for this console. TODO better persistence?
+    private static final Codec<Map<String, List<String>>> MACRO_CODEC = Codec.unboundedMap(Codec.STRING, Codec.STRING.listOf());
 
     public ConsoleBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.CONSOLE.get(), pos, blockState);
@@ -171,18 +170,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             tag.putString("saved_lines", saved_lines);
         }
         if(!macros.isEmpty()) {
-//            ListTag macros_tag = new ListTag(ListTag.TAG_COMPOUND);
-//            for(Map.Entry<String, List<String>> macro : macros.entrySet()) {
-//                CompoundTag macro_tag = new CompoundTag();
-//                macro_tag.putString("noun", macro.getKey());
-//                ListTag definition_tag = new ListTag(ListTag.TAG_STRING);
-//                for(String token : macro.getValue()) {
-//                    definition_tag.add(StringTag.valueOf(token));
-//                }
-//                macro_tag.put("definition", definition_tag);
-//                macros_tag.add(ListTag.TAG_COMPOUND, macro_tag);
-//            }
-//            tag.put("macros", macros_tag);
+            MACRO_CODEC.encodeStart(NbtOps.INSTANCE, macros).ifSuccess(macro_tag -> tag.put("macros", macro_tag));
         }
     }
 
@@ -196,16 +184,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             saved_lines = tag.getString(saved_lines);
         }
         if(tag.contains("macros")) {
-            tag.getList("macros", ListTag.TAG_COMPOUND).forEach(compound -> {
-                assert compound instanceof CompoundTag;
-                String noun = ((CompoundTag) compound).getString("noun");
-                List<String> definition = new ArrayList<>();
-                for(Tag token_tag : ((CompoundTag) compound).getList("definition", ListTag.TAG_STRING)) {
-                    assert token_tag instanceof StringTag;
-                    definition.add(token_tag.getAsString());
-                };
-                macros.put(noun, definition);
-            });
+            MACRO_CODEC.decode(NbtOps.INSTANCE, tag.get("macros")).ifSuccess(pair -> macros = new HashMap<>(pair.getFirst()));
         }
     }
 
