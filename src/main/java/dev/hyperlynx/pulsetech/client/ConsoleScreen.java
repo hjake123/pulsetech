@@ -17,11 +17,11 @@ import java.util.Arrays;
 public class ConsoleScreen extends Screen {
     private BetterFittingMultiLineTextWidget prior_lines;
     private EditBox command_box;
-    private BlockPos pos;
-    private String prior_lines_str;
+    private final BlockPos pos;
+    private final String prior_lines_str;
 
     protected ConsoleScreen(BlockPos pos, String lines) {
-        super(Component.translatable("pulsetech.console"));
+        super(Component.translatable("block.pulsetech.console"));
         this.pos = pos;
         this.prior_lines_str = lines;
     }
@@ -88,7 +88,6 @@ public class ConsoleScreen extends Screen {
         prior_lines.scrollToBottom();
         addRenderableWidget(prior_lines);
     }
-
 
     @Override
     public void onClose() {

@@ -3,6 +3,7 @@ package dev.hyperlynx.pulsetech.block.entity;
 import com.mojang.serialization.Codec;
 import dev.hyperlynx.pulsetech.net.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.net.ConsolePriorLinesPayload;
+import dev.hyperlynx.pulsetech.pulse.PatternBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -22,9 +23,13 @@ import java.util.function.BiConsumer;
 public class ConsoleBlockEntity extends ProtocolBlockEntity {
     private Mode mode = Mode.PARSE;
     private String saved_lines = "";
+    private boolean looping = false;
 
     private Map<String, List<String>> macros = new HashMap<>(); // Defined macros for this console. TODO better persistence?
     private static final Codec<Map<String, List<String>>> MACRO_CODEC = Codec.unboundedMap(Codec.STRING, Codec.STRING.listOf());
+
+    private Map<Integer, Short> delay_points = new HashMap<>();
+    private static final Codec<Map<Integer, Short>> DELAYS_CODEC = Codec.unboundedMap(Codec.INT, Codec.SHORT);
 
     public ConsoleBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.CONSOLE.get(), pos, blockState);
@@ -39,12 +44,23 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             output_cursor = 0;
             output_initialized = true;
         }
+        if(delay_points.containsKey(output_cursor)) {
+            delay(delay_points.get(output_cursor));
+            output_cursor++;
+            return true;
+        }
         output(buffer.get(output_cursor));
         output_cursor++;
         if(output_cursor < buffer.length()) {
             return true;
         }
+        if(looping) {
+            delay(4);
+            output_cursor = 0;
+            return true;
+        }
         output_initialized = false;
+        delay_points.clear();
         return false;
     }
 
@@ -52,9 +68,11 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             "help", (player, console) -> {
                 StringBuilder help_builder = new StringBuilder();
                 addBuiltInInfo(help_builder);
+                help_builder.append("\n");
                 for(String key : protocol.keys()) {
                     help_builder.append(key).append(": ").append(protocol.sequenceFor(key)).append("\n");
                 }
+                help_builder.append("\n");
                 for(String key : macros.keySet()) {
                     help_builder.append(key).append(": ");
                     for(String token : macros.get(key)) {
@@ -68,6 +86,9 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                 PacketDistributor.sendToPlayer(player, new ConsolePriorLinesPayload(getBlockPos(), ""));
             },
             "stop", (player, console) -> {
+                if(looping) {
+                    setLooping(false);
+                }
                 buffer.clear();
             },
             "define", (player, console) -> {
@@ -75,7 +96,14 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             },
             "forget", (player, console) -> {
                 console.setMode(Mode.FORGET);
-            }
+            },
+            "loop", (player, console) -> {
+                console.setLooping(true);
+                PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.looping").getString()));
+            },
+            "wait", (player, console) -> {
+                console.setMode(Mode.SET_DELAY);
+           }
     );
 
     private void addBuiltInInfo(StringBuilder help_builder) {
@@ -85,17 +113,27 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
     }
 
     public void processLine(String line, ServerPlayer player) {
+        processTokenList(Arrays.stream(line.split(" ")).toList(), player, 0);
+    }
+
+    private static final int MAX_STACK_DEPTH = 16;
+    public void processTokenList(List<String> tokens, ServerPlayer player, int depth) {
         if(protocol == null) {
             PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.no_protocol").getString()));
+            return;
+        }
+        // If this function was recursively called by a macro too many times, don't execute.
+        if(depth > MAX_STACK_DEPTH) {
+            PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.stack_overflow").getString()));
             return;
         }
         mode = Mode.PARSE;
         boolean error = false; // Tracks invalid tokens during parsing
         String noun = ""; // Used for define operations
         List<String> definition = new ArrayList<>(); // Used for define operations
-        for(String token : Arrays.stream(line.split(" ")).toList()) {
+        for(String token : tokens) {
             switch(mode) {
-                case PARSE -> error = processToken(player, token, 0);
+                case PARSE -> error = processToken(player, token, depth);
                 case DEFINE -> {
                     if(noun.isEmpty()) {
                         noun = token;
@@ -108,10 +146,22 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                         PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.forgot").getString() + token));
                     }
                 }
+                case SET_DELAY -> {
+                    try {
+                        delay_points.put(this.buffer.length(), Short.parseShort(token)); // Add a new delay to the sequence.
+                        buffer.append(false); // Add extra bit to be a placeholder for the delay.
+                    } catch (NumberFormatException e) {
+                        error = true;
+                    }
+                    mode = Mode.PARSE;
+                }
             }
         }
         if(buffer.length() > 0 && !error) {
             setActive(true);
+        }
+        if(mode.equals(Mode.SET_DELAY)) {
+            PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.wait_usage").getString()));
         }
         if(mode.equals(Mode.DEFINE)) {
             if(BUILT_IN_COMMANDS.containsKey(noun) || protocol.hasKey(noun) || macros.containsKey(noun)) {
@@ -126,21 +176,13 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         }
     }
 
-    private static final int MAX_STACK_DEPTH = 16;
     private boolean processToken(ServerPlayer player, String token, int depth) {
         if(BUILT_IN_COMMANDS.containsKey(token.toLowerCase())) {
             BUILT_IN_COMMANDS.get(token.toLowerCase()).accept(player, this);
         } else if(macros.containsKey(token)) {
             // recursively process macros up to a set depth.
-            if(depth > MAX_STACK_DEPTH) {
-                PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.stack_overflow").getString()));
-                return false;
-            }
-            boolean macros_return_value = false;
-            for(String subtoken : macros.get(token)) {
-                macros_return_value = macros_return_value || processToken(player, subtoken, depth + 1);
-            }
-            return macros_return_value;
+            processTokenList(macros.get(token), player, depth + 1);
+            return false;
         }
         else if(protocol.hasKey(token)) {
             buffer.append(true);
@@ -170,7 +212,13 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             tag.putString("saved_lines", saved_lines);
         }
         if(!macros.isEmpty()) {
-            MACRO_CODEC.encodeStart(NbtOps.INSTANCE, macros).ifSuccess(macro_tag -> tag.put("macros", macro_tag));
+            MACRO_CODEC.encodeStart(NbtOps.INSTANCE, macros).ifSuccess(encoded -> tag.put("macros", encoded));
+        }
+        if(!delay_points.isEmpty()) {
+            DELAYS_CODEC.encodeStart(NbtOps.INSTANCE, delay_points).ifSuccess(encoded -> tag.put("delays", encoded));
+        }
+        if(looping) {
+            tag.putBoolean("looping", true);
         }
     }
 
@@ -186,6 +234,10 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         if(tag.contains("macros")) {
             MACRO_CODEC.decode(NbtOps.INSTANCE, tag.get("macros")).ifSuccess(pair -> macros = new HashMap<>(pair.getFirst()));
         }
+        if(tag.contains("delays")) {
+            DELAYS_CODEC.decode(NbtOps.INSTANCE, tag.get("delays")).ifSuccess(pair -> delay_points = new HashMap<>(pair.getFirst()));
+        }
+        looping = tag.contains("looping");
     }
 
     public void savePriorLines(String lines) {
@@ -200,11 +252,20 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
     private enum Mode {
         PARSE,
         DEFINE,
+        SET_DELAY,
         FORGET
     }
 
     private void setMode(Mode mode) {
         this.mode = mode;
+    }
+
+    private void setLooping(boolean looping) {
+        this.looping = looping;
+        if(!looping) {
+            delay_points.clear();
+        }
+        setChanged();
     }
 
     // Create an update tag here, like above.

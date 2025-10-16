@@ -10,15 +10,20 @@
   "pulsetech.needs_protocol": "Needs protocol",
   "console.pulsetech.no_protocol": "No protocol loaded",
   "console.pulsetech.invalid_token": "Invalid command or number ",
-  "pulsetech.console": "Console",
   "help.pulsetech.help": "Show all valid commands",
   "help.pulsetech.clear": "Clear the prior lines",
   "help.pulsetech.stop": "Halt signal output immediately",
   "help.pulsetech.define": "Define a new macro",
   "help.pulsetech.forget": "Forget a defined macro",
+  "help.pulsetech.loop": "Repeat a command until stop is run",
+
+  "help.pulsetech.wait": "Delay execution for a number of game ticks",
   "console.pulsetech.macro_name_taken": "Macro could not be defined: name already exists",
   "console.pulsetech.defined": "Defined ",
   "console.pulsetech.forgot": "Forgot ",
   "console.pulsetech.stack_overflow": "Stack overflow",
-  "console.pulsetech.define_help": "Usage: define name def1 def2 ...\n"
+  "console.pulsetech.define_help": "Usage: define name def1 def2 ...\n",
+  "console.pulsetech.looping": "Looping prior command; run 'stop' to halt",
+  "console.pulsetech.delay_multi_parameter_error": "Delay only supports a single parameter",
+  "console.pulsetech.wait_usage": "Usage: wait (number of ticks)"
 }
