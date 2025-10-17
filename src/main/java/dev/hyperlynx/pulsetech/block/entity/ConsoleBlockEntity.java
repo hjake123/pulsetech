@@ -61,7 +61,9 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                 if(emitter.looping) {
                     setLooping(false);
                 }
+                console.setMode(Mode.PARSE);
                 emitter.reset();
+                setChanged();
             },
             "define", (player, console) -> {
                 console.setMode(Mode.DEFINE);
@@ -75,7 +77,10 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             },
             "wait", (player, console) -> {
                 console.setMode(Mode.SET_DELAY);
-           }
+           },
+            "raw", (player, console) -> {
+                console.setMode(Mode.RAW_LISTEN);
+            }
     );
 
     private void addBuiltInInfo(StringBuilder help_builder) {
@@ -216,13 +221,23 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
 
     @Override
     public void handleInput() {
+        if(mode.equals(Mode.RAW_LISTEN)) {
+            // Ignore structured input
+            return;
+        }
+        if(pattern_sensor.getLastPattern().isEmpty()) {
+            return;
+        }
         saved_lines += "\n" + pattern_sensor.getLastPattern();
         setChanged();
-        PacketDistributor.sendToAllPlayers(new ConsoleLinePayload(getBlockPos(), pattern_sensor.getLastPattern())); // TODO FOR TESTING ONLY
+        PacketDistributor.sendToAllPlayers(new ConsolePriorLinesPayload(getBlockPos(), getPriorLinesOrEmpty())); // TODO FOR TESTING ONLY
     }
 
     public void savePriorLines(String lines) {
         saved_lines = lines;
+        if(saved_lines.length() > 8192) {
+            saved_lines = saved_lines.substring(saved_lines.length() - 8192);
+        }
         setChanged();
     }
 
@@ -245,6 +260,11 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         if(level instanceof ServerLevel slevel) {
             emitter.tick(slevel, this);
             pattern_sensor.tick(slevel, this);
+            if(mode.equals(Mode.RAW_LISTEN)) {
+                String raw_in = " " + (pattern_sensor.isActive() ? "" : ".") + (pattern_sensor.isActive() && pattern_sensor.getDelay() == 0 ? "*" : "") + (input() ? "1" : "0");
+                saved_lines += raw_in;
+                setChanged();
+            }
         }
     }
 
@@ -253,7 +273,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         DEFINE,
         SET_DELAY,
         FORGET,
-        LISTEN
+        RAW_LISTEN
     }
 
     private void setMode(Mode mode) {

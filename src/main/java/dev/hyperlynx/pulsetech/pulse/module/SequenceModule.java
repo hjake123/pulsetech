@@ -38,6 +38,8 @@ public abstract class SequenceModule<T extends PulseBlockEntity> {
 
     public void reset() {
         buffer.clear();
+        delay_timer = 0;
+        active = false;
     }
 
     public void tick(ServerLevel level, T pulser) {

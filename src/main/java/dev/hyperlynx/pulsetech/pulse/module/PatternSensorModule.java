@@ -44,7 +44,8 @@ public class PatternSensorModule extends SequenceModule<ProtocolBlockEntity> {
         buffer.append(block.input());
         if(buffer.length() > block.getProtocol().sequenceLength()) {
             buffer.clear();
-            block.output(false);
+            last_pattern = "";
+            block.handleInput();
             return false;
         } else if (buffer.length() == block.getProtocol().sequenceLength()) {
             if(Objects.equals(block.getProtocol().sequenceFor(Protocol.NUM), buffer)) {
