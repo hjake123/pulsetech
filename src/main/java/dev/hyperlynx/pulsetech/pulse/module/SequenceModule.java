@@ -20,10 +20,6 @@ public abstract class SequenceModule<T extends PulseBlockEntity> {
         return buffer;
     }
 
-    public void setBuffer(Sequence buffer) {
-        this.buffer = buffer;
-    }
-
     public int getDelay() {
         return delay_timer;
     }

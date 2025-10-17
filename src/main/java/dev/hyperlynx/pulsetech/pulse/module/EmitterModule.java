@@ -40,6 +40,12 @@ public class EmitterModule extends SequenceModule<PulseBlockEntity> {
         this.output_initialized = output_initialized;
     }
 
+    public void setTransmission(Sequence buffer) {
+        this.buffer.append(true);
+        this.buffer.appendAll(buffer);
+        this.buffer.append(false);
+    }
+
     @Override
     public boolean run(PulseBlockEntity pulser) {
         if(!output_initialized) {

@@ -11,7 +11,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Objects;
@@ -58,9 +57,7 @@ public class PatternEmitterBlockEntity extends PatternBlockEntity {
             if(protocol.sequenceFor(getPattern()) == null) {
                 return;
             }
-            emitter.getBuffer().append(true);
-            emitter.getBuffer().appendAll(Objects.requireNonNull(protocol.sequenceFor(getPattern())));
-            emitter.getBuffer().append(false);
+            emitter.setTransmission(Objects.requireNonNull(protocol.sequenceFor(getPattern())));
         }
         emitter.tick(slevel, this);
     }

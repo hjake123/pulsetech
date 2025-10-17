@@ -1,6 +1,5 @@
 package dev.hyperlynx.pulsetech.block.entity;
 
-import dev.hyperlynx.pulsetech.pulse.Sequence;
 import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.module.EmitterModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
@@ -28,7 +27,7 @@ public class NumberEmitterBlockEntity extends ProtocolBlockEntity implements Num
     public void tick() {
         if(level instanceof ServerLevel slevel) {
             if(emitter.isActive() && !emitter.outputInitialized()) {
-                emitter.setBuffer(protocol.fromShort(number));
+                emitter.setTransmission(protocol.fromShort(number));
             }
             emitter.tick(slevel, this);
         }

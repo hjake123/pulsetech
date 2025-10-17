@@ -36,8 +36,6 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         super(ModBlockEntityTypes.CONSOLE.get(), pos, blockState);
     }
 
-
-
     private final Map<String, BiConsumer<ServerPlayer, ConsoleBlockEntity>> BUILT_IN_COMMANDS = Map.of(
             "help", (player, console) -> {
                 StringBuilder help_builder = new StringBuilder();
@@ -159,14 +157,10 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             return false;
         }
         else if(protocol.hasKey(token)) {
-            emitter.getBuffer().append(true);
-            emitter.getBuffer().appendAll(Objects.requireNonNull(protocol.sequenceFor(token)));
-            emitter.getBuffer().append(false);
+            emitter.setTransmission(Objects.requireNonNull(protocol.sequenceFor(token)));
         } else {
             try {
-                emitter.getBuffer().append(true);
-                emitter.getBuffer().appendAll(protocol.fromShort(Short.parseShort(token)));
-                emitter.getBuffer().append(false);
+                emitter.setTransmission(protocol.fromShort(Short.parseShort(token)));
             } catch (NumberFormatException ignored) {
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_token").getString() + token));
                 emitter.reset();
