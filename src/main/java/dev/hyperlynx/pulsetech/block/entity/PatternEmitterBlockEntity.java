@@ -57,7 +57,7 @@ public class PatternEmitterBlockEntity extends PatternBlockEntity {
             if(protocol.sequenceFor(getPattern()) == null) {
                 return;
             }
-            emitter.setTransmission(Objects.requireNonNull(protocol.sequenceFor(getPattern())));
+            emitter.enqueueTransmission(Objects.requireNonNull(protocol.sequenceFor(getPattern())));
         }
         emitter.tick(slevel, this);
     }

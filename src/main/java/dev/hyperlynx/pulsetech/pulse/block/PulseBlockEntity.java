@@ -27,4 +27,6 @@ public abstract class PulseBlockEntity extends BlockEntity {
     public abstract void setActive(boolean active);
 
     public abstract void tick();
+
+    public void handleInput() {}
 }

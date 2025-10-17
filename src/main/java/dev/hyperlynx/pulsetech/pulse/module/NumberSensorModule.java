@@ -63,7 +63,7 @@ public class NumberSensorModule extends SequenceModule<ProtocolBlockEntity> {
             if(buffer.length() == block.getProtocol().numberSequenceLength()) {
                 Pulsetech.LOGGER.debug("Parsing sequence {} for short", buffer);
                 number = block.getProtocol().toShort(buffer);
-                block.setChanged();
+                block.handleInput();
                 return false;
             }
             return true;

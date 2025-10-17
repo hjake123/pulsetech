@@ -1,7 +1,7 @@
 package dev.hyperlynx.pulsetech.block.entity;
 
 import dev.hyperlynx.pulsetech.pulse.block.PatternBlockEntity;
-import dev.hyperlynx.pulsetech.pulse.module.PatternDetectorModule;
+import dev.hyperlynx.pulsetech.pulse.module.PatternSensorModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class PatternDetectorBlockEntity extends PatternBlockEntity {
-    private PatternDetectorModule detector = new PatternDetectorModule();
+    private PatternSensorModule detector = new PatternSensorModule();
 
     public PatternDetectorBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.PATTERN_DETECTOR.get(), pos, blockState);
@@ -39,15 +39,20 @@ public class PatternDetectorBlockEntity extends PatternBlockEntity {
     }
 
     @Override
+    public void handleInput() {
+        output(detector.getLastPattern().equals(getPattern()));
+    }
+
+    @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        tag.put("Detector", PatternDetectorModule.CODEC.encodeStart(NbtOps.INSTANCE, detector).getOrThrow());
+        tag.put("Detector", PatternSensorModule.CODEC.encodeStart(NbtOps.INSTANCE, detector).getOrThrow());
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        PatternDetectorModule.CODEC.decode(NbtOps.INSTANCE, tag.get("Detector")).ifSuccess(success -> detector = success.getFirst());
+        PatternSensorModule.CODEC.decode(NbtOps.INSTANCE, tag.get("Detector")).ifSuccess(success -> detector = success.getFirst());
     }
 
     // Create an update tag here, like above.

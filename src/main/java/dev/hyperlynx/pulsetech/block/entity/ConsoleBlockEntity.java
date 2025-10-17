@@ -5,8 +5,7 @@ import dev.hyperlynx.pulsetech.net.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.net.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.module.ConsoleEmitterModule;
-import dev.hyperlynx.pulsetech.pulse.module.EmitterModule;
-import dev.hyperlynx.pulsetech.pulse.module.NumberSensorModule;
+import dev.hyperlynx.pulsetech.pulse.module.PatternSensorModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -25,6 +24,7 @@ import java.util.function.BiConsumer;
 
 public class ConsoleBlockEntity extends ProtocolBlockEntity {
     private ConsoleEmitterModule emitter = new ConsoleEmitterModule();
+    private PatternSensorModule pattern_sensor = new PatternSensorModule();
 
     private Mode mode = Mode.PARSE;
     private String saved_lines = "";
@@ -157,10 +157,16 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             return false;
         }
         else if(protocol.hasKey(token)) {
-            emitter.setTransmission(Objects.requireNonNull(protocol.sequenceFor(token)));
+            emitter.enqueueTransmission(Objects.requireNonNull(protocol.sequenceFor(token)));
+            pattern_sensor.delay(emitter.getBuffer().length() * 2 + 1);
+            pattern_sensor.getBuffer().clear();
+            emitter.setActive(true);
         } else {
             try {
-                emitter.setTransmission(protocol.fromShort(Short.parseShort(token)));
+                emitter.enqueueTransmission(protocol.fromShort(Short.parseShort(token)));
+                pattern_sensor.delay(emitter.getBuffer().length() * 2 + 1);
+                pattern_sensor.getBuffer().clear();
+                emitter.setActive(true);
             } catch (NumberFormatException ignored) {
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_token").getString() + token));
                 emitter.reset();
@@ -177,6 +183,10 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         if(encode_result.hasResultOrPartial()) {
             tag.put("Emitter", encode_result.getPartialOrThrow());
         }
+        var ps_encode_result = PatternSensorModule.CODEC.encodeStart(NbtOps.INSTANCE, pattern_sensor);
+        if(ps_encode_result.hasResultOrPartial()) {
+            tag.put("PatternSensor", ps_encode_result.getPartialOrThrow());
+        }
         if(!saved_lines.isEmpty()) {
             tag.putString("saved_lines", saved_lines);
         }
@@ -192,12 +202,23 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         if(decode_result.hasResultOrPartial()) {
             emitter = decode_result.getPartialOrThrow().getFirst();
         }
+        var ps_decode_result = PatternSensorModule.CODEC.decode(NbtOps.INSTANCE, tag.get("PatternSensor"));
+        if(ps_decode_result.hasResultOrPartial()) {
+            pattern_sensor = ps_decode_result.getPartialOrThrow().getFirst();
+        }
         if(tag.contains("saved_lines")) {
             saved_lines = tag.getString("saved_lines");
         }
         if(tag.contains("macros")) {
             MACRO_CODEC.decode(NbtOps.INSTANCE, tag.get("macros")).ifSuccess(pair -> macros = new HashMap<>(pair.getFirst()));
         }
+    }
+
+    @Override
+    public void handleInput() {
+        saved_lines += "\n" + pattern_sensor.getLastPattern();
+        setChanged();
+        PacketDistributor.sendToAllPlayers(new ConsoleLinePayload(getBlockPos(), pattern_sensor.getLastPattern())); // TODO FOR TESTING ONLY
     }
 
     public void savePriorLines(String lines) {
@@ -211,18 +232,19 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
 
     @Override
     public boolean isActive() {
-        return emitter.isActive();
+        return pattern_sensor.isActive();
     }
 
     @Override
     public void setActive(boolean active) {
-        emitter.setActive(active);
+        pattern_sensor.setActive(active);
     }
 
     @Override
     public void tick() {
         if(level instanceof ServerLevel slevel) {
             emitter.tick(slevel, this);
+            pattern_sensor.tick(slevel, this);
         }
     }
 

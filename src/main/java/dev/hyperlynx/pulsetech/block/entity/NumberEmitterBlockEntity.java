@@ -27,7 +27,7 @@ public class NumberEmitterBlockEntity extends ProtocolBlockEntity implements Num
     public void tick() {
         if(level instanceof ServerLevel slevel) {
             if(emitter.isActive() && !emitter.outputInitialized()) {
-                emitter.setTransmission(protocol.fromShort(number));
+                emitter.enqueueTransmission(protocol.fromShort(number));
             }
             emitter.tick(slevel, this);
         }

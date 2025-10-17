@@ -40,6 +40,11 @@ public class NumberMonitorBlockEntity extends ProtocolBlockEntity implements Num
         module.tick(slevel, this);
     }
 
+    @Override
+    public void handleInput() {
+        setChanged();
+    }
+
     public short getNumber() {
         return module.getNumber();
     }

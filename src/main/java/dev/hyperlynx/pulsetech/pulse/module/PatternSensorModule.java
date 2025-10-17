@@ -6,30 +6,38 @@ import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.pulse.Protocol;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
 import dev.hyperlynx.pulsetech.pulse.block.PatternBlockEntity;
-import dev.hyperlynx.pulsetech.pulse.block.PulseBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
 
 import java.util.Objects;
 
-/// A SequenceModule that can update a PatternBlockEntity about whether its pattern was matched
-public class PatternDetectorModule extends SequenceModule<PatternBlockEntity> {
-    public static final Codec<PatternDetectorModule> CODEC = RecordCodecBuilder.create(instance ->
+/// A SequenceModule that can update a ProtocolBlockEntity about whether its pattern was matched
+public class PatternSensorModule extends SequenceModule<ProtocolBlockEntity> {
+    private String last_pattern = "";
+
+    public static final Codec<PatternSensorModule> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Sequence.CODEC.fieldOf("buffer").forGetter(SequenceModule::getBuffer),
                     Codec.INT.fieldOf("delay_timer").forGetter(SequenceModule::getDelay),
-                    Codec.BOOL.fieldOf("active").forGetter(SequenceModule::isActive)
-            ).apply(instance, PatternDetectorModule::new)
+                    Codec.BOOL.fieldOf("active").forGetter(SequenceModule::isActive),
+                    Codec.STRING.fieldOf("last_pattern").forGetter(PatternSensorModule::getLastPattern)
+            ).apply(instance, PatternSensorModule::new)
     );
 
-    public PatternDetectorModule() {}
+    public String getLastPattern() {
+        return last_pattern;
+    }
 
-    private PatternDetectorModule(Sequence buffer, int delay, boolean active) {
+    public PatternSensorModule() {}
+
+    private PatternSensorModule(Sequence buffer, int delay, boolean active, String last_pattern) {
         this.buffer = buffer;
         this.delay_timer = delay;
         this.setActive(active);
+        this.last_pattern = last_pattern;
     }
 
     @Override
-    public boolean run(PatternBlockEntity block) {
+    public boolean run(ProtocolBlockEntity block) {
         if(block.getProtocol() == null) {
             return false;
         }
@@ -48,7 +56,8 @@ public class PatternDetectorModule extends SequenceModule<PatternBlockEntity> {
             String key = block.getProtocol().keyFor(buffer);
             if(key != null) {
                 Pulsetech.LOGGER.debug("Matched pattern with key {}", key);
-                block.output(key.equals(block.getPattern()));
+                last_pattern = key;
+                block.handleInput();
                 // We don't return false right away to
                 // allow one extra pulse to be absorbed to help with timing.
             }
