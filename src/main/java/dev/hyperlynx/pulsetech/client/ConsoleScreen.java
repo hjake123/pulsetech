@@ -54,7 +54,7 @@ public class ConsoleScreen extends Screen {
             // Workaround to avoid flickering when clearing the screen
             // Consider changing this, since it adds lots of overhead to the client for just this reason
             if(Arrays.stream(getLastLine().split(" ")).noneMatch(token -> token.equals("clear"))) {
-                addReadoutLine(getLastLine());
+                addReadoutLine("> " + getLastLine());
             }
             command_box.setValue("");
         }
