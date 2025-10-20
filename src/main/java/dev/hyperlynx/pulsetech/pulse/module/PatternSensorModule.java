@@ -7,6 +7,7 @@ import dev.hyperlynx.pulsetech.pulse.Protocol;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
 import dev.hyperlynx.pulsetech.pulse.block.PatternBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
+import net.minecraft.server.level.ServerLevel;
 
 import java.util.Objects;
 
@@ -38,23 +39,24 @@ public class PatternSensorModule extends SequenceModule<ProtocolBlockEntity> {
 
     @Override
     public boolean run(ProtocolBlockEntity block) {
-        if(block.getProtocol() == null) {
+        Protocol protocol = block.getProtocol();
+        if(protocol == null) {
             return false;
         }
         buffer.append(block.input());
-        if(buffer.length() > block.getProtocol().sequenceLength()) {
+        if(buffer.length() > protocol.sequenceLength()) {
             buffer.clear();
             last_pattern = "";
             block.handleInput();
             return false;
-        } else if (buffer.length() == block.getProtocol().sequenceLength()) {
-            if(Objects.equals(block.getProtocol().sequenceFor(Protocol.NUM), buffer)) {
+        } else if (buffer.length() == protocol.sequenceLength()) {
+            if(Objects.equals(protocol.sequenceFor(Protocol.NUM), buffer)) {
                 Pulsetech.LOGGER.debug("Matched NUM, sleeping...");
                 delay(46);
                 return false;
             }
             Pulsetech.LOGGER.debug("Checking for match with {}", buffer);
-            String key = block.getProtocol().keyFor(buffer);
+            String key = protocol.keyFor(buffer);
             if(key != null) {
                 Pulsetech.LOGGER.debug("Matched pattern with key {}", key);
                 last_pattern = key;

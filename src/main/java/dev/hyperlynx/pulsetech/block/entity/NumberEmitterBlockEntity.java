@@ -27,7 +27,7 @@ public class NumberEmitterBlockEntity extends ProtocolBlockEntity implements Num
     public void tick() {
         if(level instanceof ServerLevel slevel) {
             if(emitter.isActive() && !emitter.outputInitialized()) {
-                emitter.enqueueTransmission(protocol.fromShort(number));
+                emitter.enqueueTransmission(getProtocol().fromShort(number));
             }
             emitter.tick(slevel, this);
         }
@@ -40,14 +40,6 @@ public class NumberEmitterBlockEntity extends ProtocolBlockEntity implements Num
     @Override
     public short getNumber() {
         return number;
-    }
-
-    @Override
-    public String getOverrideMessage() {
-        if(protocol == null) {
-            return Component.translatable("pulsetech.needs_protocol").getString();
-        }
-        return null;
     }
 
     @Override

@@ -7,6 +7,7 @@ import dev.hyperlynx.pulsetech.pulse.Protocol;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
 import dev.hyperlynx.pulsetech.pulse.block.PatternBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 
 import java.util.Objects;
@@ -45,24 +46,25 @@ public class NumberSensorModule extends SequenceModule<ProtocolBlockEntity> {
 
     @Override
     public boolean run(ProtocolBlockEntity block) {
-        if(block.getProtocol() == null) {
+        Protocol protocol = block.getProtocol();
+        if(protocol == null) {
             return false;
         }
-        if(buffer.length() < block.getProtocol().numberSequenceLength()) {
+        if(buffer.length() < protocol.numberSequenceLength()) {
             number = 0;
             buffer.append(block.input());
-            if(buffer.length() == block.getProtocol().sequenceLength()) {
+            if(buffer.length() == protocol.sequenceLength()) {
                 // We can now test for the NUM sequence. If it's absent, we need to fail out.
-                if(!Objects.equals(block.getProtocol().sequenceFor(Protocol.NUM), buffer)) {
+                if(!Objects.equals(protocol.sequenceFor(Protocol.NUM), buffer)) {
                     buffer.clear();
                     delay(6); // magic number!
                     return false;
                 }
                 Pulsetech.LOGGER.debug("Matched NUM, getting ready for input");
             }
-            if(buffer.length() == block.getProtocol().numberSequenceLength()) {
+            if(buffer.length() == protocol.numberSequenceLength()) {
                 Pulsetech.LOGGER.debug("Parsing sequence {} for short", buffer);
-                number = block.getProtocol().toShort(buffer);
+                number = protocol.toShort(buffer);
                 block.handleInput();
                 return false;
             }

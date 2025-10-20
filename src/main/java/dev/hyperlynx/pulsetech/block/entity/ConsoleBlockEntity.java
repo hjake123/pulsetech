@@ -41,8 +41,8 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                 StringBuilder help_builder = new StringBuilder();
                 addBuiltInInfo(help_builder);
                 help_builder.append("\n");
-                for(String key : protocol.keys()) {
-                    help_builder.append(key).append(": ").append(protocol.sequenceFor(key)).append("\n");
+                for(String key : getProtocol().keys()) {
+                    help_builder.append(key).append(": ").append(getProtocol().sequenceFor(key)).append("\n");
                 }
                 help_builder.append("\n");
                 for(String key : macros.keySet()) {
@@ -95,7 +95,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
 
     private static final int MAX_STACK_DEPTH = 16;
     public void processTokenList(List<String> tokens, ServerPlayer player, int depth) {
-        if(protocol == null) {
+        if(getProtocol() == null) {
             PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.no_protocol").getString()));
             return;
         }
@@ -141,7 +141,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.wait_usage").getString()));
         }
         if(mode.equals(Mode.DEFINE)) {
-            if(BUILT_IN_COMMANDS.containsKey(noun) || protocol.hasKey(noun) || macros.containsKey(noun)) {
+            if(BUILT_IN_COMMANDS.containsKey(noun) || getProtocol().hasKey(noun) || macros.containsKey(noun)) {
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.macro_name_taken").getString()));
             } else if(noun.isEmpty() || definition.isEmpty()) {
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.define_help").getString() + noun));
@@ -161,14 +161,14 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             processTokenList(macros.get(token), player, depth + 1);
             return false;
         }
-        else if(protocol.hasKey(token)) {
-            emitter.enqueueTransmission(Objects.requireNonNull(protocol.sequenceFor(token)));
+        else if(getProtocol().hasKey(token)) {
+            emitter.enqueueTransmission(Objects.requireNonNull(getProtocol().sequenceFor(token)));
             pattern_sensor.delay(emitter.getBuffer().length() * 2 + 1);
             pattern_sensor.getBuffer().clear();
             emitter.setActive(true);
         } else {
             try {
-                emitter.enqueueTransmission(protocol.fromShort(Short.parseShort(token)));
+                emitter.enqueueTransmission(getProtocol().fromShort(Short.parseShort(token)));
                 pattern_sensor.delay(emitter.getBuffer().length() * 2 + 1);
                 pattern_sensor.getBuffer().clear();
                 emitter.setActive(true);

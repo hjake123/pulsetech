@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import dev.hyperlynx.pulsetech.pulse.Protocol;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
+import dev.hyperlynx.pulsetech.pulse.data.ProtocolData;
 import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -22,18 +23,13 @@ public class ModCommands {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event) {
         LiteralArgumentBuilder<CommandSourceStack> command_builder = Commands.literal("pulsetech-debug")
-                        .then(Commands.literal("get-protocol-paper").executes(ModCommands::debugGetCommandSlip));
+                        .then(Commands.literal("create-debug-protocol").executes(ModCommands::debugCreateProtocol));
 
         event.getDispatcher().register(command_builder);
     }
 
-    private static int debugGetCommandSlip(CommandContext<CommandSourceStack> context) {
-        ServerPlayer player = context.getSource().getPlayer();
-        if(player == null) {
-            return 0;
-        }
-        ItemStack paper = Items.PAPER.getDefaultInstance();
-        paper.set(ModComponentTypes.PROTOCOL.get(), new Protocol(4,
+    private static int debugCreateProtocol(CommandContext<CommandSourceStack> context) {
+        Protocol debug_protocol = new Protocol(4,
                 Map.of(
                         Protocol.ACK, new Sequence(false, false, false, false),
                         Protocol.ERR, new Sequence(true, true, true, true),
@@ -41,9 +37,9 @@ public class ModCommands {
                         "B", new Sequence(false, true, true, false),
                         "C", new Sequence(false, false, true, true),
                         Protocol.NUM, new Sequence(true, true, false, true)
-                ))
+                )
         );
-        player.addItem(paper);
+        ProtocolData.retrieve(context.getSource().getLevel()).add("debug", debug_protocol);
         return 1;
     }
 }

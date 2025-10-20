@@ -54,10 +54,10 @@ public class PatternEmitterBlockEntity extends PatternBlockEntity {
             return;
         }
         if(emitter.isActive() && !emitter.outputInitialized()) {
-            if(protocol.sequenceFor(getPattern()) == null) {
+            if(getProtocol() == null || getProtocol().sequenceFor(getPattern()) == null) {
                 return;
             }
-            emitter.enqueueTransmission(Objects.requireNonNull(protocol.sequenceFor(getPattern())));
+            emitter.enqueueTransmission(Objects.requireNonNull(getProtocol().sequenceFor(getPattern())));
         }
         emitter.tick(slevel, this);
     }

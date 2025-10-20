@@ -50,14 +50,6 @@ public class NumberMonitorBlockEntity extends ProtocolBlockEntity implements Num
     }
 
     @Override
-    public String getOverrideMessage() {
-        if(protocol == null) {
-            return Component.translatable("pulsetech.needs_protocol").getString();
-        }
-        return null;
-    }
-
-    @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         NumberSensorModule.CODEC.decode(NbtOps.INSTANCE, tag.get("Sensor")).ifSuccess(success -> module = success.getFirst());

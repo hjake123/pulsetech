@@ -4,6 +4,7 @@ import dev.hyperlynx.pulsetech.pulse.Protocol;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -27,9 +28,9 @@ public abstract class PatternBlockEntity extends ProtocolBlockEntity {
 
     public void rotatePattern() {
         // TODO temporary logic
-        pattern = protocol.nextKey(pattern);
+        pattern = getProtocol().nextKey(pattern);
         if(Objects.equals(pattern, Protocol.NUM)) {
-            pattern = protocol.nextKey(pattern);
+            pattern = getProtocol().nextKey(pattern);
         }
     }
 
