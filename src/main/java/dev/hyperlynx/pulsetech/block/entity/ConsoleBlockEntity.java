@@ -228,7 +228,11 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         if(pattern_sensor.getLastPattern().isEmpty()) {
             return;
         }
-        saved_lines += "\n" + pattern_sensor.getLastPattern();
+        if(saved_lines.isEmpty()) {
+            saved_lines = pattern_sensor.getLastPattern();
+        } else {
+            saved_lines += "\n" + pattern_sensor.getLastPattern();
+        }
         setChanged();
         PacketDistributor.sendToAllPlayers(new ConsolePriorLinesPayload(getBlockPos(), getPriorLinesOrEmpty())); // TODO FOR TESTING ONLY
     }
