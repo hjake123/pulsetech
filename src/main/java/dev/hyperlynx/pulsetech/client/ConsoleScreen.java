@@ -9,17 +9,21 @@ import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ConsoleScreen extends Screen {
     private BetterFittingMultiLineTextWidget prior_lines;
     private EditBox command_box;
     private final BlockPos pos;
     private final String prior_lines_str;
+    private int past_commands_cursor = -1;
+
+    private final List<String> past_commands = new ArrayList<>();
 
     protected ConsoleScreen(BlockPos pos, String lines) {
         super(Component.translatable("block.pulsetech.console"));
@@ -52,16 +56,37 @@ public class ConsoleScreen extends Screen {
         if(keyCode == GLFW.GLFW_KEY_ENTER) {
             assert Minecraft.getInstance().player != null;
             PacketDistributor.sendToServer(new ConsoleLinePayload(pos, getLastLine()));
+            past_commands.add(getLastLine());
             // Workaround to avoid flickering when clearing the screen
             // Consider changing this, since it adds lots of overhead to the client for just this reason
             if(Arrays.stream(getLastLine().split(" ")).noneMatch(token -> token.equals("clear"))) {
                 addReadoutLine("> " + getLastLine());
             }
             command_box.setValue("");
+            past_commands_cursor = -1;
         }
         if(keyCode == GLFW.GLFW_KEY_UP) {
-            String last_line = prior_lines.getMessage().getString().lines().toList().getLast();
-            command_box.setValue(last_line);
+            if(past_commands.isEmpty()) {
+                return true;
+            }
+            if(past_commands_cursor == -1) {
+                past_commands_cursor = past_commands.size() - 1;
+            } else if(past_commands_cursor > 0) {
+                past_commands_cursor -= 1;
+            }
+            command_box.setValue(past_commands.get(past_commands_cursor));
+            return true;
+        }
+        if(keyCode == GLFW.GLFW_KEY_DOWN) {
+            if(past_commands.isEmpty()) {
+                return true;
+            }
+            if(past_commands_cursor != -1) {
+                if(past_commands_cursor < past_commands.size() - 1) {
+                    past_commands_cursor += 1;
+                }
+                command_box.setValue(past_commands.get(past_commands_cursor));
+            }
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);

@@ -355,6 +355,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         // The packet uses the CompoundTag returned by #getUpdateTag. An alternative overload of #create exists
         // that allows you to specify a custom update tag, including the ability to omit data the client might not need.
+        // TODO use that to omit macros, since they can be used to DC the client if there are too many
         return ClientboundBlockEntityDataPacket.create(this);
     }
 }
