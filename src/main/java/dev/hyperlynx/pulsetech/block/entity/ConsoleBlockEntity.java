@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.block.entity;
 
 import com.mojang.serialization.Codec;
+import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.net.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.net.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
@@ -26,7 +27,8 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
     private ConsoleEmitterModule emitter = new ConsoleEmitterModule();
     private PatternSensorModule pattern_sensor = new PatternSensorModule();
 
-    private Mode mode = Mode.PARSE;
+    private CommandMode command_mode = CommandMode.PARSE;
+    private OperationMode operation_mode = OperationMode.OUTPUT;
     private String saved_lines = "";
 
     private Map<String, List<String>> macros = new HashMap<>(); // Defined macros for this console. TODO better persistence?
@@ -34,6 +36,22 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
 
     public ConsoleBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.CONSOLE.get(), pos, blockState);
+    }
+
+    // The mode of the current command being parsed. Resets with each new command.
+    private enum CommandMode {
+        PARSE,
+        DEFINE,
+        SET_DELAY,
+        FORGET,
+        RAW_LISTEN
+    }
+
+    // The mode of the entire Console block. Only changed by specific commands.
+    private enum OperationMode {
+        OUTPUT,
+        LOOP_OUTPUT,
+        LISTEN
     }
 
     private final Map<String, BiConsumer<ServerPlayer, ConsoleBlockEntity>> BUILT_IN_COMMANDS = Map.of(
@@ -58,30 +76,32 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                 PacketDistributor.sendToPlayer(player, new ConsolePriorLinesPayload(getBlockPos(), ""));
             },
             "stop", (player, console) -> {
-                if(emitter.looping) {
-                    setLooping(false);
-                }
-                console.setMode(Mode.PARSE);
+                console.setOperationMode(OperationMode.OUTPUT);
+                console.setMode(CommandMode.PARSE);
                 emitter.reset();
                 setChanged();
             },
             "define", (player, console) -> {
-                console.setMode(Mode.DEFINE);
+                console.setMode(CommandMode.DEFINE);
             },
             "forget", (player, console) -> {
-                console.setMode(Mode.FORGET);
+                console.setMode(CommandMode.FORGET);
             },
             "loop", (player, console) -> {
-                console.setLooping(true);
+                console.setOperationMode(OperationMode.LOOP_OUTPUT);
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.looping").getString()));
             },
             "wait", (player, console) -> {
-                console.setMode(Mode.SET_DELAY);
+                console.setMode(CommandMode.SET_DELAY);
            },
-            "raw", (player, console) -> {
-                console.setMode(Mode.RAW_LISTEN);
+            "listen", (player, console) -> {
+                console.setOperationMode(OperationMode.LISTEN);
             }
     );
+
+    private void setOperationMode(OperationMode operation_mode) {
+        this.operation_mode = operation_mode;
+    }
 
     private void addBuiltInInfo(StringBuilder help_builder) {
         for (String built_in : BUILT_IN_COMMANDS.keySet().stream().sorted().toList()) {
@@ -92,8 +112,8 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
     public void processLine(String line, ServerPlayer player) {
         processTokenList(Arrays.stream(line.split(" ")).toList(), player, 0);
     }
-
     private static final int MAX_STACK_DEPTH = 16;
+
     public void processTokenList(List<String> tokens, ServerPlayer player, int depth) {
         if(getProtocol() == null) {
             PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.no_protocol").getString()));
@@ -104,12 +124,12 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.stack_overflow").getString()));
             return;
         }
-        mode = Mode.PARSE;
+        command_mode = CommandMode.PARSE;
         boolean error = false; // Tracks invalid tokens during parsing
         String noun = ""; // Used for define operations
         List<String> definition = new ArrayList<>(); // Used for define operations
         for(String token : tokens) {
-            switch(mode) {
+            switch(command_mode) {
                 case PARSE -> error = processToken(player, token, depth);
                 case DEFINE -> {
                     if(noun.isEmpty()) {
@@ -130,17 +150,17 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                     } catch (NumberFormatException e) {
                         error = true;
                     }
-                    mode = Mode.PARSE;
+                    command_mode = CommandMode.PARSE;
                 }
             }
         }
         if(emitter.getBuffer().length() > 0 && !error) {
             setActive(true);
         }
-        if(mode.equals(Mode.SET_DELAY)) {
+        if(command_mode.equals(CommandMode.SET_DELAY)) {
             PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.wait_usage").getString()));
         }
-        if(mode.equals(Mode.DEFINE)) {
+        if(command_mode.equals(CommandMode.DEFINE)) {
             if(BUILT_IN_COMMANDS.containsKey(noun) || getProtocol().hasKey(noun) || macros.containsKey(noun)) {
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.macro_name_taken").getString()));
             } else if(noun.isEmpty() || definition.isEmpty()) {
@@ -181,9 +201,16 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         return false;
     }
 
+    private void limitPriorLineLength() {
+        if(saved_lines.length() > 8192) {
+            saved_lines = saved_lines.substring(saved_lines.length() - 8192);
+        }
+    }
+
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
+        limitPriorLineLength();
         var encode_result = ConsoleEmitterModule.CODEC.encodeStart(NbtOps.INSTANCE, emitter);
         if(encode_result.hasResultOrPartial()) {
             tag.put("Emitter", encode_result.getPartialOrThrow());
@@ -198,6 +225,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         if(!macros.isEmpty()) {
             MACRO_CODEC.encodeStart(NbtOps.INSTANCE, macros).ifSuccess(encoded -> tag.put("macros", encoded));
         }
+        tag.putString("OperationMode", operation_mode.name());
     }
 
     @Override
@@ -217,12 +245,15 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         if(tag.contains("macros")) {
             MACRO_CODEC.decode(NbtOps.INSTANCE, tag.get("macros")).ifSuccess(pair -> macros = new HashMap<>(pair.getFirst()));
         }
+        if(tag.contains("OperationMode")) {
+            operation_mode = OperationMode.valueOf(tag.getString("OperationMode"));
+        }
     }
 
     @Override
     public void handleInput() {
-        if(mode.equals(Mode.RAW_LISTEN)) {
-            // Ignore structured input
+        if(!operation_mode.equals(OperationMode.LISTEN)) {
+            Pulsetech.LOGGER.warn("Handling input within a console that is not in LISTEN mode...? Ignoring.");
             return;
         }
         if(pattern_sensor.getLastPattern().isEmpty()) {
@@ -239,9 +270,6 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
 
     public void savePriorLines(String lines) {
         saved_lines = lines;
-        if(saved_lines.length() > 8192) {
-            saved_lines = saved_lines.substring(saved_lines.length() - 8192);
-        }
         setChanged();
     }
 
@@ -256,40 +284,33 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
 
     @Override
     public void setActive(boolean active) {
-        pattern_sensor.setActive(active);
+        if(operation_mode.equals(OperationMode.LISTEN)) {
+            // Don't change the activation outside of LISTEN mode.
+            pattern_sensor.setActive(active);
+        }
     }
 
     @Override
     public void tick() {
         if(level instanceof ServerLevel slevel) {
-            emitter.tick(slevel, this);
-            pattern_sensor.tick(slevel, this);
-            if(mode.equals(Mode.RAW_LISTEN)) {
-                String raw_in = " " + (pattern_sensor.isActive() ? "" : ".") + (pattern_sensor.isActive() && pattern_sensor.getDelay() == 0 ? "*" : "") + (input() ? "1" : "0");
-                saved_lines += raw_in;
-                setChanged();
+            switch (operation_mode) {
+                case OUTPUT -> {
+                    emitter.looping = false;
+                    emitter.tick(slevel, this);
+                }
+                case LOOP_OUTPUT -> {
+                    emitter.looping = true;
+                    emitter.tick(slevel, this);
+                }
+                case LISTEN -> {
+                    pattern_sensor.tick(slevel, this);
+                }
             }
         }
     }
 
-    private enum Mode {
-        PARSE,
-        DEFINE,
-        SET_DELAY,
-        FORGET,
-        RAW_LISTEN
-    }
-
-    private void setMode(Mode mode) {
-        this.mode = mode;
-    }
-
-    private void setLooping(boolean looping) {
-        emitter.looping = looping;
-        if(!looping) {
-            emitter.delay_points.clear();
-        }
-        setChanged();
+    private void setMode(CommandMode command_mode) {
+        this.command_mode = command_mode;
     }
 
     // Create an update tag here, like above.
@@ -301,6 +322,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
     }
 
     // Return our packet here. This method returning a non-null result tells the game to use this packet for syncing.
+
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         // The packet uses the CompoundTag returned by #getUpdateTag. An alternative overload of #create exists

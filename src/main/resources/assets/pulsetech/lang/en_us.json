@@ -15,8 +15,8 @@
   "help.pulsetech.stop": "Halt signal output immediately",
   "help.pulsetech.define": "Define a new macro",
   "help.pulsetech.forget": "Forget a defined macro",
-  "help.pulsetech.loop": "Repeat a command until stop is run",
-
+  "help.pulsetech.loop": "Repeat a command until stopped",
+  "help.pulsetech.listen": "Listen to input at the back port until stopped",
   "help.pulsetech.wait": "Delay execution for a number of game ticks",
   "console.pulsetech.macro_name_taken": "Macro could not be defined: name already exists",
   "console.pulsetech.defined": "Defined ",

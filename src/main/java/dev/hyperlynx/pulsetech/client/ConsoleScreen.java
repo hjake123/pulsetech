@@ -9,6 +9,7 @@ import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
@@ -69,6 +70,10 @@ public class ConsoleScreen extends Screen {
     public void addReadoutLine(String added) {
         removeWidget(prior_lines);
         prior_lines = prior_lines.withMessage((prior_lines.getMessage().copy().append(prior_lines.getMessage().getString().isEmpty() ? added : "\n" + added)));
+        if(prior_lines.getMessage().getString().length() > 8192) {
+            prior_lines = prior_lines.withMessage(Component.literal(prior_lines.getMessage().getString()
+                    .substring(prior_lines.getMessage().getString().length() - 8192)));
+        }
         prior_lines.scrollToBottom();
         addRenderableWidget(prior_lines);
     }
@@ -91,7 +96,11 @@ public class ConsoleScreen extends Screen {
 
     @Override
     public void onClose() {
-        PacketDistributor.sendToServer(new ConsolePriorLinesPayload(pos, prior_lines.getMessage().getString()));
+        String lines = prior_lines.getMessage().getString();
+        if(lines.length() > 8192) {
+            lines = lines.substring(lines.length() - 8192);
+        }
+        PacketDistributor.sendToServer(new ConsolePriorLinesPayload(pos, lines));
         super.onClose();
     }
 }
