@@ -52,7 +52,8 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
     private enum OperationMode {
         OUTPUT,
         LOOP_OUTPUT,
-        LISTEN
+        LISTEN,
+        OUTPUT_THEN_LISTEN
     }
 
     private final Map<String, BiConsumer<ServerPlayer, ConsoleBlockEntity>> BUILT_IN_COMMANDS = Map.of(
@@ -96,9 +97,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                 console.setMode(CommandMode.SET_DELAY);
            },
             "listen", (player, console) -> {
-                console.setOperationMode(OperationMode.LISTEN);
-                emitter.reset();
-                output(false);
+                console.setOperationMode(OperationMode.OUTPUT_THEN_LISTEN);
             }
     );
 
@@ -279,7 +278,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             saved_lines += "\n" + input;
         }
         setChanged();
-        PacketDistributor.sendToAllPlayers(new ConsolePriorLinesPayload(getBlockPos(), getPriorLinesOrEmpty())); // TODO FOR TESTING ONLY
+        PacketDistributor.sendToAllPlayers(new ConsoleLinePayload(getBlockPos(), input)); // TODO FOR TESTING ONLY
     }
 
     public void savePriorLines(String lines) {
@@ -300,8 +299,10 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
     public void setActive(boolean active) {
         if(operation_mode.equals(OperationMode.LISTEN)) {
             // Don't change the activation outside of LISTEN mode.
-            pattern_sensor.setActive(active);
-            number_sensor.setActive(active);
+            if(!(pattern_sensor.getDelay() > 0))
+                pattern_sensor.setActive(active);
+            if(!(number_sensor.getDelay() > 0))
+                number_sensor.setActive(active);
         }
     }
 
@@ -316,6 +317,17 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                 case LOOP_OUTPUT -> {
                     emitter.looping = true;
                     emitter.tick(slevel, this);
+                }
+                case OUTPUT_THEN_LISTEN -> {
+                    emitter.looping = false;
+                    emitter.tick(slevel, this);
+                    if(emitter.getBuffer().length() == 0) {
+                        setOperationMode(OperationMode.LISTEN);
+                        number_sensor.reset();
+                        number_sensor.delay(2);
+                        pattern_sensor.reset();
+                        pattern_sensor.delay(2);
+                    }
                 }
                 case LISTEN -> {
                     pattern_sensor.tick(slevel, this);
