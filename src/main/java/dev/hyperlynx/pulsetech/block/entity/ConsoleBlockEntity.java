@@ -6,6 +6,7 @@ import dev.hyperlynx.pulsetech.net.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.net.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.module.ConsoleEmitterModule;
+import dev.hyperlynx.pulsetech.pulse.module.NumberSensorModule;
 import dev.hyperlynx.pulsetech.pulse.module.PatternSensorModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -26,6 +27,7 @@ import java.util.function.BiConsumer;
 public class ConsoleBlockEntity extends ProtocolBlockEntity {
     private ConsoleEmitterModule emitter = new ConsoleEmitterModule();
     private PatternSensorModule pattern_sensor = new PatternSensorModule();
+    private NumberSensorModule number_sensor = new NumberSensorModule();
 
     private CommandMode command_mode = CommandMode.PARSE;
     private OperationMode operation_mode = OperationMode.OUTPUT;
@@ -43,8 +45,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         PARSE,
         DEFINE,
         SET_DELAY,
-        FORGET,
-        RAW_LISTEN
+        FORGET
     }
 
     // The mode of the entire Console block. Only changed by specific commands.
@@ -183,14 +184,10 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         }
         else if(getProtocol().hasKey(token)) {
             emitter.enqueueTransmission(Objects.requireNonNull(getProtocol().sequenceFor(token)));
-            pattern_sensor.delay(emitter.getBuffer().length() * 2 + 1);
-            pattern_sensor.getBuffer().clear();
             emitter.setActive(true);
         } else {
             try {
                 emitter.enqueueTransmission(getProtocol().fromShort(Short.parseShort(token)));
-                pattern_sensor.delay(emitter.getBuffer().length() * 2 + 1);
-                pattern_sensor.getBuffer().clear();
                 emitter.setActive(true);
             } catch (NumberFormatException ignored) {
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_token").getString() + token));
@@ -219,6 +216,10 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         if(ps_encode_result.hasResultOrPartial()) {
             tag.put("PatternSensor", ps_encode_result.getPartialOrThrow());
         }
+        var ns_encode_result = NumberSensorModule.CODEC.encodeStart(NbtOps.INSTANCE, number_sensor);
+        if(ns_encode_result.hasResultOrPartial()) {
+            tag.put("NumberSensor", ns_encode_result.getPartialOrThrow());
+        }
         if(!saved_lines.isEmpty()) {
             tag.putString("saved_lines", saved_lines);
         }
@@ -239,6 +240,10 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         if(ps_decode_result.hasResultOrPartial()) {
             pattern_sensor = ps_decode_result.getPartialOrThrow().getFirst();
         }
+        var ns_decode_result = NumberSensorModule.CODEC.decode(NbtOps.INSTANCE, tag.get("NumberSensor"));
+        if(ns_decode_result.hasResultOrPartial()) {
+            number_sensor = ns_decode_result.getPartialOrThrow().getFirst();
+        }
         if(tag.contains("saved_lines")) {
             saved_lines = tag.getString("saved_lines");
         }
@@ -256,13 +261,18 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             Pulsetech.LOGGER.warn("Handling input within a console that is not in LISTEN mode...? Ignoring.");
             return;
         }
-        if(pattern_sensor.getLastPattern().isEmpty()) {
+        String input;
+        if(!pattern_sensor.getLastPattern().isEmpty()) {
+            input = pattern_sensor.getLastPattern();
+        } else if(number_sensor.checkNewNumberReady()){
+            input = number_sensor.getNumber() + "";
+        } else {
             return;
         }
         if(saved_lines.isEmpty()) {
-            saved_lines = pattern_sensor.getLastPattern();
+            saved_lines = input;
         } else {
-            saved_lines += "\n" + pattern_sensor.getLastPattern();
+            saved_lines += "\n" + input;
         }
         setChanged();
         PacketDistributor.sendToAllPlayers(new ConsolePriorLinesPayload(getBlockPos(), getPriorLinesOrEmpty())); // TODO FOR TESTING ONLY
@@ -279,7 +289,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
 
     @Override
     public boolean isActive() {
-        return pattern_sensor.isActive();
+        return pattern_sensor.isActive() || number_sensor.isActive();
     }
 
     @Override
@@ -287,6 +297,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         if(operation_mode.equals(OperationMode.LISTEN)) {
             // Don't change the activation outside of LISTEN mode.
             pattern_sensor.setActive(active);
+            number_sensor.setActive(active);
         }
     }
 
@@ -304,6 +315,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                 }
                 case LISTEN -> {
                     pattern_sensor.tick(slevel, this);
+                    number_sensor.tick(slevel, this);
                 }
             }
         }
