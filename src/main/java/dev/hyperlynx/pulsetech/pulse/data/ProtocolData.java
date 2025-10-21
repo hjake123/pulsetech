@@ -1,12 +1,12 @@
 package dev.hyperlynx.pulsetech.pulse.data;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Lifecycle;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.pulse.Protocol;
+import dev.hyperlynx.pulsetech.util.MapListPairConverter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
@@ -22,6 +22,7 @@ import java.util.*;
 public class ProtocolData extends SavedData {
     private final Map<String, Protocol> protocols;
     private final Map<UUID, String> default_protocol_by_player;
+    private static final MapListPairConverter<UUID, String> converter = new MapListPairConverter<>();
 
     public static final Codec<ProtocolData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                     Codec.unboundedMap(Codec.STRING, Protocol.CODEC).fieldOf("protocols").forGetter(ProtocolData::getProtocols),
@@ -29,27 +30,11 @@ public class ProtocolData extends SavedData {
                             UUIDUtil.CODEC.fieldOf("uuid").codec(),
                             Codec.STRING.fieldOf("default").codec()
                     ).listOf().xmap(
-                            ProtocolData::toMap,
-                            ProtocolData::fromMap
+                            converter::toMap,
+                            converter::fromMap
                     ).fieldOf("default_protocol_by_player").forGetter(ProtocolData::getDefaults)
             ).apply(instance, ProtocolData::new)
     );
-
-    private static List<Pair<UUID, String>> fromMap(Map<UUID, String> map) {
-        List<Pair<UUID, String>> entries = new ArrayList<>();
-        for(UUID uuid : map.keySet()) {
-            entries.add(Pair.of(uuid, map.get(uuid)));
-        }
-        return entries;
-    }
-
-    private static Map<UUID, String> toMap(List<Pair<UUID, String>> pairs) {
-        Map<UUID, String> map = new HashMap<>();
-        for(Pair<UUID, String> pair : pairs) {
-            map.put(pair.getFirst(), pair.getSecond());
-        }
-        return map;
-    }
 
     private ProtocolData(Map<String, Protocol> protocols, Map<UUID, String> default_protocol_by_player) {
         this.protocols = new HashMap<>(protocols);

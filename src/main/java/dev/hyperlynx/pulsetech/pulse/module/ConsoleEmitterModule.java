@@ -6,15 +6,16 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.block.entity.ConsoleBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
 import dev.hyperlynx.pulsetech.pulse.block.PulseBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.data.ProtocolData;
+import dev.hyperlynx.pulsetech.util.MapListPairConverter;
+import net.minecraft.core.UUIDUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ConsoleEmitterModule extends EmitterModule {
     public Map<Integer, Short> delay_points = new HashMap<>();
     public boolean looping = false;
+    private static final MapListPairConverter<Integer, Short> converter = new MapListPairConverter<>();
 
     public static final Codec<ConsoleEmitterModule> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
@@ -23,18 +24,19 @@ public class ConsoleEmitterModule extends EmitterModule {
                     Codec.BOOL.fieldOf("active").forGetter(SequenceModule::isActive),
                     Codec.INT.fieldOf("output_cursor").forGetter(EmitterModule::getCursor),
                     Codec.BOOL.fieldOf("output_initialized").forGetter(EmitterModule::outputInitialized),
-                    Codec.INT.listOf().fieldOf("delay_times").forGetter(ConsoleEmitterModule::getDelayTimes),
-                    Codec.SHORT.listOf().fieldOf("delay_lengths").forGetter(ConsoleEmitterModule::getDelayLengths),
+                    Codec.pair(
+                            Codec.INT.fieldOf("time").codec(),
+                            Codec.SHORT.fieldOf("length").codec()
+                    ).listOf().xmap(
+                            converter::toMap,
+                            converter::fromMap
+                    ).fieldOf("delays").forGetter(ConsoleEmitterModule::getDelays),
                     Codec.BOOL.fieldOf("looping").forGetter(ConsoleEmitterModule::isLooping)
             ).apply(instance, ConsoleEmitterModule::new)
     );
 
-    private List<Integer> getDelayTimes() {
-        return delay_points.keySet().stream().toList();
-    }
-
-    private List<Short> getDelayLengths() {
-        return delay_points.values().stream().toList();
+    private Map<Integer, Short> getDelays() {
+        return delay_points;
     }
 
     private boolean isLooping() {
@@ -43,11 +45,9 @@ public class ConsoleEmitterModule extends EmitterModule {
 
     public ConsoleEmitterModule() {}
 
-    protected ConsoleEmitterModule(Sequence buffer, int delay, boolean active, int output_cursor, boolean output_initialized, List<Integer> delay_times, List<Short> delay_lengths, boolean looping) {
+    protected ConsoleEmitterModule(Sequence buffer, int delay, boolean active, int output_cursor, boolean output_initialized, Map<Integer, Short> delays, boolean looping) {
         super(buffer, delay, active, output_cursor, output_initialized);
-        for(int i = 0; i < delay_times.size(); i++) {
-            delay_points.put(delay_times.get(i), delay_lengths.get(i));
-        }
+        this.delay_points = new HashMap<>(delays);
         this.looping = looping;
     }
 
