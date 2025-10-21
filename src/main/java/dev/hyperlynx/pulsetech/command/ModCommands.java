@@ -16,6 +16,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 import java.util.Map;
+import java.util.Objects;
 
 @EventBusSubscriber
 public class ModCommands {
@@ -23,9 +24,15 @@ public class ModCommands {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event) {
         LiteralArgumentBuilder<CommandSourceStack> command_builder = Commands.literal("pulsetech-debug")
-                        .then(Commands.literal("create-debug-protocol").executes(ModCommands::debugCreateProtocol));
+                        .then(Commands.literal("create-debug-protocol").executes(ModCommands::debugCreateProtocol))
+                        .then(Commands.literal("set-debug-protocl-as-default").executes(ModCommands::debugSetDefaultProtocol));
 
         event.getDispatcher().register(command_builder);
+    }
+
+    private static int debugSetDefaultProtocol(CommandContext<CommandSourceStack> context) {
+        ProtocolData.retrieve(context.getSource().getLevel()).setDefaultFor(Objects.requireNonNull(context.getSource().getPlayer()), "debug");
+        return 1;
     }
 
     private static int debugCreateProtocol(CommandContext<CommandSourceStack> context) {

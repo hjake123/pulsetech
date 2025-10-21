@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 /// A {@link PulseBlockEntity} that also contains a particular {@link Protocol}
 public abstract class ProtocolBlockEntity extends PulseBlockEntity {
@@ -43,7 +44,7 @@ public abstract class ProtocolBlockEntity extends PulseBlockEntity {
         }
     }
 
-    public void setProtocol(String id) {
+    public void setProtocol(@NotNull String id) {
         protocol_id = id;
         setChanged();
     }
