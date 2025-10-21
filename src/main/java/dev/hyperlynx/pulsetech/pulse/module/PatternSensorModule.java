@@ -10,7 +10,7 @@ import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
 import net.minecraft.server.level.ServerLevel;
 
 import java.util.Objects;
-
+// TODO: For some unknown reason, pattern matching sometimes fails when pulses are not run through a 1 tick repeater. Why??
 /// A SequenceModule that can update a ProtocolBlockEntity about whether its pattern was matched
 public class PatternSensorModule extends SequenceModule<ProtocolBlockEntity> {
     private String last_pattern = "";
