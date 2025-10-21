@@ -97,6 +97,8 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
            },
             "listen", (player, console) -> {
                 console.setOperationMode(OperationMode.LISTEN);
+                emitter.reset();
+                output(false);
             }
     );
 
@@ -183,10 +185,12 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             return false;
         }
         else if(getProtocol().hasKey(token)) {
+            setOperationMode(OperationMode.OUTPUT);
             emitter.enqueueTransmission(Objects.requireNonNull(getProtocol().sequenceFor(token)));
             emitter.setActive(true);
         } else {
             try {
+                setOperationMode(OperationMode.OUTPUT);
                 emitter.enqueueTransmission(getProtocol().fromShort(Short.parseShort(token)));
                 emitter.setActive(true);
             } catch (NumberFormatException ignored) {
