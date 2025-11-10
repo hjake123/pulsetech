@@ -3,6 +3,7 @@ package dev.hyperlynx.pulsetech.client;
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.client.renderer.NumberBlockRenderer;
 import dev.hyperlynx.pulsetech.client.renderer.PatternBlockRenderer;
+import dev.hyperlynx.pulsetech.client.gui.ConsoleScreen;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -25,19 +26,19 @@ public class PulsetechClient {
     }
 
 
-    public void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    protected void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntityTypes.PATTERN_DETECTOR.get(), PatternBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.PATTERN_EMITTER.get(), PatternBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.NUMBER_EMITTER.get(), NumberBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.NUMBER_MONITOR.get(), NumberBlockRenderer::new);
     }
 
-    public static void openConsoleScreen(BlockPos pos, String prior_lines) {
+    protected static void openConsoleScreen(BlockPos pos, String prior_lines) {
         Minecraft.getInstance().setScreen(new ConsoleScreen(pos, prior_lines));
     }
 
 
-    public static void acceptConsoleLine(BlockPos pos, String line) {
+    protected static void acceptConsoleLine(BlockPos pos, String line) {
         Screen current_screen = Minecraft.getInstance().screen;
         if(current_screen instanceof ConsoleScreen console) {
             if(console.getPos().equals(pos)) {
@@ -46,7 +47,7 @@ public class PulsetechClient {
         }
     }
 
-    public static void setPriorConsoleLines(BlockPos pos, String lines) {
+    protected static void setPriorConsoleLines(BlockPos pos, String lines) {
         Screen current_screen = Minecraft.getInstance().screen;
         if(current_screen instanceof ConsoleScreen console) {
             if(console.getPos().equals(pos)) {

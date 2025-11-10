@@ -2,6 +2,7 @@ package dev.hyperlynx.pulsetech.net;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.block.entity.ConsoleBlockEntity;
+import dev.hyperlynx.pulsetech.client.ClientWrapper;
 import dev.hyperlynx.pulsetech.client.PulsetechClient;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
@@ -30,7 +31,7 @@ public record ConsolePriorLinesPayload(BlockPos pos, String lines) implements Cu
     );
 
     public void clientHandler(IPayloadContext context) {
-        PulsetechClient.setPriorConsoleLines(pos, lines);
+        ClientWrapper.setPriorConsoleLines(pos, lines);
     }
 
     public void serverHandler(IPayloadContext context) {

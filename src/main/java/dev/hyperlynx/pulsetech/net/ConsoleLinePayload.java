@@ -2,6 +2,7 @@ package dev.hyperlynx.pulsetech.net;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.block.entity.ConsoleBlockEntity;
+import dev.hyperlynx.pulsetech.client.ClientWrapper;
 import dev.hyperlynx.pulsetech.client.PulsetechClient;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
@@ -30,7 +31,7 @@ public record ConsoleLinePayload(BlockPos pos, String line) implements CustomPac
     );
 
     public void clientHandler(IPayloadContext context) {
-        PulsetechClient.acceptConsoleLine(pos, line);
+        ClientWrapper.acceptConsoleLine(pos, line);
     }
 
     public void serverHandler(IPayloadContext context) {

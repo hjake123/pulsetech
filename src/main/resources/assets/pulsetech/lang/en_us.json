@@ -25,5 +25,6 @@
   "console.pulsetech.define_help": "Usage: define name def1 def2 ...\n",
   "console.pulsetech.looping": "Looping prior command; run 'stop' to halt",
   "console.pulsetech.delay_multi_parameter_error": "Delay only supports a single parameter",
-  "console.pulsetech.wait_usage": "Usage: wait (number of ticks)"
+  "console.pulsetech.wait_usage": "Usage: wait (number of ticks)",
+  "narration.sequence_widget": "Pulsetech sequence definition widget"
 }

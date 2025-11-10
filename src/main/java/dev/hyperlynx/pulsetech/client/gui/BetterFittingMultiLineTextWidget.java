@@ -1,4 +1,4 @@
-package dev.hyperlynx.pulsetech.client;
+package dev.hyperlynx.pulsetech.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -7,7 +7,7 @@ import net.minecraft.client.gui.components.FittingMultiLineTextWidget;
 import net.minecraft.network.chat.Component;
 
 public class BetterFittingMultiLineTextWidget extends FittingMultiLineTextWidget {
-    public BetterFittingMultiLineTextWidget(int x, int y, int width, int height, Component message, Font font) {
+    protected BetterFittingMultiLineTextWidget(int x, int y, int width, int height, Component message, Font font) {
         super(x, y, width, height, message, font);
     }
 

@@ -1,4 +1,4 @@
-package dev.hyperlynx.pulsetech.client;
+package dev.hyperlynx.pulsetech.client.gui;
 
 import dev.hyperlynx.pulsetech.net.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.net.ConsolePriorLinesPayload;
@@ -25,7 +25,7 @@ public class ConsoleScreen extends Screen {
 
     private final List<String> past_commands = new ArrayList<>();
 
-    protected ConsoleScreen(BlockPos pos, String lines) {
+    public ConsoleScreen(BlockPos pos, String lines) {
         super(Component.translatable("block.pulsetech.console"));
         this.pos = pos;
         this.prior_lines_str = lines;

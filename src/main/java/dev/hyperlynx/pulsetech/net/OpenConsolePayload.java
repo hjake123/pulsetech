@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.net;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.client.ClientWrapper;
 import dev.hyperlynx.pulsetech.client.PulsetechClient;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
@@ -26,6 +27,6 @@ public record OpenConsolePayload(BlockPos pos, String prior_lines) implements Cu
     );
 
     public void handler(IPayloadContext context) {
-        PulsetechClient.openConsoleScreen(pos, prior_lines);
+        ClientWrapper.openConsoleScreen(pos, prior_lines);
     }
 }

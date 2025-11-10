@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.net.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.net.ConsolePriorLinesPayload;
+import dev.hyperlynx.pulsetech.pulse.Sequence;
 import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.module.ConsoleEmitterModule;
 import dev.hyperlynx.pulsetech.pulse.module.NumberSensorModule;
@@ -45,7 +46,8 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         PARSE,
         DEFINE,
         SET_DELAY,
-        FORGET
+        FORGET,
+        EMIT
     }
 
     // The mode of the entire Console block. Only changed by specific commands.
@@ -98,6 +100,9 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
            },
             "listen", (player, console) -> {
                 console.setOperationMode(OperationMode.OUTPUT_THEN_LISTEN);
+            },
+            "emit", (player, console) -> {
+                console.setMode(CommandMode.EMIT);
             }
     );
 
@@ -153,6 +158,23 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                         error = true;
                     }
                     command_mode = CommandMode.PARSE;
+                }
+                case EMIT -> {
+                    Sequence sequence = new Sequence();
+                    for(char c : token.toCharArray()) {
+                        if(c == '0') {
+                            sequence.append(false);
+                        } else if (c == '1') {
+                            sequence.append(true);
+                        } else {
+                            error = true;
+                            break;
+                        }
+                    }
+                    if(!error) {
+                        emitter.enqueueTransmission(sequence);
+                        emitter.setActive(true);
+                    }
                 }
             }
         }
