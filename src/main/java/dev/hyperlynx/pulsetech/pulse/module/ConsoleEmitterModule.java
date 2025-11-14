@@ -1,14 +1,10 @@
 package dev.hyperlynx.pulsetech.pulse.module;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.hyperlynx.pulsetech.block.entity.ConsoleBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
 import dev.hyperlynx.pulsetech.pulse.block.PulseBlockEntity;
-import dev.hyperlynx.pulsetech.pulse.data.ProtocolData;
 import dev.hyperlynx.pulsetech.util.MapListPairConverter;
-import net.minecraft.core.UUIDUtil;
 
 import java.util.*;
 

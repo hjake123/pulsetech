@@ -1,16 +1,16 @@
-package dev.hyperlynx.pulsetech.pulse.data;
+package dev.hyperlynx.pulsetech.pulse;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Lifecycle;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.Pulsetech;
-import dev.hyperlynx.pulsetech.pulse.Protocol;
 import dev.hyperlynx.pulsetech.util.MapListPairConverter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -20,15 +20,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class ProtocolData extends SavedData {
-    private final Map<String, Protocol> protocols;
-    private final Map<UUID, String> default_protocol_by_player;
-    private static final MapListPairConverter<UUID, String> converter = new MapListPairConverter<>();
+    private final Map<UUID, ResourceLocation> default_protocol_by_player;
+    private static final MapListPairConverter<UUID, ResourceLocation> converter = new MapListPairConverter<>();
 
     public static final Codec<ProtocolData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    Codec.unboundedMap(Codec.STRING, Protocol.CODEC).fieldOf("protocols").forGetter(ProtocolData::getProtocols),
                     Codec.pair(
                             UUIDUtil.CODEC.fieldOf("uuid").codec(),
-                            Codec.STRING.fieldOf("default").codec()
+                            ResourceLocation.CODEC.fieldOf("default").codec()
                     ).listOf().xmap(
                             converter::toMap,
                             converter::fromMap
@@ -36,16 +34,11 @@ public class ProtocolData extends SavedData {
             ).apply(instance, ProtocolData::new)
     );
 
-    private ProtocolData(Map<String, Protocol> protocols, Map<UUID, String> default_protocol_by_player) {
-        this.protocols = new HashMap<>(protocols);
+    private ProtocolData(Map<UUID, ResourceLocation> default_protocol_by_player) {
         this.default_protocol_by_player = new HashMap<>(default_protocol_by_player);
     }
 
-    private Map<String, Protocol> getProtocols() {
-        return protocols;
-    }
-
-    private Map<UUID, String> getDefaults() {
+    private Map<UUID, ResourceLocation> getDefaults() {
         return default_protocol_by_player;
     }
 
@@ -56,7 +49,7 @@ public class ProtocolData extends SavedData {
     }
 
     private static ProtocolData empty() {
-        return new ProtocolData(new HashMap<>(), new HashMap<>());
+        return new ProtocolData(new HashMap<>());
     }
 
     @Override
@@ -86,20 +79,11 @@ public class ProtocolData extends SavedData {
         return empty();
     }
 
-    public void add(String id, Protocol protocol) {
-        protocols.put(id, protocol);
-        setDirty();
+    public @NotNull ResourceLocation getDefaultFor(Player player) {
+        return default_protocol_by_player.getOrDefault(player.getUUID(), Pulsetech.location("error"));
     }
 
-    public Protocol get(String id) {
-        return protocols.get(id);
-    }
-
-    public @NotNull String getDefaultFor(Player player) {
-        return default_protocol_by_player.getOrDefault(player.getUUID(), "");
-    }
-
-    public void setDefaultFor(ServerPlayer player, String id) {
+    public void setDefaultFor(ServerPlayer player, ResourceLocation id) {
         default_protocol_by_player.put(player.getUUID(), id);
         setDirty();
     }

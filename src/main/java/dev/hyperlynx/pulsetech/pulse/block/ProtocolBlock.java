@@ -1,13 +1,11 @@
 package dev.hyperlynx.pulsetech.pulse.block;
 
-import dev.hyperlynx.pulsetech.pulse.data.ProtocolData;
-import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
+import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.pulse.ProtocolData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -31,11 +29,7 @@ public abstract class ProtocolBlock extends PulseBlock {
 
         // Clicking sets the protocol to "debug" TODO for now
         if(level.getBlockEntity(pos) instanceof ProtocolBlockEntity block_entity) {
-            if(ProtocolData.retrieve((ServerLevel) level).get("debug") == null) {
-                player.sendSystemMessage(Component.translatable("pulsetech.needs_protocol"));
-                return InteractionResult.SUCCESS;
-            }
-            block_entity.setProtocol("debug");
+            block_entity.setProtocol(Pulsetech.location("debug"));
         }
 
         return InteractionResult.SUCCESS;
