@@ -50,11 +50,6 @@ public class PatternSensorModule extends SequenceModule<ProtocolBlockEntity> {
             block.handleInput();
             return false;
         } else if (buffer.length() == protocol.sequenceLength()) {
-            if(Objects.equals(protocol.sequenceFor(Protocol.NUM), buffer)) {
-                Pulsetech.LOGGER.debug("Matched NUM, sleeping...");
-                delay(46);
-                return false;
-            }
             Pulsetech.LOGGER.debug("Checking for match with {}", buffer);
             String key = protocol.keyFor(buffer);
             if(key != null) {

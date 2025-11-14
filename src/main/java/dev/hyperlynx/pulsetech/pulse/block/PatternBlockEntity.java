@@ -29,9 +29,6 @@ public abstract class PatternBlockEntity extends ProtocolBlockEntity {
     public void rotatePattern() {
         // TODO temporary logic
         pattern = getProtocol().nextKey(pattern);
-        if(Objects.equals(pattern, Protocol.NUM)) {
-            pattern = getProtocol().nextKey(pattern);
-        }
     }
 
     @Override

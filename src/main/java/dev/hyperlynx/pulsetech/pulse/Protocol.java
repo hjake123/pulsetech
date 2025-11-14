@@ -15,8 +15,6 @@ import java.util.Objects;
 /// Contains a set of associations between {@link Sequence}s and String keys.
 /// These associations allow the Sequences to be used by players to configure various blocks.
 public class Protocol {
-    public static final String ACK = "ACK";
-    public static final String ERR = "ERR";
     public static final String NUM = "#";
 
     private final BiMap<String, Sequence> sequence_map;
