@@ -193,6 +193,9 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
         if(command_mode.equals(CommandMode.EMIT)) {
             PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.emit_usage").getString()));
         }
+        if(command_mode.equals(CommandMode.NUM)) {
+            PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.num_usage").getString()));
+        }
         if(command_mode.equals(CommandMode.DEFINE)) {
             if(BUILT_IN_COMMANDS.containsKey(noun) || macros.containsKey(noun)) {
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.macro_name_taken").getString()));
