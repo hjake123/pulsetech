@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.block.entity;
 
-import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.Sequence;
+import dev.hyperlynx.pulsetech.pulse.block.PulseBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.module.EmitterModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -13,7 +14,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class NumberEmitterBlockEntity extends ProtocolBlockEntity implements NumberKnower {
+public class NumberEmitterBlockEntity extends PulseBlockEntity implements NumberKnower {
     private EmitterModule emitter = new EmitterModule();
 
     public NumberEmitterBlockEntity(BlockPos pos, BlockState blockState) {
@@ -26,7 +27,7 @@ public class NumberEmitterBlockEntity extends ProtocolBlockEntity implements Num
     public void tick() {
         if(level instanceof ServerLevel slevel) {
             if(emitter.isActive() && !emitter.outputInitialized()) {
-                emitter.enqueueTransmission(getProtocol().fromShort(number));
+                emitter.enqueueTransmission(Sequence.fromShort(number));
             }
             emitter.tick(slevel, this);
         }

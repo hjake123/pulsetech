@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.block.entity;
 
 import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.block.PulseBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.module.NumberSensorModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -15,7 +16,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class NumberMonitorBlockEntity extends ProtocolBlockEntity implements NumberKnower {
+public class NumberMonitorBlockEntity extends PulseBlockEntity implements NumberKnower {
     private NumberSensorModule module = new NumberSensorModule();
 
     public NumberMonitorBlockEntity(BlockPos pos, BlockState blockState) {

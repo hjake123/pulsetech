@@ -18,7 +18,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class NumberMonitorBlock extends ProtocolBlock implements EntityBlock {
+public class NumberMonitorBlock extends PulseBlock implements EntityBlock {
     protected static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 2, 16), Block.box(4, 2, 4, 12, 6, 12));
 
     public NumberMonitorBlock(Properties properties) {

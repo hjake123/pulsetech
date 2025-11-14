@@ -101,39 +101,4 @@ public class Protocol {
     public List<String> keys() {
         return key_list;
     }
-
-    /// Returns a little endian Sequence containing the bits of the provided short
-    /// Prepends the NUM code first to signal that the following 16 bits will be a number
-    public Sequence fromShort(short n) {
-        if(sequenceFor(NUM) == null) {
-            Pulsetech.LOGGER.error("No NUM sequence defined for this protocol. Bad!");
-            return new Sequence();
-        }
-        Sequence sequence = new Sequence(Objects.requireNonNull(sequenceFor(NUM)));
-        while(n > 0) {
-            boolean b = n % 2 == 1;
-            n = (short) (n >> 1);
-            sequence.append(b);
-        }
-        while(sequence.length() < numberSequenceLength()) {
-            sequence.append(false);
-        }
-        return sequence;
-    }
-
-    /// Returns the short value of this Sequence as a little endian number.
-    /// Affects the read cursor.
-    public short toShort(Sequence sequence) {
-        short n = 0;
-        for(int i = sequence.length() - 1; i >= sequenceLength(); i--) {
-            // Repeat until we reach the NUM sequence
-            boolean b = sequence.get(i);
-            n = (short) (n << 1 | (b ? 1 : 0));
-        }
-        return n;
-    }
-
-    public int numberSequenceLength() {
-        return 16 + sequenceLength();
-    }
 }

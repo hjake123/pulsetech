@@ -22,7 +22,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class NumberEmitterBlock extends ProtocolBlock implements EntityBlock {
+public class NumberEmitterBlock extends PulseBlock implements EntityBlock {
     protected static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 2, 16), Block.box(4, 2, 4, 12, 6, 12));
 
     public NumberEmitterBlock(Properties properties) {

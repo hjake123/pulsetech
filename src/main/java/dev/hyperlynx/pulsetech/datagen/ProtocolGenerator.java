@@ -16,8 +16,6 @@ public class ProtocolGenerator {
                 Protocols.KEY,
                 bootstrap -> {
                     addProtocol(bootstrap, "debug", 4, Map.of(
-                            Protocol.ACK, new Sequence(false, false, false, false),
-                            Protocol.ERR, new Sequence(true, true, true, true),
                             "A", new Sequence(true, false, true, false),
                             "B", new Sequence(false, true, true, false),
                             "C", new Sequence(false, false, true, true),

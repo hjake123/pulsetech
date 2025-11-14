@@ -9,7 +9,8 @@
   "message.pulsetech.no_protocol": "Please set a Protocol first",
   "pulsetech.needs_protocol": "Needs protocol",
   "console.pulsetech.no_protocol": "No protocol loaded",
-  "console.pulsetech.invalid_token": "Invalid command or number ",
+  "console.pulsetech.invalid_token": "Invalid command ",
+  "console.pulsetech.invalid_number": "Invalid number",
   "help.pulsetech.help": "Show all valid commands",
   "help.pulsetech.clear": "Clear the prior lines",
   "help.pulsetech.stop": "Halt signal output immediately",
@@ -18,13 +19,16 @@
   "help.pulsetech.loop": "Repeat a command until stopped",
   "help.pulsetech.listen": "Listen to input at the back port until stopped",
   "help.pulsetech.wait": "Delay execution for a number of game ticks",
+  "help.pulsetech.emit": "Send a sequence of bits from the output",
+  "help.pulsetech.num": "Send a 16 bit integer from the output",
   "console.pulsetech.macro_name_taken": "Macro could not be defined: name already exists",
   "console.pulsetech.defined": "Defined ",
   "console.pulsetech.forgot": "Forgot ",
   "console.pulsetech.stack_overflow": "Stack overflow",
-  "console.pulsetech.define_help": "Usage: define name def1 def2 ...\n",
+  "console.pulsetech.define_help": "Usage: define name def1 def2 ...",
   "console.pulsetech.looping": "Looping prior command; run 'stop' to halt",
   "console.pulsetech.delay_multi_parameter_error": "Delay only supports a single parameter",
   "console.pulsetech.wait_usage": "Usage: wait (number of ticks)",
-  "narration.sequence_widget": "Pulsetech sequence definition widget"
+  "narration.sequence_widget": "Pulsetech sequence definition widget",
+  "console.pulsetech.emit_usage": "Usage: emit (sequence)\nExample: emit 1010"
 }

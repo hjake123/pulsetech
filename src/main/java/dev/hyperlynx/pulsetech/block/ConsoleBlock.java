@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import dev.hyperlynx.pulsetech.block.entity.ConsoleBlockEntity;
 import dev.hyperlynx.pulsetech.net.OpenConsolePayload;
 import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlock;
+import dev.hyperlynx.pulsetech.pulse.block.PulseBlock;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,7 +20,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ConsoleBlock extends ProtocolBlock implements EntityBlock {
+public class ConsoleBlock extends PulseBlock implements EntityBlock {
     public ConsoleBlock(Properties properties) {
         super(properties);
     }
@@ -37,7 +38,7 @@ public class ConsoleBlock extends ProtocolBlock implements EntityBlock {
         return ModBlockEntityTypes.CONSOLE.get().create(pos, state);
     }
 
-    public static final MapCodec<ProtocolBlock> CODEC = simpleCodec(ConsoleBlock::new);
+    public static final MapCodec<ConsoleBlock> CODEC = simpleCodec(ConsoleBlock::new);
 
     @Override
     protected @NotNull MapCodec<? extends HorizontalDirectionalBlock> codec() {

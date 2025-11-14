@@ -6,11 +6,12 @@ import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.pulse.Protocol;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
 import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.block.PulseBlockEntity;
 
 import java.util.Objects;
 
-/// A SequenceModule that can scans in a number from its ProtcolBlockEntity's input
-public class NumberSensorModule extends SequenceModule<ProtocolBlockEntity> {
+/// A SequenceModule that can scans in a number from its ProtocolBlockEntity's input
+public class NumberSensorModule extends SequenceModule<PulseBlockEntity> {
     private short number = 0;
     private boolean ready = false;
 
@@ -45,26 +46,13 @@ public class NumberSensorModule extends SequenceModule<ProtocolBlockEntity> {
     }
 
     @Override
-    public boolean run(ProtocolBlockEntity block) {
-        Protocol protocol = block.getProtocol();
-        if(protocol == null) {
-            return false;
-        }
-        if(buffer.length() < protocol.numberSequenceLength()) {
+    public boolean run(PulseBlockEntity block) {
+        if(buffer.length() <= 16) {
             number = 0;
             buffer.append(block.input());
-            if(buffer.length() == protocol.sequenceLength()) {
-                // We can now test for the NUM sequence. If it's absent, we need to fail out.
-                if(!Objects.equals(protocol.sequenceFor(Protocol.NUM), buffer)) {
-                    buffer.clear();
-                    delay(6); // magic number!
-                    return false;
-                }
-                Pulsetech.LOGGER.debug("Matched NUM, getting ready for input");
-            }
-            if(buffer.length() == protocol.numberSequenceLength()) {
+            if(buffer.length() == 16) {
                 Pulsetech.LOGGER.debug("Parsing sequence {} for short", buffer);
-                number = protocol.toShort(buffer);
+                number = buffer.toShort();
                 ready = true;
                 block.handleInput();
                 return false;

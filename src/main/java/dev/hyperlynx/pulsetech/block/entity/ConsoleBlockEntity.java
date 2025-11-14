@@ -6,9 +6,9 @@ import dev.hyperlynx.pulsetech.net.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.net.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
 import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.block.PulseBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.module.ConsoleEmitterModule;
-import dev.hyperlynx.pulsetech.pulse.module.NumberSensorModule;
-import dev.hyperlynx.pulsetech.pulse.module.PatternSensorModule;
+import dev.hyperlynx.pulsetech.pulse.module.BitSensorModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -25,10 +25,9 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-public class ConsoleBlockEntity extends ProtocolBlockEntity {
+public class ConsoleBlockEntity extends PulseBlockEntity {
     private ConsoleEmitterModule emitter = new ConsoleEmitterModule();
-    private PatternSensorModule pattern_sensor = new PatternSensorModule();
-    private NumberSensorModule number_sensor = new NumberSensorModule();
+    private BitSensorModule sensor = new BitSensorModule();
 
     private CommandMode command_mode = CommandMode.PARSE;
     private OperationMode operation_mode = OperationMode.OUTPUT;
@@ -47,7 +46,7 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         DEFINE,
         SET_DELAY,
         FORGET,
-        EMIT
+        NUM, EMIT
     }
 
     // The mode of the entire Console block. Only changed by specific commands.
@@ -62,10 +61,6 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             "help", (player, console) -> {
                 StringBuilder help_builder = new StringBuilder();
                 addBuiltInInfo(help_builder);
-                help_builder.append("\n");
-                for(String key : getProtocol().keys()) {
-                    help_builder.append(key).append(": ").append(getProtocol().sequenceFor(key)).append("\n");
-                }
                 help_builder.append("\n");
                 for(String key : macros.keySet()) {
                     help_builder.append(key).append(": ");
@@ -103,6 +98,9 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             },
             "emit", (player, console) -> {
                 console.setMode(CommandMode.EMIT);
+            },
+            "num", (player, console) -> {
+                console.setMode(CommandMode.NUM);
             }
     );
 
@@ -122,10 +120,6 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
     private static final int MAX_STACK_DEPTH = 16;
 
     public void processTokenList(List<String> tokens, ServerPlayer player, int depth) {
-        if(getProtocol() == null) {
-            PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.no_protocol").getString()));
-            return;
-        }
         // If this function was recursively called by a macro too many times, don't execute.
         if(depth > MAX_STACK_DEPTH) {
             PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.stack_overflow").getString()));
@@ -175,6 +169,18 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                         emitter.enqueueTransmission(sequence);
                         emitter.setActive(true);
                     }
+                    command_mode = CommandMode.PARSE;
+                }
+                case NUM -> {
+                    try {
+                        Sequence sequence = Sequence.fromShort(Short.parseShort(token));
+                        emitter.enqueueTransmission(sequence);
+                        emitter.setActive(true);
+                    }
+                    catch (NumberFormatException e) {
+                        PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_number").getString()));
+                    }
+                    command_mode = CommandMode.PARSE;
                 }
             }
         }
@@ -184,8 +190,11 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         if(command_mode.equals(CommandMode.SET_DELAY)) {
             PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.wait_usage").getString()));
         }
+        if(command_mode.equals(CommandMode.EMIT)) {
+            PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.emit_usage").getString()));
+        }
         if(command_mode.equals(CommandMode.DEFINE)) {
-            if(BUILT_IN_COMMANDS.containsKey(noun) || getProtocol().hasKey(noun) || macros.containsKey(noun)) {
+            if(BUILT_IN_COMMANDS.containsKey(noun) || macros.containsKey(noun)) {
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.macro_name_taken").getString()));
             } else if(noun.isEmpty() || definition.isEmpty()) {
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.define_help").getString() + noun));
@@ -204,21 +213,10 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
             // recursively process macros up to a set depth.
             processTokenList(macros.get(token), player, depth + 1);
             return false;
-        }
-        else if(getProtocol().hasKey(token)) {
-            setOperationMode(OperationMode.OUTPUT);
-            emitter.enqueueTransmission(Objects.requireNonNull(getProtocol().sequenceFor(token)));
-            emitter.setActive(true);
         } else {
-            try {
-                setOperationMode(OperationMode.OUTPUT);
-                emitter.enqueueTransmission(getProtocol().fromShort(Short.parseShort(token)));
-                emitter.setActive(true);
-            } catch (NumberFormatException ignored) {
-                PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_token").getString() + token));
-                emitter.reset();
-                return true;
-            }
+            PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_token").getString() + token));
+            emitter.reset();
+            return true;
         }
         return false;
     }
@@ -237,14 +235,6 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         if(encode_result.hasResultOrPartial()) {
             tag.put("Emitter", encode_result.getPartialOrThrow());
         }
-        var ps_encode_result = PatternSensorModule.CODEC.encodeStart(NbtOps.INSTANCE, pattern_sensor);
-        if(ps_encode_result.hasResultOrPartial()) {
-            tag.put("PatternSensor", ps_encode_result.getPartialOrThrow());
-        }
-        var ns_encode_result = NumberSensorModule.CODEC.encodeStart(NbtOps.INSTANCE, number_sensor);
-        if(ns_encode_result.hasResultOrPartial()) {
-            tag.put("NumberSensor", ns_encode_result.getPartialOrThrow());
-        }
         if(!saved_lines.isEmpty()) {
             tag.putString("saved_lines", saved_lines);
         }
@@ -261,14 +251,6 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
         if(decode_result.hasResultOrPartial()) {
             emitter = decode_result.getPartialOrThrow().getFirst();
         }
-        var ps_decode_result = PatternSensorModule.CODEC.decode(NbtOps.INSTANCE, tag.get("PatternSensor"));
-        if(ps_decode_result.hasResultOrPartial()) {
-            pattern_sensor = ps_decode_result.getPartialOrThrow().getFirst();
-        }
-        var ns_decode_result = NumberSensorModule.CODEC.decode(NbtOps.INSTANCE, tag.get("NumberSensor"));
-        if(ns_decode_result.hasResultOrPartial()) {
-            number_sensor = ns_decode_result.getPartialOrThrow().getFirst();
-        }
         if(tag.contains("saved_lines")) {
             saved_lines = tag.getString("saved_lines");
         }
@@ -282,25 +264,17 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
 
     @Override
     public void handleInput() {
-        if(!operation_mode.equals(OperationMode.LISTEN)) {
-            Pulsetech.LOGGER.warn("Handling input within a console that is not in LISTEN mode...? Ignoring.");
+        if(!sensor.ready()) {
             return;
         }
-        String input;
-        if(!pattern_sensor.getLastPattern().isEmpty()) {
-            input = pattern_sensor.getLastPattern();
-        } else if(number_sensor.checkNewNumberReady()){
-            input = number_sensor.getNumber() + "";
-        } else {
-            return;
-        }
+        String input = sensor.read() ? "1" : "0";
         if(saved_lines.isEmpty()) {
             saved_lines = input;
         } else {
-            saved_lines += "\n" + input;
+            saved_lines += input;
         }
         setChanged();
-        PacketDistributor.sendToAllPlayers(new ConsoleLinePayload(getBlockPos(), input)); // TODO FOR TESTING ONLY
+        PacketDistributor.sendToAllPlayers(new ConsoleLinePayload(getBlockPos(), input));
     }
 
     public void savePriorLines(String lines) {
@@ -314,17 +288,16 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
 
     @Override
     public boolean isActive() {
-        return pattern_sensor.isActive() || number_sensor.isActive();
+        return false;
     }
 
     @Override
     public void setActive(boolean active) {
         if(operation_mode.equals(OperationMode.LISTEN)) {
             // Don't change the activation outside of LISTEN mode.
-            if(!(pattern_sensor.getDelay() > 0))
-                pattern_sensor.setActive(active);
-            if(!(number_sensor.getDelay() > 0))
-                number_sensor.setActive(active);
+            if(sensor.getDelay() <= 0) {
+                sensor.setActive(active);
+            }
         }
     }
 
@@ -345,15 +318,17 @@ public class ConsoleBlockEntity extends ProtocolBlockEntity {
                     emitter.tick(slevel, this);
                     if(emitter.getBuffer().length() == 0) {
                         setOperationMode(OperationMode.LISTEN);
-                        number_sensor.reset();
-                        number_sensor.delay(2);
-                        pattern_sensor.reset();
-                        pattern_sensor.delay(2);
+                        sensor.reset();
+                        sensor.delay(2);
+                        if(saved_lines == null) {
+                            saved_lines = "/n";
+                        } else {
+                            saved_lines += "/n";
+                        }
                     }
                 }
                 case LISTEN -> {
-                    pattern_sensor.tick(slevel, this);
-                    number_sensor.tick(slevel, this);
+                    sensor.tick(slevel, this);
                 }
             }
         }
