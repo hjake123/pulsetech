@@ -3,9 +3,7 @@ package dev.hyperlynx.pulsetech.pulse.module;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.Pulsetech;
-import dev.hyperlynx.pulsetech.pulse.Protocol;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
-import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.block.PulseBlockEntity;
 
 import java.util.Objects;

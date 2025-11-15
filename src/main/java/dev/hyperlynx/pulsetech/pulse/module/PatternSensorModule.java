@@ -5,61 +5,63 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.pulse.Protocol;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
-import dev.hyperlynx.pulsetech.pulse.block.PatternBlockEntity;
-import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
-import net.minecraft.server.level.ServerLevel;
+import dev.hyperlynx.pulsetech.pulse.PatternHolder;
+import dev.hyperlynx.pulsetech.pulse.block.SequenceBlockEntity;
 
 import java.util.Objects;
-// TODO: For some unknown reason, pattern matching sometimes fails when pulses are not run through a 1 tick repeater. Why??
-/// A SequenceModule that can update a ProtocolBlockEntity about whether its pattern was matched
-public class PatternSensorModule extends SequenceModule<ProtocolBlockEntity> {
-    private String last_pattern = "";
+
+public class PatternSensorModule extends SequenceModule<SequenceBlockEntity> implements PatternHolder {
+    Sequence pattern = new Sequence();
 
     public static final Codec<PatternSensorModule> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Sequence.CODEC.fieldOf("buffer").forGetter(SequenceModule::getBuffer),
                     Codec.INT.fieldOf("delay_timer").forGetter(SequenceModule::getDelay),
                     Codec.BOOL.fieldOf("active").forGetter(SequenceModule::isActive),
-                    Codec.STRING.fieldOf("last_pattern").forGetter(PatternSensorModule::getLastPattern)
+                    Sequence.CODEC.fieldOf("pattern").forGetter(PatternSensorModule::getPattern)
             ).apply(instance, PatternSensorModule::new)
     );
 
-    public String getLastPattern() {
-        return last_pattern;
-    }
-
     public PatternSensorModule() {}
-
-    private PatternSensorModule(Sequence buffer, int delay, boolean active, String last_pattern) {
+    public PatternSensorModule(Sequence buffer, int delay, boolean active, Sequence pattern) {
         this.buffer = buffer;
-        this.delay_timer = delay;
-        this.setActive(active);
-        this.last_pattern = last_pattern;
+        delay_timer = delay;
+        this.active = active;
+        this.pattern = pattern;
     }
 
     @Override
-    public boolean run(ProtocolBlockEntity block) {
-        Protocol protocol = block.getProtocol();
-        if(protocol == null) {
-            return false;
-        }
-        buffer.append(block.input());
-        if(buffer.length() > protocol.sequenceLength()) {
+    protected boolean run(SequenceBlockEntity pulser) {
+        buffer.append(pulser.input());
+        if(buffer.length() > pattern.length()) {
             buffer.clear();
-            last_pattern = "";
-            block.handleInput();
+            pulser.handleInput();
             return false;
-        } else if (buffer.length() == protocol.sequenceLength()) {
+        } else if (buffer.length() == pattern.length()) {
             Pulsetech.LOGGER.debug("Checking for match with {}", buffer);
-            String key = protocol.keyFor(buffer);
-            if(key != null) {
-                Pulsetech.LOGGER.debug("Matched pattern with key {}", key);
-                last_pattern = key;
-                block.handleInput();
+            if(buffer.equals(pattern)) {
+                Pulsetech.LOGGER.debug("Matched pattern");
+                pulser.handleInput();
                 // We don't return false right away to
                 // allow one extra pulse to be absorbed to help with timing.
             }
         }
         return true;
+    }
+
+
+
+    @Override
+    public Sequence getPattern() {
+        return pattern;
+    }
+
+    @Override
+    public void setPattern(Sequence sequence) {
+        pattern = sequence;
+    }
+
+    public boolean bufferMatchesPattern() {
+        return buffer.equals(pattern);
     }
 }

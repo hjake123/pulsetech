@@ -133,4 +133,7 @@ public class Sequence {
         return n;
     }
 
+    public boolean isEmpty() {
+        return length() == 0;
+    }
 }

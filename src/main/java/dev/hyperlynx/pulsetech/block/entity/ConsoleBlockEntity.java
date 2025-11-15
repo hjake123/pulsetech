@@ -5,7 +5,6 @@ import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.net.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.net.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
-import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.block.PulseBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.module.ConsoleEmitterModule;
 import dev.hyperlynx.pulsetech.pulse.module.BitSensorModule;

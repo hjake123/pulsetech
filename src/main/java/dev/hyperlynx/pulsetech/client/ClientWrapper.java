@@ -15,4 +15,9 @@ public class ClientWrapper {
     public static void setPriorConsoleLines(BlockPos pos, String lines) {
         PulsetechClient.setPriorConsoleLines(pos, lines);
     }
+
+    public static void openSequenceScreen(BlockPos pos) {
+        PulsetechClient.openSequenceScreen(pos);
+    }
+
 }

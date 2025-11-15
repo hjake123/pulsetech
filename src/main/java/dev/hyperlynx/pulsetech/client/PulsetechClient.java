@@ -1,9 +1,11 @@
 package dev.hyperlynx.pulsetech.client;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.client.gui.SequenceChooseScreen;
 import dev.hyperlynx.pulsetech.client.renderer.NumberBlockRenderer;
 import dev.hyperlynx.pulsetech.client.renderer.PatternBlockRenderer;
 import dev.hyperlynx.pulsetech.client.gui.ConsoleScreen;
+import dev.hyperlynx.pulsetech.pulse.PatternHolder;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -53,6 +55,12 @@ public class PulsetechClient {
             if(console.getPos().equals(pos)) {
                 console.setPriorLines(lines);
             }
+        }
+    }
+
+    public static void openSequenceScreen(BlockPos pos) {
+        if(Minecraft.getInstance().level != null && Minecraft.getInstance().level.getBlockEntity(pos) instanceof PatternHolder bearer) {
+            Minecraft.getInstance().setScreen(new SequenceChooseScreen(pos, bearer));
         }
     }
 }

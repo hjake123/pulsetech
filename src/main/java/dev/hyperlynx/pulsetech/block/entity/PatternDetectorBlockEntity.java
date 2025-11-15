@@ -1,6 +1,9 @@
 package dev.hyperlynx.pulsetech.block.entity;
 
-import dev.hyperlynx.pulsetech.pulse.block.PatternBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.PatternHolder;
+import dev.hyperlynx.pulsetech.pulse.Sequence;
+import dev.hyperlynx.pulsetech.pulse.block.SequenceBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.module.EmitterModule;
 import dev.hyperlynx.pulsetech.pulse.module.PatternSensorModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -11,9 +14,10 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class PatternDetectorBlockEntity extends PatternBlockEntity {
+public class PatternDetectorBlockEntity extends SequenceBlockEntity implements PatternHolder {
     private PatternSensorModule detector = new PatternSensorModule();
 
     public PatternDetectorBlockEntity(BlockPos pos, BlockState blockState) {
@@ -40,7 +44,14 @@ public class PatternDetectorBlockEntity extends PatternBlockEntity {
 
     @Override
     public void handleInput() {
-        output(detector.getLastPattern().equals(getPattern()));
+        output(detector.bufferMatchesPattern());
+    }
+
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        assert level != null;
+        level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
     }
 
     @Override
@@ -69,5 +80,16 @@ public class PatternDetectorBlockEntity extends PatternBlockEntity {
         // The packet uses the CompoundTag returned by #getUpdateTag. An alternative overload of #create exists
         // that allows you to specify a custom update tag, including the ability to omit data the client might not need.
         return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void setPattern(Sequence sequence) {
+        detector.setPattern(sequence);
+        setChanged();
+    }
+
+    @Override
+    public Sequence getPattern() {
+        return detector.getPattern();
     }
 }

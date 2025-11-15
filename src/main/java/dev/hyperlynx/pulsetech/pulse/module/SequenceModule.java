@@ -55,7 +55,7 @@ public abstract class SequenceModule<T extends PulseBlockEntity> {
             setActive(run(pulser));
             delay(2);
         } else {
-            if(buffer.length() > 0) {
+            if(!buffer.isEmpty()) {
                 reset();
             }
         }

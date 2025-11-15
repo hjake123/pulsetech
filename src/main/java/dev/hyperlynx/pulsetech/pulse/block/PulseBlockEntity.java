@@ -13,7 +13,7 @@ public abstract class PulseBlockEntity extends BlockEntity {
 
     public void output(boolean bit) {
         assert level != null;
-        level.setBlock(getBlockPos(), getBlockState().setValue(ProtocolBlock.OUTPUT, bit), Block.UPDATE_CLIENTS);
+        level.setBlock(getBlockPos(), getBlockState().setValue(PulseBlock.OUTPUT, bit), Block.UPDATE_CLIENTS);
         level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
     }
 
