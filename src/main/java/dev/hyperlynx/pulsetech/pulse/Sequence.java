@@ -3,6 +3,10 @@ package dev.hyperlynx.pulsetech.pulse;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.Pulsetech;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -20,6 +24,8 @@ public class Sequence {
                     Codec.list(Codec.BOOL).fieldOf("bools").forGetter(Sequence::getAsBooleans)
             ).apply(instance, Sequence::new)
     );
+
+    public static final StreamCodec<ByteBuf, Sequence> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
     private List<Boolean> getAsBooleans() {
         List<Boolean> bools = new ArrayList<>();
@@ -135,5 +141,14 @@ public class Sequence {
 
     public boolean isEmpty() {
         return length() == 0;
+    }
+
+    public void set(int index, boolean b) {
+        bits.set(index, b);
+    }
+
+    public void removeLast() {
+        write_cursor--;
+        bits.clear(write_cursor);
     }
 }

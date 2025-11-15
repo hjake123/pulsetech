@@ -10,7 +10,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-/// S -> C payload that opens the Console screen
+/// S -> C payload that opens the Sequence Chooser screen
 public record OpenSequenceChooserPayload(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<OpenSequenceChooserPayload> TYPE = new Type<>(Pulsetech.location("open_sequence"));

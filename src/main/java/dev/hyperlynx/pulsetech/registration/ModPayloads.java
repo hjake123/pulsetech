@@ -1,9 +1,6 @@
 package dev.hyperlynx.pulsetech.registration;
 
-import dev.hyperlynx.pulsetech.net.ConsoleLinePayload;
-import dev.hyperlynx.pulsetech.net.ConsolePriorLinesPayload;
-import dev.hyperlynx.pulsetech.net.OpenConsolePayload;
-import dev.hyperlynx.pulsetech.net.OpenSequenceChooserPayload;
+import dev.hyperlynx.pulsetech.net.*;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -44,6 +41,12 @@ public class ModPayloads {
                 OpenSequenceChooserPayload.TYPE,
                 OpenSequenceChooserPayload.STREAM_CODEC,
                 OpenSequenceChooserPayload::handler
+        );
+
+        registrar.playToServer(
+                SequenceSelectPayload.TYPE,
+                SequenceSelectPayload.STREAM_CODEC,
+                SequenceSelectPayload::handler
         );
     }
 }
