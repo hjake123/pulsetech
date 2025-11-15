@@ -2,6 +2,7 @@ package dev.hyperlynx.pulsetech.client.gui;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -10,6 +11,7 @@ import net.minecraft.client.gui.components.SpriteIconButton;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,16 +70,25 @@ public class InputSequenceWidget extends AbstractWidget implements Renderable {
 
     private void bitButtonPress(int index) {
         sequence.set(index, !sequence.get(index));
+        clickSound(sequence.get(index) ? 1.0F : 0.8F);
     }
 
     private void bitAppendButtonPress() {
         sequence.append(false);
         last_sequence = null;
+        clickSound(1.0F + (sequence.length() / 36.0F));
     }
 
     private void bitRemoveButtonPress() {
         sequence.removeLast();
         last_sequence = null;
+        clickSound(0.7F + (sequence.length() / 36.0F));
+    }
+
+    private void clickSound(float pitch) {
+        assert Minecraft.getInstance().player != null;
+        assert Minecraft.getInstance().level != null;
+        Minecraft.getInstance().player.playSound(SoundEvents.LEVER_CLICK, 0.5F, (float) (pitch + Minecraft.getInstance().level.random.nextFloat() * 0.1));
     }
 
     @Override
