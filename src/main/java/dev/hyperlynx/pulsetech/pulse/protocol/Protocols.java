@@ -1,4 +1,4 @@
-package dev.hyperlynx.pulsetech.pulse;
+package dev.hyperlynx.pulsetech.pulse.protocol;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
 import net.minecraft.core.Registry;

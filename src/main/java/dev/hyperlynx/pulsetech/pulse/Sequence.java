@@ -113,14 +113,19 @@ public class Sequence {
         }
     }
 
-    /// Returns a little endian Sequence containing the bits of the provided short
-    public static Sequence fromShort(short n) {
+    public static Sequence truncatedFromInt(int n) {
         Sequence sequence = new Sequence();
         while(n > 0) {
             boolean b = n % 2 == 1;
-            n = (short) (n >> 1);
+            n = n >> 1;
             sequence.append(b);
         }
+        return sequence;
+    }
+
+    /// Returns a little endian Sequence containing the bits of the provided short
+    public static Sequence fromShort(short n) {
+        Sequence sequence = truncatedFromInt(n);
         while(sequence.length() < 16) {
             sequence.append(false);
         }
