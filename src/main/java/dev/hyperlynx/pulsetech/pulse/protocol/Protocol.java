@@ -4,7 +4,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
 import dev.hyperlynx.pulsetech.util.MapListPairConverter;
 
@@ -15,9 +14,9 @@ import java.util.*;
 /// These associations allow the Sequences to be used by players to configure various blocks.
 public class Protocol {
     private final int sequence_length;
-    private final BiMap<ProtocolCommand<?>, Sequence> commands;
+    private final BiMap<ProtocolCommand, Sequence> commands;
 
-    private static final MapListPairConverter<ProtocolCommand<?>, Sequence> converter = new MapListPairConverter<>();
+    private static final MapListPairConverter<ProtocolCommand, Sequence> converter = new MapListPairConverter<>();
 
     public static final Codec<Protocol> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
@@ -37,12 +36,12 @@ public class Protocol {
         commands = HashBiMap.create();
     }
 
-    public Protocol(int sequence_length, Map<ProtocolCommand<?>, Sequence> existing) {
+    public Protocol(int sequence_length, Map<ProtocolCommand, Sequence> existing) {
         this.sequence_length = sequence_length;
         commands = HashBiMap.create(existing);
     }
 
-    private Map<ProtocolCommand<?>, Sequence> getCommands() {
+    public Map<ProtocolCommand, Sequence> getCommands() {
         return commands;
     }
 
@@ -61,5 +60,9 @@ public class Protocol {
     @Override
     public int hashCode() {
         return Objects.hash(commands, sequence_length);
+    }
+
+    public @Nullable ProtocolCommand getCommand(Sequence buffer) {
+        return commands.inverse().get(buffer);
     }
 }

@@ -5,9 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
 import dev.hyperlynx.pulsetech.pulse.PatternHolder;
-import dev.hyperlynx.pulsetech.pulse.block.SequenceBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.block.PatternBlockEntity;
 
-public class PatternSensorModule extends SequenceModule<SequenceBlockEntity> implements PatternHolder {
+public class PatternSensorModule extends SequenceModule<PatternBlockEntity> implements PatternHolder {
     Sequence pattern = new Sequence();
 
     public static final Codec<PatternSensorModule> CODEC = RecordCodecBuilder.create(instance ->
@@ -28,7 +28,7 @@ public class PatternSensorModule extends SequenceModule<SequenceBlockEntity> imp
     }
 
     @Override
-    protected boolean run(SequenceBlockEntity pulser) {
+    protected boolean run(PatternBlockEntity pulser) {
         buffer.append(pulser.input());
         if(buffer.length() > pattern.length()) {
             buffer.clear();

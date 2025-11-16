@@ -1,9 +1,8 @@
 package dev.hyperlynx.pulsetech.net;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
-import dev.hyperlynx.pulsetech.client.ClientWrapper;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
-import dev.hyperlynx.pulsetech.pulse.block.SequenceBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.block.PatternBlockEntity;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.StreamCodec;
@@ -27,7 +26,7 @@ public record SequenceSelectPayload(BlockPos pos, Sequence sequence) implements 
     );
 
     public void handler(IPayloadContext context) {
-        if(context.player().level().getBlockEntity(pos) instanceof SequenceBlockEntity sbe) {
+        if(context.player().level().getBlockEntity(pos) instanceof PatternBlockEntity sbe) {
             sbe.setPattern(sequence);
         }
     }

@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /// A command that a ProtocolBlockEntity could perform when it hears a certain pulse code from a Protocol.
-public abstract class ProtocolCommand<T extends ProtocolBlockEntity> {
+public abstract class ProtocolCommand {
     protected final Map<String, Parameter<?>> parameters = new HashMap<>();
 
-    void ownerInit(T block) {}
+    public void ownerInit(ProtocolBlockEntity block) {}
 
-    abstract void run(T block);
+    public abstract void run(ProtocolBlockEntity block);
 }

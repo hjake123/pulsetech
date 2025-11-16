@@ -6,16 +6,12 @@ import dev.hyperlynx.pulsetech.pulse.protocol.ProtocolCommands;
 import dev.hyperlynx.pulsetech.pulse.protocol.ProtocolDataMap;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.DataMapProvider;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -26,7 +22,7 @@ public class ProtocolGenerator extends DataMapProvider {
 
     @Override
     protected void gather(HolderLookup.Provider provider) {
-        builder(ProtocolDataMap.PROTOCOL_MAP)
+        builder(ProtocolDataMap.TYPE)
                 .add(ModBlockEntityTypes.CONTROLLER,
                         ProtocolBuilder.builder(4)
                                 .add(ProtocolCommands.OFF)
@@ -42,7 +38,7 @@ public class ProtocolGenerator extends DataMapProvider {
 
     private static class ProtocolBuilder {
         private final int sequence_length;
-        private final Map<ProtocolCommand<?>, Sequence> commands = new HashMap<>();
+        private final Map<ProtocolCommand, Sequence> commands = new HashMap<>();
 
         private ProtocolBuilder(int sequenceLength) {
             sequence_length = sequenceLength;
@@ -53,13 +49,13 @@ public class ProtocolGenerator extends DataMapProvider {
         }
 
         /// Override to include a command with pre-chosen sequence.
-        ProtocolBuilder add(Sequence sequence, Supplier<ProtocolCommand<?>> command) {
+        ProtocolBuilder add(Sequence sequence, Supplier<ProtocolCommand> command) {
             commands.put(command.get(), sequence);
             return this;
         }
 
         /// Override to auto determine a sequence.
-        ProtocolBuilder add(Supplier<ProtocolCommand<?>> command) {
+        ProtocolBuilder add(Supplier<ProtocolCommand> command) {
             int i = 0;
             while(i < Math.pow(2, sequence_length)) {
                 Sequence s = Sequence.truncatedFromInt(i);

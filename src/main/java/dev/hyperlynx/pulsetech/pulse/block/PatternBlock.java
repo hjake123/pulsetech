@@ -1,6 +1,5 @@
 package dev.hyperlynx.pulsetech.pulse.block;
 
-import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.net.OpenSequenceChooserPayload;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,8 +11,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class SequenceBlock extends PulseBlock {
-    public SequenceBlock(Properties properties) {
+public abstract class PatternBlock extends PulseBlock {
+    public PatternBlock(Properties properties) {
         super(properties);
     }
 

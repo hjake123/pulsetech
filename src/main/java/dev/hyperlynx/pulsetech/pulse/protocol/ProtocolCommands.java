@@ -15,51 +15,51 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 /// A static registry of all commands.
 @EventBusSubscriber
 public class ProtocolCommands {
-    public static final ResourceKey<Registry<ProtocolCommand<?>>> REGISTRY_KEY = ResourceKey.createRegistryKey(Pulsetech.location("protocol_commands"));
-    public static final Registry<ProtocolCommand<?>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY)
+    public static final ResourceKey<Registry<ProtocolCommand>> REGISTRY_KEY = ResourceKey.createRegistryKey(Pulsetech.location("protocol_commands"));
+    public static final Registry<ProtocolCommand> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY)
             .sync(true)
             .defaultKey(Pulsetech.location("error"))
             .create();
-    public static final DeferredRegister<ProtocolCommand<?>> COMMANDS = DeferredRegister.create(REGISTRY, Pulsetech.MODID);
+    public static final DeferredRegister<ProtocolCommand> COMMANDS = DeferredRegister.create(REGISTRY, Pulsetech.MODID);
 
     @SubscribeEvent
     public static void registerRegistries(NewRegistryEvent event) {
         event.register(REGISTRY);
     }
 
-    public static final DeferredHolder<ProtocolCommand<?>, ProtocolCommand<?>> ON = COMMANDS.register("on", () ->
-            new ProtocolCommand<>() {
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> ON = COMMANDS.register("on", () ->
+            new ProtocolCommand() {
                 @Override
-                void run(ProtocolBlockEntity block) {
+                public void run(ProtocolBlockEntity block) {
                     block.output(true);
                 }
             });
 
-    public static final DeferredHolder<ProtocolCommand<?>, ProtocolCommand<?>> OFF = COMMANDS.register("off", () ->
-            new ProtocolCommand<>() {
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> OFF = COMMANDS.register("off", () ->
+            new ProtocolCommand() {
                 @Override
-                void run(ProtocolBlockEntity block) {
+                public void run(ProtocolBlockEntity block) {
                     block.output(false);
                 }
             });
 
-    public static final DeferredHolder<ProtocolCommand<?>, ProtocolCommand<?>> PULSE = COMMANDS.register("pulse", () ->
-            new ProtocolCommand<>() {
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> PULSE = COMMANDS.register("pulse", () ->
+            new ProtocolCommand() {
                 @Override
-                void run(ProtocolBlockEntity block) {
+                public void run(ProtocolBlockEntity block) {
                     block.emit(new Sequence(true));
                 }
             });
 
-    public static final DeferredHolder<ProtocolCommand<?>, ProtocolCommand<?>> LOOP_PULSE = COMMANDS.register("loop_pulse", () ->
-            new ProtocolCommand<>() {
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> LOOP_PULSE = COMMANDS.register("loop_pulse", () ->
+            new ProtocolCommand() {
                 @Override
-                void ownerInit(ProtocolBlockEntity block) {
+                public void ownerInit(ProtocolBlockEntity block) {
                     parameters.put("loops", block.numberParameter());
                 }
 
                 @Override
-                void run(ProtocolBlockEntity block) {
+                public void run(ProtocolBlockEntity block) {
                     ShortParameter loops = (ShortParameter) parameters.get("loops");
                     if(loops == null) {
                         return;
@@ -76,15 +76,15 @@ public class ProtocolCommands {
             });
 
 
-    public static final DeferredHolder<ProtocolCommand<?>, ProtocolCommand<?>> DELAY_PULSE = COMMANDS.register("delay_pulse", () ->
-            new ProtocolCommand<>() {
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> DELAY_PULSE = COMMANDS.register("delay_pulse", () ->
+            new ProtocolCommand() {
                 @Override
-                void ownerInit(ProtocolBlockEntity block) {
+                public void ownerInit(ProtocolBlockEntity block) {
                     parameters.put("ticks", block.numberParameter());
                 }
 
                 @Override
-                void run(ProtocolBlockEntity block) {
+                public void run(ProtocolBlockEntity block) {
                     ShortParameter ticks = (ShortParameter) parameters.get("ticks");
                     if(ticks == null) {
                         return;
@@ -100,15 +100,15 @@ public class ProtocolCommands {
                 }
             });
 
-    public static final DeferredHolder<ProtocolCommand<?>, ProtocolCommand<?>> TIMED_PULSE = COMMANDS.register("timed_pulse", () ->
-            new ProtocolCommand<>() {
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> TIMED_PULSE = COMMANDS.register("timed_pulse", () ->
+            new ProtocolCommand() {
                 @Override
-                void ownerInit(ProtocolBlockEntity block) {
+                public void ownerInit(ProtocolBlockEntity block) {
                     parameters.put("ticks", block.numberParameter());
                 }
 
                 @Override
-                void run(ProtocolBlockEntity block) {
+                public void run(ProtocolBlockEntity block) {
                     ShortParameter ticks = (ShortParameter) parameters.get("ticks");
                     if(ticks == null) {
                         return;

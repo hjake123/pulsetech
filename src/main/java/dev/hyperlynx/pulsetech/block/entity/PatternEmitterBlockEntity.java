@@ -1,8 +1,7 @@
 package dev.hyperlynx.pulsetech.block.entity;
 
-import dev.hyperlynx.pulsetech.pulse.PatternHolder;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
-import dev.hyperlynx.pulsetech.pulse.block.SequenceBlockEntity;
+import dev.hyperlynx.pulsetech.pulse.block.PatternBlockEntity;
 import dev.hyperlynx.pulsetech.pulse.module.EmitterModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -18,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Objects;
 
-public class PatternEmitterBlockEntity extends SequenceBlockEntity {
+public class PatternEmitterBlockEntity extends PatternBlockEntity {
     private EmitterModule emitter = new EmitterModule();
     public PatternEmitterBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.PATTERN_EMITTER.get(), pos, blockState);

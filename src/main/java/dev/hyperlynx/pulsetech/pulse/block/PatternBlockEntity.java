@@ -9,10 +9,10 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class SequenceBlockEntity extends PulseBlockEntity implements PatternHolder {
+public abstract class PatternBlockEntity extends PulseBlockEntity implements PatternHolder {
     protected Sequence trigger = new Sequence();
 
-    public SequenceBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+    public PatternBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
     }
 
