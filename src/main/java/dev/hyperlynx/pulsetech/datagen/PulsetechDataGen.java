@@ -15,12 +15,7 @@ public class PulsetechDataGen {
         var lookup = event.getLookupProvider();
         event.getGenerator().addProvider(
                 event.includeServer(),
-                (DataProvider.Factory<DatapackBuiltinEntriesProvider>) output -> new DatapackBuiltinEntriesProvider(
-                        output,
-                        lookup,
-                        ProtocolGenerator.get(),
-                        Set.of(Pulsetech.MODID)
-                )
+                new ProtocolGenerator(event.getGenerator().getPackOutput(), lookup)
         );
     }
 }
