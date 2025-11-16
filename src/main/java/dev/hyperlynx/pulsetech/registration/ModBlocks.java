@@ -26,4 +26,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<ConsoleBlock> CONSOLE = BLOCKS.register("console", () ->
             new ConsoleBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CHISELED_QUARTZ_BLOCK)));
+
+    public static final DeferredBlock<ControllerBlock> CONTROLLER = BLOCKS.register("controller", () ->
+            new ControllerBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK)));
 }

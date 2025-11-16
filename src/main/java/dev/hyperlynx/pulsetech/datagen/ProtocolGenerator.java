@@ -6,13 +6,16 @@ import dev.hyperlynx.pulsetech.pulse.protocol.ProtocolCommands;
 import dev.hyperlynx.pulsetech.pulse.protocol.ProtocolDataMap;
 import dev.hyperlynx.pulsetech.pulse.Sequence;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.DataMapProvider;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -24,12 +27,14 @@ public class ProtocolGenerator extends DataMapProvider {
     @Override
     protected void gather(HolderLookup.Provider provider) {
         builder(ProtocolDataMap.PROTOCOL_MAP)
-                // TODO Example debug protocol -- remove this
-                .add(ModBlockEntityTypes.NUMBER_MONITOR,
+                .add(ModBlockEntityTypes.CONTROLLER,
                         ProtocolBuilder.builder(4)
-                                .add("A", new Sequence(true, false, true, false))
-                                .add("ON", new Sequence(true, true, true, true), ProtocolCommands.ON)
-                                .add("OFF", ProtocolCommands.OFF)
+                                .add(ProtocolCommands.OFF)
+                                .add(ProtocolCommands.ON)
+                                .add(ProtocolCommands.PULSE)
+                                .add(ProtocolCommands.LOOP_PULSE)
+                                .add(ProtocolCommands.DELAY_PULSE)
+                                .add(ProtocolCommands.TIMED_PULSE)
                                 .build(), false
                 );
     }
@@ -81,6 +86,10 @@ public class ProtocolGenerator extends DataMapProvider {
 
         public Protocol build() {
             return new Protocol(sequence_length, terms, commands);
+        }
+
+        public ProtocolBuilder add(Holder<ProtocolCommand<?>> holder) {
+            return add(Objects.requireNonNull(holder.getKey()).location().getPath(), holder::value);
         }
     }
 }

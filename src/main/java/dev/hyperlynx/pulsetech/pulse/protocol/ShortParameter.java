@@ -21,7 +21,7 @@ public class ShortParameter implements Parameter<Short> {
         return queried && !input.isActive();
     }
 
-    public @Nullable Short getValue() {
+    public Short getValue() {
         if(!ready()) {
             queried = true;
             return null;

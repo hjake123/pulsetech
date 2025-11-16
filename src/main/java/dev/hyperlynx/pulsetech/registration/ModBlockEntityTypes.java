@@ -2,6 +2,7 @@ package dev.hyperlynx.pulsetech.registration;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.block.entity.*;
+import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -29,4 +30,8 @@ public class ModBlockEntityTypes {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ConsoleBlockEntity>> CONSOLE =
             TYPES.register("console", () ->
                     BlockEntityType.Builder.of(ConsoleBlockEntity::new, ModBlocks.CONSOLE.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ControllerBlockEntity>> CONTROLLER =
+            TYPES.register("controller", () ->
+                    BlockEntityType.Builder.of(ControllerBlockEntity::new, ModBlocks.CONTROLLER.get()).build(null));
 }
