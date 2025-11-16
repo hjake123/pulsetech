@@ -42,8 +42,7 @@ public class ProtocolGenerator extends DataMapProvider {
 
     private static class ProtocolBuilder {
         private final int sequence_length;
-        private final Map<String, Sequence> terms = new HashMap<>();
-        private @Nullable Map<String, ProtocolCommand<?>> commands;
+        private final Map<ProtocolCommand<?>, Sequence> commands = new HashMap<>();
 
         private ProtocolBuilder(int sequenceLength) {
             sequence_length = sequenceLength;
@@ -53,31 +52,22 @@ public class ProtocolGenerator extends DataMapProvider {
            return new ProtocolBuilder(sequence_length);
         }
 
-        /// Override to just add a symbol. Useless?
-        ProtocolBuilder add(String key, Sequence sequence) {
-            terms.put(key, sequence);
+        /// Override to include a command with pre-chosen sequence.
+        ProtocolBuilder add(Sequence sequence, Supplier<ProtocolCommand<?>> command) {
+            commands.put(command.get(), sequence);
             return this;
         }
 
-        /// Override to include a command.
-        ProtocolBuilder add(String key, Sequence sequence, Supplier<ProtocolCommand<?>> command) {
-            if(commands == null) {
-                commands = new HashMap<>();
-            }
-            commands.put(key, command.get());
-            return add(key, sequence);
-        }
-
         /// Override to auto determine a sequence.
-        ProtocolBuilder add(String key, Supplier<ProtocolCommand<?>> command) {
+        ProtocolBuilder add(Supplier<ProtocolCommand<?>> command) {
             int i = 0;
             while(i < Math.pow(2, sequence_length)) {
                 Sequence s = Sequence.truncatedFromInt(i);
                 while(s.length() < sequence_length) {
                     s.append(false);
                 }
-                if(!terms.containsValue(s)) {
-                    return add(key, s, command);
+                if(!commands.containsValue(s)) {
+                    return add(s, command);
                 }
                 i++;
             }
@@ -85,11 +75,7 @@ public class ProtocolGenerator extends DataMapProvider {
         }
 
         public Protocol build() {
-            return new Protocol(sequence_length, terms, commands);
-        }
-
-        public ProtocolBuilder add(Holder<ProtocolCommand<?>> holder) {
-            return add(Objects.requireNonNull(holder.getKey()).location().getPath(), holder::value);
+            return new Protocol(sequence_length, commands);
         }
     }
 }
