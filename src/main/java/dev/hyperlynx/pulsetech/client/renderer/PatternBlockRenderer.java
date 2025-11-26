@@ -1,8 +1,8 @@
 package dev.hyperlynx.pulsetech.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.hyperlynx.pulsetech.pulse.PatternHolder;
-import dev.hyperlynx.pulsetech.pulse.block.PatternBlockEntity;
+import dev.hyperlynx.pulsetech.core.PatternHolder;
+import dev.hyperlynx.pulsetech.feature.pattern.block.PatternBlockEntity;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;

@@ -1,7 +1,7 @@
 package dev.hyperlynx.pulsetech;
 
 import com.mojang.logging.LogUtils;
-import dev.hyperlynx.pulsetech.pulse.protocol.ProtocolCommands;
+import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
 import dev.hyperlynx.pulsetech.registration.*;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;

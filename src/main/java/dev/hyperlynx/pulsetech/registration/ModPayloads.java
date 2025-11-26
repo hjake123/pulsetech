@@ -1,6 +1,10 @@
 package dev.hyperlynx.pulsetech.registration;
 
-import dev.hyperlynx.pulsetech.net.*;
+import dev.hyperlynx.pulsetech.feature.console.ConsoleLinePayload;
+import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
+import dev.hyperlynx.pulsetech.feature.console.OpenConsolePayload;
+import dev.hyperlynx.pulsetech.feature.pattern.OpenSequenceChooserPayload;
+import dev.hyperlynx.pulsetech.feature.pattern.SequenceSelectPayload;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;

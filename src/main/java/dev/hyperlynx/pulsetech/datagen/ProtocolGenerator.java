@@ -1,10 +1,10 @@
 package dev.hyperlynx.pulsetech.datagen;
 
-import dev.hyperlynx.pulsetech.pulse.protocol.Protocol;
-import dev.hyperlynx.pulsetech.pulse.protocol.ProtocolCommand;
-import dev.hyperlynx.pulsetech.pulse.protocol.ProtocolCommands;
-import dev.hyperlynx.pulsetech.pulse.protocol.ProtocolDataMap;
-import dev.hyperlynx.pulsetech.pulse.Sequence;
+import dev.hyperlynx.pulsetech.core.Sequence;
+import dev.hyperlynx.pulsetech.core.protocol.Protocol;
+import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommand;
+import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
+import dev.hyperlynx.pulsetech.core.protocol.ProtocolDataMap;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -15,8 +15,9 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
+/// Creates all the Protocols for the mod's features.
 public class ProtocolGenerator extends DataMapProvider {
-    protected ProtocolGenerator(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+    public ProtocolGenerator(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(packOutput, lookupProvider);
     }
 

@@ -1,8 +1,13 @@
 package dev.hyperlynx.pulsetech.registration;
 
-import dev.hyperlynx.pulsetech.block.*;
-import dev.hyperlynx.pulsetech.pulse.block.PulseBlock;
-import dev.hyperlynx.pulsetech.pulse.block.PatternBlock;
+import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlock;
+import dev.hyperlynx.pulsetech.feature.controller.ControllerBlock;
+import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlock;
+import dev.hyperlynx.pulsetech.feature.number.block.NumberMonitorBlock;
+import dev.hyperlynx.pulsetech.feature.pattern.block.PatternDetectorBlock;
+import dev.hyperlynx.pulsetech.feature.pattern.block.PatternEmitterBlock;
+import dev.hyperlynx.pulsetech.core.PulseBlock;
+import dev.hyperlynx.pulsetech.feature.pattern.block.PatternBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;

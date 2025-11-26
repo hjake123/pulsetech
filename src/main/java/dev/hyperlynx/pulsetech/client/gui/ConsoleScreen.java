@@ -1,7 +1,7 @@
 package dev.hyperlynx.pulsetech.client.gui;
 
-import dev.hyperlynx.pulsetech.net.ConsoleLinePayload;
-import dev.hyperlynx.pulsetech.net.ConsolePriorLinesPayload;
+import dev.hyperlynx.pulsetech.feature.console.ConsoleLinePayload;
+import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;

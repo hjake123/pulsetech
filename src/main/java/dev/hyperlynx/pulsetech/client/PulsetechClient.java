@@ -5,7 +5,7 @@ import dev.hyperlynx.pulsetech.client.gui.SequenceChooseScreen;
 import dev.hyperlynx.pulsetech.client.renderer.NumberBlockRenderer;
 import dev.hyperlynx.pulsetech.client.renderer.PatternBlockRenderer;
 import dev.hyperlynx.pulsetech.client.gui.ConsoleScreen;
-import dev.hyperlynx.pulsetech.pulse.PatternHolder;
+import dev.hyperlynx.pulsetech.core.PatternHolder;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;

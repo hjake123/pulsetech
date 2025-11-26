@@ -1,7 +1,7 @@
 package dev.hyperlynx.pulsetech.client.gui;
 
-import dev.hyperlynx.pulsetech.net.SequenceSelectPayload;
-import dev.hyperlynx.pulsetech.pulse.PatternHolder;
+import dev.hyperlynx.pulsetech.feature.pattern.SequenceSelectPayload;
+import dev.hyperlynx.pulsetech.core.PatternHolder;
 import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;

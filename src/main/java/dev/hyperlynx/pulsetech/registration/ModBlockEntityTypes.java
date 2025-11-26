@@ -1,8 +1,12 @@
 package dev.hyperlynx.pulsetech.registration;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
-import dev.hyperlynx.pulsetech.block.entity.*;
-import dev.hyperlynx.pulsetech.pulse.block.ProtocolBlockEntity;
+import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlockEntity;
+import dev.hyperlynx.pulsetech.feature.controller.ControllerBlockEntity;
+import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
+import dev.hyperlynx.pulsetech.feature.number.block.NumberMonitorBlockEntity;
+import dev.hyperlynx.pulsetech.feature.pattern.block.PatternDetectorBlockEntity;
+import dev.hyperlynx.pulsetech.feature.pattern.block.PatternEmitterBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
