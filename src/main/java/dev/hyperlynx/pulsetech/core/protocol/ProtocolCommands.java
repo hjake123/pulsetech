@@ -46,7 +46,7 @@ public class ProtocolCommands {
             new ProtocolCommand(0) {
                 @Override
                 public void run(ExecutionContext context) {
-                    context.block().emit(new Sequence(true));
+                    context.block().emitRaw(new Sequence(true));
                 }
             });
 
@@ -60,7 +60,7 @@ public class ProtocolCommands {
                         output.append(true);
                         output.append(false);
                     }
-                    context.block().emit(output);
+                    context.block().emitRaw(output);
                 }
             });
 
@@ -75,7 +75,7 @@ public class ProtocolCommands {
                         output.append(false);
                     }
                     output.append(true);
-                    context.block().emit(output);
+                    context.block().emitRaw(output);
                 }
             });
 
@@ -88,7 +88,7 @@ public class ProtocolCommands {
                     for(int i = 0; i < ticks; i++) {
                         output.append(true);
                     }
-                    context.block().emit(output);
+                    context.block().emitRaw(output);
                 }
             });
 }

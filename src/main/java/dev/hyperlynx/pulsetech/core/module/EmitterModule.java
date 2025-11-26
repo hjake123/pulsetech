@@ -40,10 +40,15 @@ public class EmitterModule extends SequenceModule<PulseBlockEntity> {
         this.output_initialized = output_initialized;
     }
 
-    public void enqueueTransmission(Sequence buffer) {
-        this.buffer.append(true);
-        this.buffer.appendAll(buffer);
-        this.buffer.append(false);
+    public void enqueueTransmission(Sequence sequence) {
+        buffer.append(true);
+        buffer.appendAll(sequence);
+        buffer.append(false);
+    }
+
+    public void enqueueWithoutHeader(Sequence sequence) {
+        this.buffer.appendAll(sequence);
+        buffer.append(false);
     }
 
     @Override

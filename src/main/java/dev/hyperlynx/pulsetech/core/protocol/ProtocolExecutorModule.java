@@ -63,7 +63,9 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
                     if(command != null) {
                         active_command = command;
                         active_parameters.clear();
-                        state = State.AWAIT_PARAMETER;
+                        buffer.clear();
+                        delay(6);
+                        state = command.parameterCount() > 0 ? State.AWAIT_PARAMETER : State.RUN;
                     }
                 }
             }
@@ -78,6 +80,8 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
                     return false;
                 } else if (buffer.length() == 16) {
                     active_parameters.add(buffer.toShort());
+                    buffer.clear();
+                    delay(6);
                 }
 
                 if(active_parameters.size() == active_command.parameterCount()) {

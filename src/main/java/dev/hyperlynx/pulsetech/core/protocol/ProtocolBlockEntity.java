@@ -9,9 +9,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /// A block entity capable of hearing and responding to {@link ProtocolCommand}s.
 public class ProtocolBlockEntity extends PulseBlockEntity {
     private final ProtocolExecutorModule executor;
@@ -41,8 +38,8 @@ public class ProtocolBlockEntity extends PulseBlockEntity {
         }
     }
 
-    public void emit(Sequence sequence) {
-        emitter.enqueueTransmission(sequence);
+    public void emitRaw(Sequence sequence) {
+        emitter.enqueueWithoutHeader(sequence);
         emitter.setActive(true);
     }
 }
