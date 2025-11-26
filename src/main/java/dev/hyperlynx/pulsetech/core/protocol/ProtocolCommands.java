@@ -27,98 +27,68 @@ public class ProtocolCommands {
     }
 
     public static final DeferredHolder<ProtocolCommand, ProtocolCommand> ON = COMMANDS.register("on", () ->
-            new ProtocolCommand() {
+            new ProtocolCommand(0) {
                 @Override
-                public void run(ProtocolBlockEntity block) {
-                    block.output(true);
+                public void run(ExecutionContext context) {
+                    context.block().output(true);
                 }
             });
 
     public static final DeferredHolder<ProtocolCommand, ProtocolCommand> OFF = COMMANDS.register("off", () ->
-            new ProtocolCommand() {
+            new ProtocolCommand(0) {
                 @Override
-                public void run(ProtocolBlockEntity block) {
-                    block.output(false);
+                public void run(ExecutionContext context) {
+                    context.block().output(false);
                 }
             });
 
     public static final DeferredHolder<ProtocolCommand, ProtocolCommand> PULSE = COMMANDS.register("pulse", () ->
-            new ProtocolCommand() {
+            new ProtocolCommand(0) {
                 @Override
-                public void run(ProtocolBlockEntity block) {
-                    block.emit(new Sequence(true));
+                public void run(ExecutionContext context) {
+                    context.block().emit(new Sequence(true));
                 }
             });
 
     public static final DeferredHolder<ProtocolCommand, ProtocolCommand> LOOP_PULSE = COMMANDS.register("loop_pulse", () ->
-            new ProtocolCommand() {
+            new ProtocolCommand(1) {
                 @Override
-                public int parameterCount() {
-                    return 1;
-                }
-
-                @Override
-                public void run(ProtocolBlockEntity block) {
-                    ShortParameter loops = block.getParameter(0);
-                    if(loops == null) {
-                        return;
+                public void run(ExecutionContext context) {
+                    short loops = context.params().getFirst();
+                    Sequence output = new Sequence();
+                    for(int i = 0; i < loops; i++) {
+                        output.append(true);
+                        output.append(false);
                     }
-                    if(loops.ready()) {
-                        Sequence output = new Sequence();
-                        for(int i = 0; i < loops.getValue(); i++) {
-                            output.append(true);
-                            output.append(false);
-                        }
-                        block.emit(output);
-                    }
+                    context.block().emit(output);
                 }
             });
 
 
     public static final DeferredHolder<ProtocolCommand, ProtocolCommand> DELAY_PULSE = COMMANDS.register("delay_pulse", () ->
-            new ProtocolCommand() {
+            new ProtocolCommand(1) {
                 @Override
-                public int parameterCount() {
-                    return 1;
-                }
-
-                @Override
-                public void run(ProtocolBlockEntity block) {
-                    ShortParameter ticks = block.getParameter(0);
-                    if(ticks == null) {
-                        return;
+                public void run(ExecutionContext context) {
+                    short ticks = context.params().getFirst();
+                    Sequence output = new Sequence();
+                    for(int i = 0; i < ticks; i++) {
+                        output.append(false);
                     }
-                    if(ticks.ready()) {
-                        Sequence output = new Sequence();
-                        for(int i = 0; i < ticks.getValue(); i++) {
-                            output.append(false);
-                        }
-                        output.append(true);
-                        block.emit(output);
-                    }
+                    output.append(true);
+                    context.block().emit(output);
                 }
             });
 
     public static final DeferredHolder<ProtocolCommand, ProtocolCommand> TIMED_PULSE = COMMANDS.register("timed_pulse", () ->
-            new ProtocolCommand() {
+            new ProtocolCommand(1) {
                 @Override
-                public int parameterCount() {
-                    return 1;
-                }
-
-                @Override
-                public void run(ProtocolBlockEntity block) {
-                    ShortParameter ticks = block.getParameter(0);
-                    if(ticks == null) {
-                        return;
+                public void run(ExecutionContext context) {
+                    short ticks = context.params().getFirst();
+                    Sequence output = new Sequence();
+                    for(int i = 0; i < ticks; i++) {
+                        output.append(true);
                     }
-                    if(ticks.ready()) {
-                        Sequence output = new Sequence();
-                        for(int i = 0; i < ticks.getValue(); i++) {
-                            output.append(true);
-                        }
-                        block.emit(output);
-                    }
+                    context.block().emit(output);
                 }
             });
 }
