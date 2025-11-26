@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.datagen;
 
 import dev.hyperlynx.pulsetech.core.protocol.*;
+import dev.hyperlynx.pulsetech.feature.controller.ControllerBlock;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -19,12 +20,12 @@ public class ProtocolGenerator extends DataMapProvider {
         builder(ProtocolDataMap.TYPE)
                 .add(ModBlockEntityTypes.CONTROLLER,
                         ProtocolBuilder.builder(4)
-                                .add(ProtocolCommands.OFF)
-                                .add(ProtocolCommands.ON)
-                                .add(ProtocolCommands.PULSE)
-                                .add(ProtocolCommands.LOOP_PULSE)
-                                .add(ProtocolCommands.DELAY_PULSE)
-                                .add(ProtocolCommands.TIMED_PULSE)
+                                .add(ControllerBlock.OFF)
+                                .add(ControllerBlock.ON)
+                                .add(ControllerBlock.PULSE)
+                                .add(ControllerBlock.LOOP_PULSE)
+                                .add(ControllerBlock.DELAY_PULSE)
+                                .add(ControllerBlock.TIMED_PULSE)
                                 .build(), false
                 );
     }
