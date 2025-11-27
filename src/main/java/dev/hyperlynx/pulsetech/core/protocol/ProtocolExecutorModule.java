@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.Sequence;
+import dev.hyperlynx.pulsetech.core.module.NumberSensorModule;
 import dev.hyperlynx.pulsetech.core.module.SequenceModule;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,6 +15,7 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
     private State state = State.AWAIT_COMMAND;
     @Nullable private ProtocolCommand active_command = null;
     private final List<Byte> active_parameters = new ArrayList<>();
+    private final NumberSensorModule parameter_sensor = new NumberSensorModule();
 
     private enum State {
         AWAIT_COMMAND,
@@ -63,24 +65,18 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
                         active_command = command;
                         active_parameters.clear();
                         buffer.clear();
-                        delay(6);
                         state = command.parameterCount() > 0 ? State.AWAIT_PARAMETER : State.RUN;
+                        return false;
                     }
                 }
             }
             case AWAIT_PARAMETER -> {
                 assert active_command != null;
-                buffer.append(pulser.input());
-                if(buffer.length() > 8) {
-                    buffer.clear();
-                    pulser.handleInput();
-                    state = State.AWAIT_COMMAND;
-                    active_command = null;
-                    return false;
-                } else if (buffer.length() == 8) {
-                    active_parameters.add(buffer.toByte());
-                    buffer.clear();
-                    delay(6);
+                parameter_sensor.setActive(true);
+                parameter_sensor.run(pulser);
+                if(parameter_sensor.checkNewNumberReady()) {
+                    active_parameters.add(parameter_sensor.getNumber());
+                    parameter_sensor.reset();
                 }
 
                 if(active_parameters.size() == active_command.parameterCount()) {
