@@ -90,4 +90,9 @@ public class PatternDetectorBlockEntity extends PatternBlockEntity implements Pa
     public Sequence getPattern() {
         return detector.getPattern();
     }
+
+    @Override
+    public boolean isDelayed() {
+        return detector.getDelay() > 0;
+    }
 }

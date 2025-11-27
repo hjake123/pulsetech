@@ -29,4 +29,6 @@ public abstract class PulseBlockEntity extends BlockEntity {
     public abstract void tick();
 
     public void handleInput() {}
+
+    public abstract boolean isDelayed();
 }

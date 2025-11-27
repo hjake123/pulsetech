@@ -38,6 +38,11 @@ public class ProtocolBlockEntity extends PulseBlockEntity {
         }
     }
 
+    @Override
+    public boolean isDelayed() {
+        return executor.getDelay() > 0 || emitter.getDelay() > 0;
+    }
+
     public void emitRaw(Sequence sequence) {
         emitter.enqueueWithoutHeader(sequence);
         emitter.setActive(true);

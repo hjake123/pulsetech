@@ -17,6 +17,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -171,7 +172,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
                 }
                 case NUM -> {
                     try {
-                        Sequence sequence = Sequence.fromShort(Short.parseShort(token));
+                        Sequence sequence = Sequence.fromByte(Byte.parseByte(token));
                         emitter.enqueueTransmission(sequence);
                         emitter.setActive(true);
                     }
@@ -278,6 +279,11 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
         PacketDistributor.sendToAllPlayers(new ConsoleLinePayload(getBlockPos(), input));
     }
 
+    @Override
+    public boolean isDelayed() {
+        return emitter.getDelay() > 0;
+    }
+
     public void savePriorLines(String lines) {
         saved_lines = lines;
         setChanged();
@@ -356,5 +362,12 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
         // that allows you to specify a custom update tag, including the ability to omit data the client might not need.
         // TODO use that to omit macros, since they can be used to DC the client if there are too many
         return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        if(level != null)
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
     }
 }

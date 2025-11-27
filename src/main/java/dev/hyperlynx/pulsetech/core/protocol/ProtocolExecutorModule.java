@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.Sequence;
-import dev.hyperlynx.pulsetech.core.module.NumberSensorModule;
 import dev.hyperlynx.pulsetech.core.module.SequenceModule;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +13,7 @@ import java.util.List;
 public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> {
     private State state = State.AWAIT_COMMAND;
     @Nullable private ProtocolCommand active_command = null;
-    private List<Short> active_parameters = new ArrayList<>();
+    private final List<Byte> active_parameters = new ArrayList<>();
 
     private enum State {
         AWAIT_COMMAND,
@@ -72,14 +71,14 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
             case AWAIT_PARAMETER -> {
                 assert active_command != null;
                 buffer.append(pulser.input());
-                if(buffer.length() > 16) {
+                if(buffer.length() > 8) {
                     buffer.clear();
                     pulser.handleInput();
                     state = State.AWAIT_COMMAND;
                     active_command = null;
                     return false;
-                } else if (buffer.length() == 16) {
-                    active_parameters.add(buffer.toShort());
+                } else if (buffer.length() == 8) {
+                    active_parameters.add(buffer.toByte());
                     buffer.clear();
                     delay(6);
                 }

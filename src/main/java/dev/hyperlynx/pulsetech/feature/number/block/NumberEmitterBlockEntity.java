@@ -22,31 +22,31 @@ public class NumberEmitterBlockEntity extends PulseBlockEntity implements Number
         super(ModBlockEntityTypes.NUMBER_EMITTER.get(), pos, blockState);
     }
 
-    private short number = 0;
+    private byte number = 0;
 
     @Override
     public void tick() {
         if(level instanceof ServerLevel slevel) {
             if(emitter.isActive() && !emitter.outputInitialized()) {
-                emitter.enqueueTransmission(Sequence.fromShort(number));
+                emitter.enqueueTransmission(Sequence.fromByte(number));
             }
             emitter.tick(slevel, this);
         }
     }
 
     public void adjustNumber(int amount) {
-        number = (short) Math.max(0, number + amount);
+        number = (byte) Math.clamp(number + amount, Byte.MIN_VALUE, Byte.MAX_VALUE);
     }
 
     @Override
-    public short getNumber() {
+    public byte getNumber() {
         return number;
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        number = (short) tag.getInt("Number");
+        number = (byte) tag.getInt("Number");
         EmitterModule.CODEC.decode(NbtOps.INSTANCE, tag).ifSuccess(success -> emitter = success.getFirst());
     }
 
@@ -81,5 +81,10 @@ public class NumberEmitterBlockEntity extends PulseBlockEntity implements Number
     @Override
     public void setActive(boolean active) {
         emitter.setActive(active);
+    }
+
+    @Override
+    public boolean isDelayed() {
+        return emitter.getDelay() > 0;
     }
 }

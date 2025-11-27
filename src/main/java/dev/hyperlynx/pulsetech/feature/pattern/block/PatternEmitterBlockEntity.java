@@ -79,4 +79,9 @@ public class PatternEmitterBlockEntity extends PatternBlockEntity {
         EmitterModule.CODEC.decode(NbtOps.INSTANCE, tag.get("Emitter")).ifSuccess(success -> emitter = success.getFirst());
         Sequence.CODEC.decode(NbtOps.INSTANCE, tag.get("Pattern")).ifSuccess(success -> setPattern(success.getFirst()));
     }
+
+    @Override
+    public boolean isDelayed() {
+        return emitter.getDelay() > 0;
+    }
 }

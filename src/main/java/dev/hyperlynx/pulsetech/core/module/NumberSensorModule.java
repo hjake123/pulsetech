@@ -8,7 +8,7 @@ import dev.hyperlynx.pulsetech.core.PulseBlockEntity;
 
 /// A SequenceModule that can scans in a number from its ProtocolBlockEntity's input
 public class NumberSensorModule extends SequenceModule<PulseBlockEntity> {
-    private short number = 0;
+    private byte number = 0;
     private boolean ready = false;
 
     public static final Codec<NumberSensorModule> CODEC = RecordCodecBuilder.create(instance ->
@@ -16,14 +16,14 @@ public class NumberSensorModule extends SequenceModule<PulseBlockEntity> {
                     Sequence.CODEC.fieldOf("buffer").forGetter(SequenceModule::getBuffer),
                     Codec.INT.fieldOf("delay_timer").forGetter(SequenceModule::getDelay),
                     Codec.BOOL.fieldOf("active").forGetter(SequenceModule::isActive),
-                    Codec.SHORT.fieldOf("number").forGetter(NumberSensorModule::getNumber),
+                    Codec.BYTE.fieldOf("number").forGetter(NumberSensorModule::getNumber),
                     Codec.BOOL.fieldOf("ready").forGetter(NumberSensorModule::peekNewNumberReady)
             ).apply(instance, NumberSensorModule::new)
     );
 
     public NumberSensorModule() {}
 
-    private NumberSensorModule(Sequence buffer, int delay, boolean active, short number, boolean ready) {
+    private NumberSensorModule(Sequence buffer, int delay, boolean active, byte number, boolean ready) {
         this.buffer = buffer;
         this.delay_timer = delay;
         this.setActive(active);
@@ -31,7 +31,7 @@ public class NumberSensorModule extends SequenceModule<PulseBlockEntity> {
         this.ready = ready;
     }
 
-    public short getNumber() {
+    public byte getNumber() {
         return number;
     }
 
@@ -43,14 +43,15 @@ public class NumberSensorModule extends SequenceModule<PulseBlockEntity> {
 
     @Override
     public boolean run(PulseBlockEntity block) {
-        if(buffer.length() <= 16) {
+        if(buffer.length() <= 8) {
             number = 0;
             buffer.append(block.input());
-            if(buffer.length() == 16) {
-                Pulsetech.LOGGER.debug("Parsing sequence {} for short", buffer);
-                number = buffer.toShort();
+            if(buffer.length() == 8) {
+                Pulsetech.LOGGER.debug("Parsing sequence {} for byte", buffer);
+                number = buffer.toByte();
                 ready = true;
                 block.handleInput();
+                delay(2);
                 return false;
             }
             return true;

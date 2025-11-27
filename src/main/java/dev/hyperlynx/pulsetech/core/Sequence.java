@@ -120,23 +120,27 @@ public class Sequence {
         return sequence;
     }
 
-    /// Returns a little endian Sequence containing the bits of the provided short
-    public static Sequence fromShort(short n) {
-        Sequence sequence = truncatedFromInt(n);
-        while(sequence.length() < 16) {
+    /// Returns a little endian Sequence containing the bits of the provided byte
+    public static Sequence fromByte(byte n) {
+        Sequence sequence = truncatedFromInt(Math.abs(n));
+        while(sequence.length() < 7) {
             sequence.append(false);
         }
+        sequence.append(n < 0);
         return sequence;
     }
 
-    /// Returns the short value of this Sequence as a little endian number.
+    /// Returns the short value of this Sequence as a little endian signed byte.
     /// Affects the read cursor.
-    public short toShort() {
-        short n = 0;
-        for(int i = length() - 1; i >= 0; i--) {
-            // Repeat until we reach the NUM sequence
+    public byte toByte() {
+        byte n = 0;
+        boolean negative = get(7);
+        for(int i = length() - 2; i >= 0; i--) {
             boolean b = get(i);
-            n = (short) (n << 1 | (b ? 1 : 0));
+            n = (byte) (n << 1 | (b ? 1 : 0));
+        }
+        if(negative) {
+            n *= -1;
         }
         return n;
     }

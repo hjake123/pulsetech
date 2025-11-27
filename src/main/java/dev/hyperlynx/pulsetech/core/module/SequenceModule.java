@@ -56,7 +56,7 @@ public abstract class SequenceModule<T extends PulseBlockEntity> {
             setActive(run(pulser));
             delay(2);
             if(!isActive()) {
-                pulser.getLevel().sendBlockUpdated(pulser.getBlockPos(), pulser.getBlockState(), pulser.getBlockState(), Block.UPDATE_IMMEDIATE);
+                pulser.setChanged();
             }
         } else {
             if(!buffer.isEmpty()) {

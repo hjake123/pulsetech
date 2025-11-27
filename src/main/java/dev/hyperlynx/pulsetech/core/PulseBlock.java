@@ -62,7 +62,7 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
         super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
-        if(level.getDirectSignalTo(pos) > 0 && level.getBlockEntity(pos) instanceof PulseBlockEntity entity && !entity.isActive()) {
+        if(level.getDirectSignalTo(pos) > 0 && level.getBlockEntity(pos) instanceof PulseBlockEntity entity && !entity.isActive() && !entity.isDelayed()) {
             level.scheduleTick(pos, this, 3);
         }
     }

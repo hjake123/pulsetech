@@ -45,7 +45,7 @@ public class NumberMonitorBlockEntity extends PulseBlockEntity implements Number
         setChanged();
     }
 
-    public short getNumber() {
+    public byte getNumber() {
         return module.getNumber();
     }
 
@@ -82,5 +82,10 @@ public class NumberMonitorBlockEntity extends PulseBlockEntity implements Number
         super.setChanged();
         if(level != null)
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
+    }
+
+    @Override
+    public boolean isDelayed() {
+        return module.getDelay() > 0;
     }
 }
