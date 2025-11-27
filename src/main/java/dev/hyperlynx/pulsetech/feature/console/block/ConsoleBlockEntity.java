@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public class ConsoleBlockEntity extends PulseBlockEntity {
-    private ConsoleEmitterModule emitter = new ConsoleEmitterModule();
+    ConsoleEmitterModule emitter = new ConsoleEmitterModule();
     private BitSensorModule sensor = new BitSensorModule();
 
     private CommandMode command_mode = CommandMode.PARSE;
@@ -182,7 +182,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
                 }
             }
         }
-        if(emitter.getBuffer().length() > 0 && !error) {
+        if(!emitter.getBuffer().isEmpty() && !error) {
             setActive(true);
         }
         if(command_mode.equals(CommandMode.SET_DELAY)) {
@@ -317,8 +317,9 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
                 case OUTPUT_THEN_LISTEN -> {
                     emitter.looping = false;
                     emitter.tick(slevel, this);
-                    if(emitter.getBuffer().length() == 0) {
+                    if(emitter.getBuffer().isEmpty()) {
                         setOperationMode(OperationMode.LISTEN);
+                        emitter.setActive(false);
                         sensor.reset();
                         sensor.delay(2);
                         if(saved_lines == null) {

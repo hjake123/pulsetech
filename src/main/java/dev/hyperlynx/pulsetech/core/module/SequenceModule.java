@@ -3,6 +3,7 @@ package dev.hyperlynx.pulsetech.core.module;
 import dev.hyperlynx.pulsetech.core.PulseBlockEntity;
 import dev.hyperlynx.pulsetech.core.Sequence;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
 
 /// A module to be owned by a BlockEntity, representing a buffer, a delay timer,
 /// and an active state for reading from or writing to the buffer.
@@ -54,6 +55,9 @@ public abstract class SequenceModule<T extends PulseBlockEntity> {
         if(isActive()){
             setActive(run(pulser));
             delay(2);
+            if(!isActive()) {
+                pulser.getLevel().sendBlockUpdated(pulser.getBlockPos(), pulser.getBlockState(), pulser.getBlockState(), Block.UPDATE_IMMEDIATE);
+            }
         } else {
             if(!buffer.isEmpty()) {
                 reset();

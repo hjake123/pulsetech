@@ -31,7 +31,6 @@ public class ControllerBlock extends PulseBlock implements EntityBlock {
         return new ProtocolBlockEntity(ModBlockEntityTypes.CONTROLLER.get(), blockPos, blockState);
     }
 
-
     public static final DeferredHolder<ProtocolCommand, ProtocolCommand> ON = ProtocolCommands.COMMANDS.register("controller/on", () ->
             new ProtocolCommand(0) {
                 @Override

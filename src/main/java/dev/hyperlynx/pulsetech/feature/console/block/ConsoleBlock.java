@@ -5,7 +5,9 @@ import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.feature.console.OpenConsolePayload;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -41,5 +43,14 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
     @Override
     protected @NotNull MapCodec<? extends HorizontalDirectionalBlock> codec() {
         return CODEC;
+    }
+
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        if(level.getBlockEntity(pos) instanceof ConsoleBlockEntity console) {
+            if(console.emitter.isActive()) {
+                level.addParticle(DustParticleOptions.REDSTONE, pos.getBottomCenter().x, pos.getBottomCenter().y + 1, pos.getBottomCenter().z, 0, 0, 0);
+            }
+        }
     }
 }
