@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.client;
 
+import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import net.minecraft.core.BlockPos;
 
 /// The ONLY class within the client package that is safe to call upon from outside the package!
@@ -19,5 +20,10 @@ public class ClientWrapper {
     public static void openSequenceScreen(BlockPos pos) {
         PulsetechClient.openSequenceScreen(pos);
     }
+
+    public static void openDatasheetScreen(Datasheet datasheet) {
+        PulsetechClient.openDatasheetScreen(datasheet);
+    }
+
 
 }

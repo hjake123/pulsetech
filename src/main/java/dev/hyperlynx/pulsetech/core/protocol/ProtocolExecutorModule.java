@@ -6,6 +6,7 @@ import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.core.module.NumberSensorModule;
 import dev.hyperlynx.pulsetech.core.module.SequenceModule;
+import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetEntry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
         RUN
     }
 
-    private @Nullable Protocol fetchProtocol(ProtocolBlockEntity block) {
+    public @Nullable Protocol fetchProtocol(ProtocolBlockEntity block) {
         assert block.getType().builtInRegistryHolder() != null;
         return block.getType().builtInRegistryHolder().getData(ProtocolDataMap.TYPE);
     }
