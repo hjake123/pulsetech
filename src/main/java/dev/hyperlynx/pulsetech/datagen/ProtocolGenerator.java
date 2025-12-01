@@ -19,13 +19,15 @@ public class ProtocolGenerator extends DataMapProvider {
     protected void gather(HolderLookup.Provider provider) {
         builder(ProtocolDataMap.TYPE)
                 .add(ModBlockEntityTypes.CONTROLLER,
-                        ProtocolBuilder.builder(4)
+                        ProtocolBuilder.builder(3)
                                 .add(ControllerBlock.OFF)
                                 .add(ControllerBlock.ON)
                                 .add(ControllerBlock.PULSE)
                                 .add(ControllerBlock.LOOP_PULSE)
                                 .add(ControllerBlock.DELAY_PULSE)
                                 .add(ControllerBlock.TIMED_PULSE)
+                                .add(ControllerBlock.LOOP_DELAY_PULSE)
+                                .add(ControllerBlock.RANDOMS)
                                 .build(), false
                 );
     }

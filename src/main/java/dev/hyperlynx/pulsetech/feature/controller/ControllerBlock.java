@@ -95,4 +95,37 @@ public class ControllerBlock extends PulseBlock implements EntityBlock {
                     context.block().emitRaw(output);
                 }
             });
+
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> LOOP_DELAY_PULSE = ProtocolCommands.COMMANDS.register("controller/loop_delay_pulse", () ->
+            new ProtocolCommand(2) {
+                @Override
+                public void run(ExecutionContext context) {
+                    short ticks = context.params().getFirst();
+                    short delay_length = context.params().get(1);
+                    Sequence output = new Sequence();
+                    for(int i = 0; i < ticks; i++) {
+                        output.append(true);
+                        if(i != (ticks-1)) {
+                            for(int j = 0; j < delay_length; j++) {
+                                output.append(false);
+                            }
+                        }
+                    }
+                    context.block().emitRaw(output);
+                }
+            });
+
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> RANDOMS = ProtocolCommands.COMMANDS.register("controller/randoms", () ->
+            new ProtocolCommand(1) {
+                @Override
+                public void run(ExecutionContext context) {
+                    short loops = context.params().getFirst();
+                    Sequence output = new Sequence();
+                    for(int i = 0; i < loops; i++) {
+                        assert context.block().getLevel() != null;
+                        output.append(context.block().getLevel().random.nextBoolean());
+                    }
+                    context.block().emitRaw(output);
+                }
+            });
 }
