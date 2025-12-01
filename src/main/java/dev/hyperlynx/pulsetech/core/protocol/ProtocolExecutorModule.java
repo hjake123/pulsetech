@@ -34,7 +34,7 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
                     Codec.INT.fieldOf("delay_timer").forGetter(SequenceModule::getDelay),
                     Codec.BOOL.fieldOf("active").forGetter(SequenceModule::isActive)
             ).apply(instance, ProtocolExecutorModule::new)
-    );
+    ); // TODO Add the new fields !
 
     public ProtocolExecutorModule() {}
 
@@ -72,15 +72,15 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
             }
             case AWAIT_PARAMETER -> {
                 assert active_command != null;
-                parameter_sensor.setActive(true);
                 parameter_sensor.run(pulser);
                 if(parameter_sensor.checkNewNumberReady()) {
                     active_parameters.add(parameter_sensor.getNumber());
                     parameter_sensor.reset();
-                }
-
-                if(active_parameters.size() == active_command.parameterCount()) {
-                    state = State.RUN;
+                    if(active_parameters.size() == active_command.parameterCount()) {
+                        state = State.RUN;
+                    } else {
+                        return false;
+                    }
                 }
             }
 
