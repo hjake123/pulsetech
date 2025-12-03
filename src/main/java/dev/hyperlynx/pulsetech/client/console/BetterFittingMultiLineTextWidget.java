@@ -1,4 +1,4 @@
-package dev.hyperlynx.pulsetech.client.gui;
+package dev.hyperlynx.pulsetech.client.console;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

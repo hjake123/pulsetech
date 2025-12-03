@@ -1,11 +1,11 @@
 package dev.hyperlynx.pulsetech.client;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
-import dev.hyperlynx.pulsetech.client.gui.DatasheetScreen;
-import dev.hyperlynx.pulsetech.client.gui.SequenceChooseScreen;
-import dev.hyperlynx.pulsetech.client.renderer.NumberBlockRenderer;
-import dev.hyperlynx.pulsetech.client.renderer.PatternBlockRenderer;
-import dev.hyperlynx.pulsetech.client.gui.ConsoleScreen;
+import dev.hyperlynx.pulsetech.client.datasheet.DatasheetScreen;
+import dev.hyperlynx.pulsetech.client.pattern.SequenceChooseScreen;
+import dev.hyperlynx.pulsetech.client.blocktag.NumberBlockRenderer;
+import dev.hyperlynx.pulsetech.client.blocktag.PatternBlockRenderer;
+import dev.hyperlynx.pulsetech.client.console.ConsoleScreen;
 import dev.hyperlynx.pulsetech.core.PatternHolder;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;

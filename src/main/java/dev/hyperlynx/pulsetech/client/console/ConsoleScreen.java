@@ -1,4 +1,4 @@
-package dev.hyperlynx.pulsetech.client.gui;
+package dev.hyperlynx.pulsetech.client.console;
 
 import dev.hyperlynx.pulsetech.feature.console.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;

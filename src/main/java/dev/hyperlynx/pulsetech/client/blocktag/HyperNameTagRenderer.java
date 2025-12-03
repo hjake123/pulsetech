@@ -1,4 +1,4 @@
-package dev.hyperlynx.pulsetech.client.renderer;
+package dev.hyperlynx.pulsetech.client.blocktag;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;

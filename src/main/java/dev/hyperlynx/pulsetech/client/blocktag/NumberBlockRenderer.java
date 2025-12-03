@@ -1,30 +1,28 @@
-package dev.hyperlynx.pulsetech.client.renderer;
+package dev.hyperlynx.pulsetech.client.blocktag;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.hyperlynx.pulsetech.core.PatternHolder;
-import dev.hyperlynx.pulsetech.feature.pattern.block.PatternBlockEntity;
+import dev.hyperlynx.pulsetech.feature.number.NumberKnower;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class PatternBlockRenderer <T extends PatternBlockEntity & PatternHolder> implements BlockEntityRenderer<T> {
+public class NumberBlockRenderer<T extends BlockEntity & NumberKnower> implements BlockEntityRenderer<T> {
     EntityRenderDispatcher dispatcher;
 
-    public PatternBlockRenderer(BlockEntityRendererProvider.Context context) {
+    public NumberBlockRenderer(BlockEntityRendererProvider.Context context) {
         dispatcher = context.getEntityRenderer();
     }
 
     @Override
-    public void render(T pattern_be, float v, PoseStack stack, MultiBufferSource buffers, int i, int i1) {
+    public void render(T be, float v, PoseStack stack, MultiBufferSource buffers, int i, int i1) {
         stack.pushPose();
         stack.translate(0.5, 0.75, 0.5);
-        if(!pattern_be.getPattern().isEmpty()) {
-            HyperNameTagRenderer.renderNameTag(dispatcher, Component.literal(pattern_be.getPattern().toString()),
+        HyperNameTagRenderer.renderNameTag(dispatcher, Component.literal("" + be.getNumber()),
                     stack, buffers, LightTexture.FULL_BRIGHT);
-        }
         stack.popPose();
     }
 }

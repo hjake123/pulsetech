@@ -1,4 +1,4 @@
-package dev.hyperlynx.pulsetech.client.gui;
+package dev.hyperlynx.pulsetech.client.pattern;
 
 import dev.hyperlynx.pulsetech.feature.pattern.SequenceSelectPayload;
 import dev.hyperlynx.pulsetech.core.PatternHolder;

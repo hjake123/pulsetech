@@ -1,19 +1,15 @@
-package dev.hyperlynx.pulsetech.client.gui;
+package dev.hyperlynx.pulsetech.client.datasheet;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.MultiLineLabel;
 import net.minecraft.client.gui.components.MultiLineTextWidget;
-import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.phys.HitResult;
 
 public class DatasheetScreen extends Screen {
     private static final ResourceLocation BACKGROUND = Pulsetech.location("textures/gui/datasheet_background.png");
