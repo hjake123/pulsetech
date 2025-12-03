@@ -32,5 +32,7 @@
   "console.pulsetech.wait_usage": "Usage: wait (number of ticks)",
   "narration.sequence_widget": "Pulsetech sequence definition widget",
   "console.pulsetech.emit_usage": "Usage: emit (sequence)\nExample: emit 1010",
-  "console.pulsetech.num_usage": "Usage: num (integer)\nExample: num 1234"
+  "console.pulsetech.num_usage": "Usage: num (integer)\nExample: num 1234",
+  "pulsetech.synced_macros": "Macros synced with console",
+  "pulsetech.macros_up_to_date": "Macros already up to date"
 }

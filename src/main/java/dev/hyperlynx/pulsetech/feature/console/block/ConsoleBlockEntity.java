@@ -7,6 +7,7 @@ import dev.hyperlynx.pulsetech.feature.console.BitSensorModule;
 import dev.hyperlynx.pulsetech.feature.console.ConsoleEmitterModule;
 import dev.hyperlynx.pulsetech.feature.console.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
+import dev.hyperlynx.pulsetech.feature.console.macros.Macros;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -37,6 +38,14 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
 
     public ConsoleBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.CONSOLE.get(), pos, blockState);
+    }
+
+    public Macros getMacros() {
+        return new Macros(macros);
+    }
+
+    public void addMacros(Map<String, List<String>> other_macros) {
+        macros.putAll(other_macros);
     }
 
     // The mode of the current command being parsed. Resets with each new command.
