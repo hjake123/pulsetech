@@ -33,6 +33,7 @@ public class ProtocolBuilder {
             while (s.length() < sequence_length) {
                 s.append(false);
             }
+            s.reverse();
             if (!commands.containsValue(s)) {
                 return add(command, s);
             }
