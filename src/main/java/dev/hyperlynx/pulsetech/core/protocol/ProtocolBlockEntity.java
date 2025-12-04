@@ -7,7 +7,11 @@ import dev.hyperlynx.pulsetech.core.module.NumberSensorModule;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetEntry;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetProvider;
+import dev.hyperlynx.pulsetech.feature.pattern.PatternSensorModule;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -18,8 +22,8 @@ import java.util.List;
 
 /// A block entity capable of hearing and responding to {@link ProtocolCommand}s.
 public class ProtocolBlockEntity extends PulseBlockEntity implements DatasheetProvider {
-    private final ProtocolExecutorModule executor;
-    private final EmitterModule emitter = new EmitterModule();
+    private ProtocolExecutorModule executor;
+    private EmitterModule emitter = new EmitterModule();
 
     public ProtocolBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -67,5 +71,19 @@ public class ProtocolBlockEntity extends PulseBlockEntity implements DatasheetPr
                             command_sequence
                             );
                 }).toList());
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        tag.put("Executor", ProtocolExecutorModule.CODEC.encodeStart(NbtOps.INSTANCE, executor).getOrThrow());
+        tag.put("Emitter", EmitterModule.CODEC.encodeStart(NbtOps.INSTANCE, emitter).getOrThrow());
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ProtocolExecutorModule.CODEC.decode(NbtOps.INSTANCE, tag.get("Executor")).ifSuccess(success -> executor = success.getFirst());
+        EmitterModule.CODEC.decode(NbtOps.INSTANCE, tag.get("Emitter")).ifSuccess(success -> emitter = success.getFirst());
     }
 }

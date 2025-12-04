@@ -11,12 +11,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> {
     private State state = State.AWAIT_COMMAND;
     @Nullable private ProtocolCommand active_command = null;
-    private final List<Byte> active_parameters = new ArrayList<>();
-    private final NumberSensorModule parameter_sensor = new NumberSensorModule();
+    private final List<Byte> active_parameters;
+    private final NumberSensorModule parameter_sensor;
 
     private enum State {
         AWAIT_COMMAND,
@@ -33,16 +34,38 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
             instance.group(
                     Sequence.CODEC.fieldOf("buffer").forGetter(SequenceModule::getBuffer),
                     Codec.INT.fieldOf("delay_timer").forGetter(SequenceModule::getDelay),
-                    Codec.BOOL.fieldOf("active").forGetter(SequenceModule::isActive)
+                    Codec.BOOL.fieldOf("active").forGetter(SequenceModule::isActive),
+                    ProtocolCommand.CODEC.optionalFieldOf("active_command").forGetter(ProtocolExecutorModule::activeCommand),
+                    Codec.BYTE.listOf().fieldOf("params").forGetter(ProtocolExecutorModule::activeParams),
+                    NumberSensorModule.CODEC.fieldOf("param_sensor").forGetter(ProtocolExecutorModule::paramSensor)
             ).apply(instance, ProtocolExecutorModule::new)
-    ); // TODO Add the new fields !
+    );
 
-    public ProtocolExecutorModule() {}
+    private NumberSensorModule paramSensor() {
+        return parameter_sensor;
+    }
 
-    public ProtocolExecutorModule(Sequence buffer, int delay, boolean active) {
+    private List<Byte> activeParams() {
+        return active_parameters;
+    }
+
+    private Optional<ProtocolCommand> activeCommand() {
+        return Optional.ofNullable(active_command);
+    }
+
+    public ProtocolExecutorModule() {
+        this.active_parameters = new ArrayList<>();
+        this.parameter_sensor = new NumberSensorModule();
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private ProtocolExecutorModule(Sequence buffer, int delay, boolean active, Optional<ProtocolCommand> active_command, List<Byte> active_parameters, NumberSensorModule parameter_sensor) {
         this.buffer = buffer;
         delay_timer = delay;
         this.active = active;
+        active_command.ifPresent(protocolCommand -> this.active_command = protocolCommand);
+        this.active_parameters = new ArrayList<>(active_parameters);
+        this.parameter_sensor = parameter_sensor;
     }
 
     @Override
