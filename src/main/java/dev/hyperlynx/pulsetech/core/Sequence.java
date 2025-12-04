@@ -12,7 +12,7 @@ import java.util.List;
 
 /// Contains a single pulse sequence -- a sequence of on and off that is used by various features.
 /// The sequence is stored as a {@link BitSet}.
-public class Sequence {
+public class Sequence implements Comparable<Sequence> {
     private final BitSet bits;
     private int write_cursor = 0;
 
@@ -156,5 +156,24 @@ public class Sequence {
     public void removeLast() {
         write_cursor--;
         bits.clear(write_cursor);
+    }
+
+    @Override
+    public int compareTo(Sequence other) {
+        if(other.length() != length()) {
+            return (other.length() - length());
+        }
+        for(int i = 0; i < length(); i++) {
+            boolean my_bit = get(i);
+            boolean other_bit = other.get(i);
+            if(my_bit != other_bit) {
+                if(my_bit) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        }
+        return 0;
     }
 }

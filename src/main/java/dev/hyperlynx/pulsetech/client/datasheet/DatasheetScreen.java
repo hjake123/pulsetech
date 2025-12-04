@@ -5,7 +5,6 @@ import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -30,9 +29,9 @@ public class DatasheetScreen extends Screen {
         paper_top_y = getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - 120;
         title = Component.translatable(datasheet.block().getDescriptionId()).withStyle(ChatFormatting.BLACK);
 
-        var text = new MultiLineTextWidget(Component.literal(datasheet.entries().size() + " entries"), Minecraft.getInstance().font);
-        text.setPosition(getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (text.getWidth() / 2), getRectangle().getCenterInAxis(ScreenAxis.VERTICAL));
-        addRenderableWidget(text);
+        DatasheetEntryList list = new DatasheetEntryList(Minecraft.getInstance(), 165, 207, paper_top_y + 30, 36, datasheet);
+        list.setPosition(paper_top_x + 4, paper_top_y + 31);
+        addRenderableWidget(list);
     }
 
     @Override
