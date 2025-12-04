@@ -29,12 +29,16 @@ public class DatasheetEntryWidget extends ObjectSelectionList.Entry<DatasheetEnt
         graphics.drawString(font, entry.name().getString(), left, top, TEXT_COLOR, false);
         assert entry.pattern() != null;
         String pattern = entry.pattern().toString();
-        int cursor = left;
+        int cursor = left + width - font.width(pattern) - 2;
         for(char p : pattern.toCharArray()) {
-            graphics.drawString(font, String.valueOf(p), cursor, top + 10, p == '1' ? 0xFA3100 : 0x7E0908, false);
+            graphics.drawString(font, String.valueOf(p), cursor, top, p == '1' ? 0xFA3100 : 0x7E0908, false);
             cursor += font.width(String.valueOf(p));
         }
-        graphics.drawString(font, entry.description().getString(), left, top + 20, TEXT_COLOR, false);
+        boolean no_params = entry.params().getString().isEmpty();
+        if(!no_params) {
+            graphics.drawString(font, Component.translatable("pulsetech.parameters").append(" ").append(entry.params()), left, top + 10, 0x68635F, false);
+        }
+        graphics.drawWordWrap(font,entry.description(), left, top + (no_params ? 10 : 20), 165, TEXT_COLOR);
     }
 
     @Override

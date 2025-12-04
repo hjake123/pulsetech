@@ -20,7 +20,7 @@ public class ProtocolBuilder {
     }
 
     /// Override to include a command with pre-chosen sequence.
-    public ProtocolBuilder add(Sequence sequence, Supplier<ProtocolCommand> command) {
+    public ProtocolBuilder add(Supplier<ProtocolCommand> command, Sequence sequence) {
         commands.put(command.get(), sequence);
         return this;
     }
@@ -34,7 +34,7 @@ public class ProtocolBuilder {
                 s.append(false);
             }
             if (!commands.containsValue(s)) {
-                return add(s, command);
+                return add(command, s);
             }
             i++;
         }

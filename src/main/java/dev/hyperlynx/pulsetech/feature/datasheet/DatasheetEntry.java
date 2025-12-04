@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public record DatasheetEntry(Component name, Component description, @Nullable Sequence pattern) implements Comparable<DatasheetEntry>{
+public record DatasheetEntry(Component name, Component description, Component params, @Nullable Sequence pattern) implements Comparable<DatasheetEntry>{
 
     @Override
     public int compareTo(@NotNull DatasheetEntry o) {

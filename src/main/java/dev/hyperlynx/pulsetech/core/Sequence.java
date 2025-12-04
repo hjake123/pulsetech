@@ -163,7 +163,7 @@ public class Sequence implements Comparable<Sequence> {
         if(other.length() != length()) {
             return (other.length() - length());
         }
-        for(int i = 0; i < length(); i++) {
+        for(int i = length() - 1; i >= 0; i--) {
             boolean my_bit = get(i);
             boolean other_bit = other.get(i);
             if(my_bit != other_bit) {

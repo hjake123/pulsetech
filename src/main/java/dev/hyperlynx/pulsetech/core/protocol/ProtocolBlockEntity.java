@@ -63,6 +63,7 @@ public class ProtocolBlockEntity extends PulseBlockEntity implements DatasheetPr
                     return new DatasheetEntry(
                             Component.translatable("protocol.pulsetech.name." + command_location.getPath()),
                             Component.translatable("protocol.pulsetech.description." + command_location.getPath()),
+                            Component.translatable("protocol.pulsetech.parameters." + command_location.getPath()),
                             command_sequence
                             );
                 }).toList());
