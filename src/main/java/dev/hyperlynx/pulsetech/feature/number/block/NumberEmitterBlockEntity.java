@@ -13,6 +13,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class NumberEmitterBlockEntity extends PulseBlockEntity implements NumberKnower {
@@ -27,8 +28,17 @@ public class NumberEmitterBlockEntity extends PulseBlockEntity implements Number
     @Override
     public void tick() {
         if(level instanceof ServerLevel slevel) {
-            if(emitter.isActive() && !emitter.outputInitialized()) {
-                emitter.enqueueTransmission(Sequence.fromByte(number));
+            if (emitter.isActive()) {
+                if (!getBlockState().getValue(NumberEmitterBlock.ACTIVE)) {
+                    assert getLevel() != null;
+                    getLevel().setBlock(getBlockPos(), getBlockState().setValue(NumberEmitterBlock.ACTIVE, true), Block.UPDATE_ALL);
+                }
+                if (!emitter.outputInitialized()) {
+                    emitter.enqueueTransmission(Sequence.fromByte(number));
+                }
+            } else if (getBlockState().getValue(NumberEmitterBlock.ACTIVE)) {
+                assert getLevel() != null;
+                getLevel().setBlock(getBlockPos(), getBlockState().setValue(NumberEmitterBlock.ACTIVE, false), Block.UPDATE_ALL);
             }
             emitter.tick(slevel, this);
         }

@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.feature.number.block;
 
 import dev.hyperlynx.pulsetech.core.PulseBlockEntity;
+import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.feature.number.NumberKnower;
 import dev.hyperlynx.pulsetech.core.module.NumberSensorModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
@@ -36,6 +37,15 @@ public class NumberMonitorBlockEntity extends PulseBlockEntity implements Number
     public void tick() {
         if(!(level instanceof ServerLevel slevel)) {
             return;
+        }
+        if (module.isActive()) {
+            if (!getBlockState().getValue(NumberMonitorBlock.ACTIVE)) {
+                assert getLevel() != null;
+                getLevel().setBlock(getBlockPos(), getBlockState().setValue(NumberMonitorBlock.ACTIVE, true), Block.UPDATE_ALL);
+            }
+        } else if (getBlockState().getValue(NumberMonitorBlock.ACTIVE)) {
+            assert getLevel() != null;
+            getLevel().setBlock(getBlockPos(), getBlockState().setValue(NumberMonitorBlock.ACTIVE, false), Block.UPDATE_ALL);
         }
         module.tick(slevel, this);
     }

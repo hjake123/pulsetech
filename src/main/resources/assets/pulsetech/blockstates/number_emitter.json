@@ -1,18 +1,33 @@
 {
   "variants": {
-    "facing=east": {
+    "facing=east,active=false": {
       "model": "pulsetech:block/number_emitter",
       "y": 270
     },
-    "facing=north": {
+    "facing=north,active=false": {
       "model": "pulsetech:block/number_emitter",
       "y": 180
     },
-    "facing=south": {
+    "facing=south,active=false": {
       "model": "pulsetech:block/number_emitter"
     },
-    "facing=west": {
+    "facing=west,active=false": {
       "model": "pulsetech:block/number_emitter",
+      "y": 90
+    },
+    "facing=east,active=true": {
+      "model": "pulsetech:block/number_emitter_active",
+      "y": 270
+    },
+    "facing=north,active=true": {
+      "model": "pulsetech:block/number_emitter_active",
+      "y": 180
+    },
+    "facing=south,active=true": {
+      "model": "pulsetech:block/number_emitter_active"
+    },
+    "facing=west,active=true": {
+      "model": "pulsetech:block/number_emitter_active",
       "y": 90
     }
   }
