@@ -7,6 +7,8 @@ import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
@@ -14,54 +16,49 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScannerBlockEntity extends ProtocolBlockEntity {
-    private int mode = 0;
-
     public static final int RANGE = 16;
-
-    public static final int MODE_ANY = 0;
-    public static final int MODE_MONSTER = 1;
-    public static final int MODE_ANIMAL = 2;
-    public static final int MODE_ADULT = 3;
-    public static final int MODE_CHILD = 4;
-    public static final int MODE_ITEM = 5;
-    public static final int MODE_OBJECT = 6;
-    public static final int MAX_MODE = 6;
 
     public ScannerBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.SCANNER.get(), pos, blockState);
     }
 
-    public void setMode(int mode) {
-        if(mode >= 0 && mode < MAX_MODE) {
-            this.mode = mode;
-            setChanged();
+    public void setMode(int index) {
+        for(ScannerBlock.Mode mode : ScannerBlock.Mode.values()) {
+            if(mode.index == index) {
+                assert level != null;
+                level.setBlock(getBlockPos(), getBlockState().setValue(ScannerBlock.MODE, mode), Block.UPDATE_ALL);
+                break;
+            }
         }
     }
 
     private List<Entity> scan() {
         AABB scan_area = new AABB(getBlockPos()).inflate(RANGE);
         assert level != null;
-        switch(mode) {
-            case(MODE_ANY) -> {
+        switch(getBlockState().getValue(ScannerBlock.MODE)) {
+            case ScannerBlock.Mode.ANY -> {
                 return level.getEntities((Entity) null, scan_area, entity -> true);
             }
-            case(MODE_MONSTER) -> {
+            case ScannerBlock.Mode.MONSTER -> {
                 return level.getEntities((Entity) null, scan_area, entity -> !entity.getType().getCategory().isFriendly());
             }
-            case(MODE_ANIMAL) -> {
+            case ScannerBlock.Mode.ANIMAL  -> {
                 return level.getEntities((Entity) null, scan_area, entity -> entity instanceof Animal);
             }
-            case(MODE_ADULT) -> {
+            case ScannerBlock.Mode.ADULT  -> {
                 return level.getEntities((Entity) null, scan_area, entity -> entity instanceof AgeableMob mob && !mob.isBaby());
             }
-            case(MODE_CHILD) -> {
+            case ScannerBlock.Mode.CHILD -> {
                 return level.getEntities((Entity) null, scan_area, entity -> entity instanceof AgeableMob mob && mob.isBaby());
             }
-            case(MODE_ITEM) -> {
+            case ScannerBlock.Mode.ITEM -> {
                 return level.getEntities((Entity) null, scan_area, entity -> entity instanceof ItemEntity);
             }
-            case(MODE_OBJECT) -> {
-                return level.getEntities((Entity) null, scan_area, entity -> entity.getType().getCategory().isFriendly() && !(entity instanceof AgeableMob) && !(entity instanceof ItemEntity));
+            case ScannerBlock.Mode.OBJECT -> {
+                return level.getEntities((Entity) null, scan_area, entity -> entity.getType().getCategory().isFriendly() && !(entity instanceof AgeableMob) && !(entity instanceof ItemEntity) &&!(entity instanceof Player));
+            }
+            case ScannerBlock.Mode.PLAYER -> {
+                return level.getEntities((Entity) null, scan_area, entity -> entity instanceof Player);
             }
             default -> {
                 return new ArrayList<>();
