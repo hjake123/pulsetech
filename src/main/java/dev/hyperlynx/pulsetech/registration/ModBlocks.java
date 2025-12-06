@@ -8,6 +8,7 @@ import dev.hyperlynx.pulsetech.feature.pattern.block.PatternDetectorBlock;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternEmitterBlock;
 import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternBlock;
+import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -34,4 +35,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<ControllerBlock> CONTROLLER = BLOCKS.register("controller", () ->
             new ControllerBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK)));
+
+    public static final DeferredBlock<ScannerBlock> SCANNER = BLOCKS.register("scanner", () ->
+            new ScannerBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK)));
 }

@@ -7,6 +7,7 @@ import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberMonitorBlockEntity;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternDetectorBlockEntity;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternEmitterBlockEntity;
+import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -38,4 +39,8 @@ public class ModBlockEntityTypes {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ControllerBlockEntity>> CONTROLLER =
             TYPES.register("controller", () ->
                     BlockEntityType.Builder.of(ControllerBlockEntity::new, ModBlocks.CONTROLLER.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ScannerBlockEntity>> SCANNER =
+            TYPES.register("scanner", () ->
+                    BlockEntityType.Builder.of(ScannerBlockEntity::new, ModBlocks.SCANNER.get()).build(null));
 }

@@ -58,6 +58,11 @@ public class ProtocolBlockEntity extends PulseBlockEntity implements DatasheetPr
         emitter.setActive(true);
     }
 
+    public void emit(Sequence sequence) {
+        emitter.enqueueTransmission(sequence);
+        emitter.setActive(true);
+    }
+
     @Override
     public Datasheet getDatasheet() {
         return new Datasheet(getBlockState().getBlock(), Component.translatable("description.pulsetech." + getBlockState().getBlock().getDescriptionId()),
