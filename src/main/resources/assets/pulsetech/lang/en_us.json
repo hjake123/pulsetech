@@ -59,7 +59,7 @@
   "protocol.pulsetech.name.controller/on": "ON",
   "protocol.pulsetech.description.controller/on": "Start emitting a constant signal",
   "protocol.pulsetech.parameters.controller/on": "",
-  "protocol.pulsetech.name.scanner/mode_select": "MODE_SELECT",
+  "protocol.pulsetech.name.scanner/mode_select": "MODE SELECT",
   "protocol.pulsetech.description.scanner/mode_select": "Set the scan mode; see below",
   "protocol.pulsetech.parameters.scanner/mode_select": "Mode",
   "protocol.pulsetech.name.scanner/count": "COUNT",

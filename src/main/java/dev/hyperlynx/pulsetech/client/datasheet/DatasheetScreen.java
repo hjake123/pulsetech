@@ -29,7 +29,7 @@ public class DatasheetScreen extends Screen {
         paper_top_y = getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - 120;
         title = Component.translatable(datasheet.block().getDescriptionId()).withStyle(ChatFormatting.BLACK);
 
-        DatasheetEntryList list = new DatasheetEntryList(Minecraft.getInstance(), 170, 207, paper_top_y + 30, 48, datasheet);
+        DatasheetLinesList list = new DatasheetLinesList(Minecraft.getInstance(), 170, 207, paper_top_y + 30, Minecraft.getInstance().font.lineHeight + 2, datasheet);
         list.setPosition(paper_top_x + 4, paper_top_y + 31);
         addRenderableWidget(list);
     }
