@@ -1,8 +1,11 @@
 package dev.hyperlynx.pulsetech.feature.scanner;
 
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolBlockEntity;
+import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
+import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetEntry;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Animal;
@@ -72,5 +75,32 @@ public class ScannerBlockEntity extends ProtocolBlockEntity {
             return 127;
         }
         return (byte) count;
+    }
+
+    public BlockPos findNearest() {
+        var nearby = scan();
+        double dist = Double.POSITIVE_INFINITY;
+        Entity nearest = null;
+        for (Entity entity : nearby) {
+            double entity_dist = entity.distanceToSqr(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+            if (entity_dist < dist) {
+                dist = entity_dist;
+                nearest = entity;
+            }
+        }
+        if(nearest == null) {
+            return BlockPos.ZERO;
+        }
+        return new BlockPos(getBlockPos().getX() - nearest.getBlockX(), getBlockPos().getY() - nearest.getBlockY(), getBlockPos().getZ() - nearest.getBlockZ());
+    }
+
+    @Override
+    public Datasheet getDatasheet() {
+        return super.getDatasheet().append(new DatasheetEntry(
+                Component.translatable("docs.pulsetech.name.scanner_mode_info"),
+                Component.translatable("docs.pulsetech.description.scanner_mode_info"),
+                Component.empty(),
+                null
+        ));
     }
 }

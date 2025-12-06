@@ -88,4 +88,17 @@ public class ScannerBlock extends PulseBlock implements EntityBlock {
                     }
                 }
             });
+
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> FIND_NEAREST = ProtocolCommands.COMMANDS.register("scanner/find_nearest", () ->
+            new ProtocolCommand(0) {
+                @Override
+                public void run(ExecutionContext context) {
+                    if(context.block() instanceof ScannerBlockEntity scanner) {
+                        BlockPos pos = scanner.findNearest();
+                        context.block().emit(Sequence.fromByte((byte) pos.getX()));
+                        context.block().emit(Sequence.fromByte((byte) pos.getY()));
+                        context.block().emit(Sequence.fromByte((byte) pos.getZ()));
+                    }
+                }
+            });
 }
