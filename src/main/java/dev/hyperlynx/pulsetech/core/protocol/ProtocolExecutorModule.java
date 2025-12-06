@@ -90,6 +90,7 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
                         active_parameters.clear();
                         buffer.clear();
                         state = command.parameterCount() > 0 ? State.AWAIT_PARAMETER : State.RUN;
+                        delay(1);
                         return command.parameterCount() == 0;
                     }
                 }

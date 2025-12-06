@@ -50,7 +50,7 @@ public class ProtocolBlockEntity extends PulseBlockEntity implements DatasheetPr
 
     @Override
     public boolean isDelayed() {
-        return executor.getDelay() > 0 || emitter.getDelay() > 0;
+        return executor.getDelay() > 0;
     }
 
     public void emitRaw(Sequence sequence) {
