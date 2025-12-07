@@ -101,4 +101,17 @@ public class ScannerBlock extends PulseBlock implements EntityBlock {
                     }
                 }
             });
+
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> CHECK = ProtocolCommands.COMMANDS.register("scanner/check", () ->
+            new ProtocolCommand(0) {
+                @Override
+                public void run(ExecutionContext context) {
+                    if(context.block() instanceof ScannerBlockEntity scanner) {
+                        if(!scanner.testAnyNearby()) {
+                            context.block().emitRaw(new Sequence(true, false));
+                        }
+                    }
+                }
+            });
+
 }

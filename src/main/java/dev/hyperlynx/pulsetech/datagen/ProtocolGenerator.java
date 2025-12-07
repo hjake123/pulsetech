@@ -34,6 +34,7 @@ public class ProtocolGenerator extends DataMapProvider {
                 .add(ModBlockEntityTypes.SCANNER,
                         ProtocolBuilder.builder(2)
                                 .add(ScannerBlock.MODE_SELECT)
+                                .add(ScannerBlock.CHECK)
                                 .add(ScannerBlock.COUNT)
                                 .add(ScannerBlock.FIND_NEAREST)
                                 .build(), false

@@ -69,6 +69,10 @@ public class ScannerBlockEntity extends ProtocolBlockEntity {
         }
     }
 
+    public boolean testAnyNearby() {
+        return scan().isEmpty();
+    }
+
     public byte countNearby() {
         int count = scan().size();
         if(count > 127) {

@@ -68,6 +68,9 @@
   "protocol.pulsetech.name.scanner/find_nearest": "SCAN",
   "protocol.pulsetech.description.scanner/find_nearest": "Emit the X, Y, and Z offsets to the nearest matching entity, or (0, 0, 0) if there are none",
   "protocol.pulsetech.parameters.scanner/find_nearest": "",
+  "protocol.pulsetech.name.scanner/check": "CHECK",
+  "protocol.pulsetech.description.scanner/check": "Emit a pulse if any matching entities are within 16 blocks",
+  "protocol.pulsetech.parameters.scanner/check": "",
   "pulsetech.parameters": "Parameters:",
   "pulsetech.none": "none"
 }
