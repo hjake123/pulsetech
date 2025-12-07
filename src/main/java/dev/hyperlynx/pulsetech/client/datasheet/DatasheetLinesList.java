@@ -16,7 +16,7 @@ public class DatasheetLinesList extends ObjectSelectionList<DatasheetTextWidget>
             if(!entry.params().getString().isEmpty()) {
                 addEntry(new DatasheetTextWidget(Component.translatable("pulsetech.parameters").append(" ").append(entry.params()).withColor(0x68635F)));
             }
-            for (var line : client.font.getSplitter().splitLines(entry.description(), getRowWidth(), Style.EMPTY)) {
+            for (var line : client.font.getSplitter().splitLines(entry.description(), getRowWidth() - 2, Style.EMPTY)) {
                 addEntry(new DatasheetTextWidget(Component.literal(line.getString())));
             }
             addEntry(new DatasheetTextWidget(Component.empty()));
@@ -35,6 +35,11 @@ public class DatasheetLinesList extends ObjectSelectionList<DatasheetTextWidget>
 
     @Override
     protected void renderListSeparators(GuiGraphics guiGraphics) {
+        // NO-OP
+    }
+
+    @Override
+    protected void renderSelection(GuiGraphics guiGraphics, int top, int width, int height, int outerColor, int innerColor) {
         // NO-OP
     }
 }

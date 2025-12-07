@@ -93,14 +93,4 @@ public class ScannerBlockEntity extends ProtocolBlockEntity {
         }
         return new BlockPos(getBlockPos().getX() - nearest.getBlockX(), getBlockPos().getY() - nearest.getBlockY(), getBlockPos().getZ() - nearest.getBlockZ());
     }
-
-    @Override
-    public Datasheet getDatasheet() {
-        return super.getDatasheet().append(new DatasheetEntry(
-                Component.translatable("docs.pulsetech.name.scanner_mode_info"),
-                Component.translatable("docs.pulsetech.description.scanner_mode_info"),
-                Component.empty(),
-                null
-        ));
-    }
 }

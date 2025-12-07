@@ -60,16 +60,14 @@
   "protocol.pulsetech.description.controller/on": "Start emitting a constant signal",
   "protocol.pulsetech.parameters.controller/on": "",
   "protocol.pulsetech.name.scanner/mode_select": "MODE SELECT",
-  "protocol.pulsetech.description.scanner/mode_select": "Set the scan mode; see below",
+  "protocol.pulsetech.description.scanner/mode_select": "Set the scan mode, which decides which entities are scanned\n\nValid modes:\n0 - Any\n1 - Monster\n2 - Animal\n3 - Adult Animal\n4 - Child Animal\n5 - Nonliving other than Item\n6 - Item\n7 - Player",
   "protocol.pulsetech.parameters.scanner/mode_select": "Mode",
   "protocol.pulsetech.name.scanner/count": "COUNT",
   "protocol.pulsetech.description.scanner/count": "Emit the number of matching entities within 16 blocks",
   "protocol.pulsetech.parameters.scanner/count": "",
   "protocol.pulsetech.name.scanner/find_nearest": "SCAN",
-  "protocol.pulsetech.description.scanner/find_nearest": "Emit the X, Y, and Z offsets to the nearest matching entity",
+  "protocol.pulsetech.description.scanner/find_nearest": "Emit the X, Y, and Z offsets to the nearest matching entity, or (0, 0, 0) if there are none",
   "protocol.pulsetech.parameters.scanner/find_nearest": "",
   "pulsetech.parameters": "Parameters:",
-  "pulsetech.none": "none",
-  "docs.pulsetech.name.scanner_mode_info": "Scanning Modes:",
-  "docs.pulsetech.description.scanner_mode_info": "0 - Any\n1 - Monster\n2 - Animal\n3 - Adult Animal\n4 - Child Animal\n5 - Nonliving other than Item\n6 - Item\n7 - Player"
+  "pulsetech.none": "none"
 }
