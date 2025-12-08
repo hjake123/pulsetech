@@ -7,7 +7,9 @@ import dev.hyperlynx.pulsetech.core.protocol.ExecutionContext;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommand;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -15,10 +17,16 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
 public class ScannerBlock extends PulseBlock implements EntityBlock {
+    protected static final VoxelShape SHAPE_X = Shapes.or(Block.box(12, 2, 6, 14, 3, 10), Block.box(2, 2, 6, 4, 3, 10), Block.box(4, 2, 4, 12, 8, 12), Block.box(0, 0, 0, 16, 2, 16), Block.box(7, 8, 7, 9, 12, 9), Block.box(6, 12, 6, 10, 16, 10), Block.box(3, 10, 7, 7, 11, 9), Block.box(3, 10, 2, 13, 14, 3), Block.box(2, 10, 2, 3, 14, 14), Block.box(3, 10, 13, 13, 14, 14), Block.box(13, 10, 2, 14, 14, 14), Block.box(9, 10, 7, 13, 11, 9));
+    protected static final VoxelShape SHAPE_Z = Shapes.or(Block.box(6, 2, 12, 10, 3, 14), Block.box(6, 2, 2, 10, 3, 4), Block.box(4, 2, 4, 12, 8, 12), Block.box(0, 0, 0, 16, 2, 16), Block.box(7, 8, 7, 9, 12, 9), Block.box(6, 12, 6, 10, 16, 10), Block.box(7, 10, 3, 9, 11, 7), Block.box(2, 10, 3, 3, 14, 13), Block.box(2, 10, 2, 14, 14, 3), Block.box(13, 10, 3, 14, 14, 13), Block.box(2, 10, 13, 14, 14, 14), Block.box(7, 10, 9, 9, 11, 13));
+
     public static EnumProperty<Mode> MODE = EnumProperty.create("mode", Mode.class);
 
     public enum Mode implements StringRepresentable {
@@ -39,7 +47,6 @@ public class ScannerBlock extends PulseBlock implements EntityBlock {
             this.index = index;
         }
 
-
         @Override
         public String getSerializedName() {
             return name;
@@ -49,6 +56,11 @@ public class ScannerBlock extends PulseBlock implements EntityBlock {
     public ScannerBlock(Properties properties) {
         super(properties);
         registerDefaultState(defaultBlockState().setValue(MODE, Mode.ANY));
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return state.getValue(FACING).getAxis().equals(Direction.Axis.X) ? SHAPE_X : SHAPE_Z;
     }
 
     @Override
