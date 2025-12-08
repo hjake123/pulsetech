@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "pulsetech:item/litmus_paper"
+    "layer0": "pulsetech:item/datasheet"
   }
 }
