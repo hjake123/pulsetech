@@ -6,6 +6,8 @@
   "block.pulsetech.number_monitor": "Number Monitor",
   "block.pulsetech.console": "Console",
   "block.pulsetech.controller": "Pulse Controller",
+  "block.pulsetech.scanner": "Scanner",
+  "item.pulsetech.datasheet": "Datasheet",
   "message.pulsetech.set_protocol": "Protocol has been updated",
   "message.pulsetech.no_protocol": "Please set a Protocol first",
   "pulsetech.needs_protocol": "Needs protocol",
