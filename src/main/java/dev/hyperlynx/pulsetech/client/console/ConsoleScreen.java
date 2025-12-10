@@ -1,7 +1,10 @@
 package dev.hyperlynx.pulsetech.client.console;
 
+import dev.hyperlynx.pulsetech.feature.console.ConsoleColor;
 import dev.hyperlynx.pulsetech.feature.console.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
+import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlock;
+import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
@@ -22,6 +25,7 @@ public class ConsoleScreen extends Screen {
     private final BlockPos pos;
     private final String prior_lines_str;
     private int past_commands_cursor = -1;
+    private final ConsoleColor color;
 
     private final List<String> past_commands = new ArrayList<>();
 
@@ -29,6 +33,12 @@ public class ConsoleScreen extends Screen {
         super(Component.translatable("block.pulsetech.console"));
         this.pos = pos;
         this.prior_lines_str = lines;
+
+        if (Minecraft.getInstance().level.getBlockState(pos).getBlock() instanceof ConsoleBlock console_block) {
+            this.color = console_block.getColor();
+        } else {
+            this.color = ConsoleColor.REDSTONE;
+        }
     }
 
     @Override
@@ -45,6 +55,24 @@ public class ConsoleScreen extends Screen {
         prior_lines.scrollToBottom();
         addRenderableWidget(prior_lines);
         setInitialFocus(command_box);
+        setupTextColors();
+    }
+
+    private static final int AMBER_COLOR = 0xFFE09E;
+    private static final int RED_COLOR = 0xEC1400;
+    private static final int GREEN_COLOR = 0x00A54A;
+    private static final int INDIGO_COLOR = 0x6951C6;
+
+    private void setupTextColors() {
+        int color_value = switch(color) {
+            case AMBER -> AMBER_COLOR;
+            case REDSTONE -> RED_COLOR;
+            case GREEN -> GREEN_COLOR;
+            case INDIGO -> INDIGO_COLOR;
+            default -> 0xFFFFFF;
+        };
+        prior_lines.setColor(color_value);
+        command_box.setTextColor(color_value);
     }
 
     private String getLastLine() {
@@ -101,6 +129,7 @@ public class ConsoleScreen extends Screen {
         }
         prior_lines.scrollToBottom();
         addRenderableWidget(prior_lines);
+        setupTextColors();
     }
 
     public BlockPos getPos() {
@@ -117,6 +146,7 @@ public class ConsoleScreen extends Screen {
         prior_lines = prior_lines.withMessage(Component.literal(lines));
         prior_lines.scrollToBottom();
         addRenderableWidget(prior_lines);
+        setupTextColors();
     }
 
     @Override

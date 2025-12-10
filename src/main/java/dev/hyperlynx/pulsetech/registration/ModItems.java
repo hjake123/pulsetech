@@ -11,6 +11,10 @@ public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
 
     public static final DeferredItem<BlockItem> CONSOLE = ITEMS.registerSimpleBlockItem("console", ModBlocks.CONSOLE);
+    public static final DeferredItem<BlockItem> GREEN_CONSOLE = ITEMS.registerSimpleBlockItem("green_console", ModBlocks.GREEN_CONSOLE);
+    public static final DeferredItem<BlockItem> RED_CONSOLE = ITEMS.registerSimpleBlockItem("red_console", ModBlocks.RED_CONSOLE);
+    public static final DeferredItem<BlockItem> INDIGO_CONSOLE = ITEMS.registerSimpleBlockItem("indigo_console", ModBlocks.INDIGO_CONSOLE);
+    public static final DeferredItem<BlockItem> WHITE_CONSOLE = ITEMS.registerSimpleBlockItem("white_console", ModBlocks.WHITE_CONSOLE);
     public static final DeferredItem<BlockItem> PATTERN_DETECTOR = ITEMS.registerSimpleBlockItem("pattern_detector", ModBlocks.PATTERN_DETECTOR);
     public static final DeferredItem<BlockItem> PATTERN_EMITTER = ITEMS.registerSimpleBlockItem("pattern_emitter", ModBlocks.PATTERN_EMITTER);
     public static final DeferredItem<BlockItem> NUMBER_MONITOR = ITEMS.registerSimpleBlockItem("number_monitor", ModBlocks.NUMBER_MONITOR);

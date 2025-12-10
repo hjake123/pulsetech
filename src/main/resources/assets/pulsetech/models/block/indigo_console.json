@@ -1,0 +1,6 @@
+{
+  "parent": "pulsetech:block/console",
+  "textures": {
+    "0": "pulsetech:block/indigo_console"
+  }
+}

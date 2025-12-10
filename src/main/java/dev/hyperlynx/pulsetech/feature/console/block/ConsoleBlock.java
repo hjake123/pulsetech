@@ -2,6 +2,7 @@ package dev.hyperlynx.pulsetech.feature.console.block;
 
 import com.mojang.serialization.MapCodec;
 import dev.hyperlynx.pulsetech.core.PulseBlock;
+import dev.hyperlynx.pulsetech.feature.console.ConsoleColor;
 import dev.hyperlynx.pulsetech.feature.console.OpenConsolePayload;
 import dev.hyperlynx.pulsetech.feature.console.macros.Macros;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
@@ -28,8 +29,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ConsoleBlock extends PulseBlock implements EntityBlock {
-    public ConsoleBlock(Properties properties) {
+    private final ConsoleColor color;
+
+    public ConsoleBlock(Properties properties, ConsoleColor color) {
         super(properties);
+        this.color = color;
+    }
+
+    public ConsoleColor getColor() {
+        return color;
     }
 
     @Override
@@ -72,7 +80,7 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
         return ModBlockEntityTypes.CONSOLE.get().create(pos, state);
     }
 
-    public static final MapCodec<ConsoleBlock> CODEC = simpleCodec(ConsoleBlock::new);
+    public static final MapCodec<ConsoleBlock> CODEC = simpleCodec(props -> new ConsoleBlock(props, ConsoleColor.AMBER));
 
     @Override
     protected @NotNull MapCodec<? extends HorizontalDirectionalBlock> codec() {

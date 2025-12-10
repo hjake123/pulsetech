@@ -5,6 +5,7 @@
   "block.pulsetech.number_emitter": "Number Emitter",
   "block.pulsetech.number_monitor": "Number Monitor",
   "block.pulsetech.console": "Console",
+  "block.pulsetech.red_console": "Red Console",
   "block.pulsetech.controller": "Pulse Controller",
   "block.pulsetech.scanner": "Scanner",
   "item.pulsetech.datasheet": "Datasheet",

@@ -9,7 +9,9 @@ import dev.hyperlynx.pulsetech.feature.pattern.block.PatternDetectorBlockEntity;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlockEntity;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -34,7 +36,13 @@ public class ModBlockEntityTypes {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ConsoleBlockEntity>> CONSOLE =
             TYPES.register("console", () ->
-                    BlockEntityType.Builder.of(ConsoleBlockEntity::new, ModBlocks.CONSOLE.get()).build(null));
+                    BlockEntityType.Builder.of(ConsoleBlockEntity::new,
+                            ModBlocks.CONSOLE.get(),
+                            ModBlocks.RED_CONSOLE.get(), 
+                            ModBlocks.GREEN_CONSOLE.get(),
+                            ModBlocks.INDIGO_CONSOLE.get(),
+                            ModBlocks.WHITE_CONSOLE.get()
+                    ).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ControllerBlockEntity>> CONTROLLER =
             TYPES.register("controller", () ->
