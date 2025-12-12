@@ -35,6 +35,7 @@ public class PulsetechClient {
         event.registerBlockEntityRenderer(ModBlockEntityTypes.PATTERN_EMITTER.get(), PatternBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.NUMBER_EMITTER.get(), NumberBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.NUMBER_MONITOR.get(), NumberBlockRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntityTypes.SCOPE.get(), PatternBlockRenderer::new);
     }
 
     protected static void openConsoleScreen(BlockPos pos, String prior_lines) {

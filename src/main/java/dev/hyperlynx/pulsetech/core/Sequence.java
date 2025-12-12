@@ -186,4 +186,15 @@ public class Sequence implements Comparable<Sequence> {
         clear();
         appendAll(reversed);
     }
+
+    /// Remove the first item in the sequence by copying. Expensive!
+    /// TODO Consider replacing with some kind of wrap-around write buffer.
+    public void removeFirst() {
+        Sequence truncated = new Sequence();
+        for (int i = 1; i < length(); i++) {
+            truncated.append(get(i));
+        }
+        clear();
+        appendAll(truncated);
+    }
 }

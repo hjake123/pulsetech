@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "pulsetech:block/pulse_scope",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "pulsetech:block/pulse_scope"
+    },
+    "facing=south": {
+      "model": "pulsetech:block/pulse_scope",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "pulsetech:block/pulse_scope",
+      "y": 270
+    }
+  }
+}
