@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.client;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.client.blocktag.ScopeBlockRenderer;
 import dev.hyperlynx.pulsetech.client.datasheet.DatasheetScreen;
 import dev.hyperlynx.pulsetech.client.pattern.SequenceChooseScreen;
 import dev.hyperlynx.pulsetech.client.blocktag.NumberBlockRenderer;
@@ -35,7 +36,7 @@ public class PulsetechClient {
         event.registerBlockEntityRenderer(ModBlockEntityTypes.PATTERN_EMITTER.get(), PatternBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.NUMBER_EMITTER.get(), NumberBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.NUMBER_MONITOR.get(), NumberBlockRenderer::new);
-        event.registerBlockEntityRenderer(ModBlockEntityTypes.SCOPE.get(), PatternBlockRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntityTypes.SCOPE.get(), ScopeBlockRenderer::new);
     }
 
     protected static void openConsoleScreen(BlockPos pos, String prior_lines) {

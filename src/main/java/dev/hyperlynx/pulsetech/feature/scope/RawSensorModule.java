@@ -8,7 +8,7 @@ import dev.hyperlynx.pulsetech.core.module.EmitterModule;
 import dev.hyperlynx.pulsetech.core.module.SequenceModule;
 
 public class RawSensorModule extends SequenceModule<PulseBlockEntity> {
-    private static final int MAX_BUFFER = 8;
+    private static final int MAX_BUFFER = 14;
 
     public static final Codec<RawSensorModule> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(

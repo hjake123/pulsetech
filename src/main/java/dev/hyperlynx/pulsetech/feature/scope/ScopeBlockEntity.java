@@ -78,7 +78,6 @@ public class ScopeBlockEntity extends PulseBlockEntity implements PatternHolder 
     }
 
     // Return our packet here. This method returning a non-null result tells the game to use this packet for syncing.
-
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         // The packet uses the CompoundTag returned by #getUpdateTag. An alternative overload of #create exists
