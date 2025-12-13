@@ -8,6 +8,7 @@
   "block.pulsetech.red_console": "Red Console",
   "block.pulsetech.controller": "Pulse Controller",
   "block.pulsetech.scanner": "Scanner",
+  "block.pulsetech.scope": "Pulse Scope",
   "item.pulsetech.datasheet": "Datasheet",
   "message.pulsetech.set_protocol": "Protocol has been updated",
   "message.pulsetech.no_protocol": "Please set a Protocol first",
