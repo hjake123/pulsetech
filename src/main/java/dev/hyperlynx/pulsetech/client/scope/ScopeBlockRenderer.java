@@ -1,7 +1,8 @@
-package dev.hyperlynx.pulsetech.client.blocktag;
+package dev.hyperlynx.pulsetech.client.scope;
 
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
+import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.feature.scope.ScopeBlockEntity;
 import net.minecraft.client.renderer.LightTexture;
@@ -13,9 +14,6 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 
 public class ScopeBlockRenderer implements BlockEntityRenderer<ScopeBlockEntity> {
     final EntityRenderDispatcher renderer;
@@ -31,9 +29,7 @@ public class ScopeBlockRenderer implements BlockEntityRenderer<ScopeBlockEntity>
     public void render(ScopeBlockEntity scope, float partial_tick, PoseStack stack, MultiBufferSource buffers, int a, int b) {
         VertexConsumer consumer = buffers.getBuffer(RenderType.entityCutout(ResourceLocation.withDefaultNamespace("textures/block/white_concrete.png")));
         stack.pushPose();
-        stack.translate(0.5, 0.5, 0.5);
-        stack.mulPose(Axis.YP.rotationDegrees(180));
-        stack.translate(-0.5, -0.5, 0.501);
+        adjustForFacing(stack, scope.getBlockState().getValue(PulseBlock.FACING));
         Sequence pattern = scope.getPattern();
         for (int i = pattern.length() - 14; i < pattern.length(); i++) {
             if (i < 0) {
@@ -47,6 +43,29 @@ public class ScopeBlockRenderer implements BlockEntityRenderer<ScopeBlockEntity>
         }
 
         stack.popPose();
+    }
+
+    private void adjustForFacing(PoseStack stack, Direction facing) {
+        switch (facing) {
+            case NORTH -> {
+                stack.translate(0.5, 0.5, 0.5);
+                stack.mulPose(Axis.YP.rotationDegrees(180));
+                stack.translate(-0.5, -0.5, 0.501);
+            }
+            case EAST -> {
+                stack.translate(0.5, 0.5, 0.5);
+                stack.mulPose(Axis.YP.rotationDegrees(90));
+                stack.translate(-0.5, -0.5, 0.501);
+            }
+            case WEST -> {
+                stack.translate(0.5, 0.5, 0.5);
+                stack.mulPose(Axis.YP.rotationDegrees(270));
+                stack.translate(-0.5, -0.5, 0.501);
+            }
+            default -> { // SOUTH
+                stack.translate(0, 0, 1.001);
+            }
+        }
     }
 
     private void drawDisplayBox(VertexConsumer consumer, PoseStack stack, int color, int display_x1, int display_y1, int display_x2, int display_y2) {
