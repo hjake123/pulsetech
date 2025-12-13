@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class ScopeBlockEntity extends PulseBlockEntity implements PatternHolder {
     RawSensorModule module = new RawSensorModule();
+    Sequence last_sent_sequence = null;
 
     public ScopeBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.SCOPE.get(), pos, blockState);
@@ -89,7 +90,9 @@ public class ScopeBlockEntity extends PulseBlockEntity implements PatternHolder 
     @Override
     public void setChanged() {
         super.setChanged();
-        if(level != null)
+        if(level != null && !module.getBuffer().equals(last_sent_sequence)) {
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
+            last_sent_sequence = new Sequence(module.getBuffer());
+        }
     }
 }

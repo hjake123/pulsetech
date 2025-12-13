@@ -22,9 +22,7 @@ public class ScopeBlockRenderer implements BlockEntityRenderer<ScopeBlockEntity>
         renderer = context.getEntityRenderer();
     }
 
-    /// Render the graph on the front.
-    /// For the last seven bits in the buffer, there should be a different drawing depending on whether it is on or off, and whether it matches the prior state
-    /// ON, OFF, RISING, and FALLING have different appearances.
+    /// Render the graph on the front
     @Override
     public void render(ScopeBlockEntity scope, float partial_tick, PoseStack stack, MultiBufferSource buffers, int a, int b) {
         VertexConsumer consumer = buffers.getBuffer(RenderType.entityCutout(ResourceLocation.withDefaultNamespace("textures/block/white_concrete.png")));
