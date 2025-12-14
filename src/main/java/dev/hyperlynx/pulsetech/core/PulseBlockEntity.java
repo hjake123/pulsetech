@@ -22,7 +22,6 @@ public abstract class PulseBlockEntity extends BlockEntity {
     }
 
     public boolean input() {
-        Pulsetech.LOGGER.debug("Reading {}", last_detected_input);
         return last_detected_input;
     }
 
