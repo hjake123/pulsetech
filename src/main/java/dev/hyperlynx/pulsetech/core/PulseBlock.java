@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.ticks.TickPriority;
 import org.jetbrains.annotations.Nullable;
 
 /// See {@link PulseBlockEntity}
@@ -62,8 +63,12 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
         super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
-        if(level.getDirectSignalTo(pos) > 0 && level.getBlockEntity(pos) instanceof PulseBlockEntity entity && !entity.isActive() && !entity.isDelayed()) {
-            level.scheduleTick(pos, this, 3);
+        if(level.getDirectSignalTo(pos) > 0 && level.getBlockEntity(pos) instanceof PulseBlockEntity entity && !entity.isActive() && !entity.isDelayed() && !entity.wake_triggered) {
+            entity.wake_triggered = true;
+            level.scheduleTick(pos, this, 3, TickPriority.VERY_HIGH);
+        }
+        if(level.getBlockEntity(pos) instanceof PulseBlockEntity entity) {
+            entity.last_detected_input = level.getDirectSignalTo(pos) > 0;
         }
     }
 
@@ -71,6 +76,7 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if(level.getBlockEntity(pos) instanceof PulseBlockEntity entity) {
             entity.setActive(true);
+            entity.wake_triggered = false;
         }
     }
 
