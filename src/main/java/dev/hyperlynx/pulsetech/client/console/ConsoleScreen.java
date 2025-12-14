@@ -61,7 +61,7 @@ public class ConsoleScreen extends Screen {
     private static final int AMBER_COLOR = 0xFFE09E;
     private static final int RED_COLOR = 0xEC1400;
     private static final int GREEN_COLOR = 0x00A54A;
-    private static final int INDIGO_COLOR = 0x6951C6;
+    private static final int INDIGO_COLOR = 0x703DFF;
 
     private void setupTextColors() {
         int color_value = switch(color) {
