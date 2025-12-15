@@ -38,7 +38,6 @@ public class ScopeBlockEntity extends PulseBlockEntity implements PatternHolder 
     @Override
     public void tick() {
         if(getLevel() instanceof ServerLevel slevel) {
-            module.setActive(true);
             module.tick(slevel, this);
             setChanged();
         }

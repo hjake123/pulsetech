@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.core.PulseBlockEntity;
 import dev.hyperlynx.pulsetech.core.Sequence;
-import dev.hyperlynx.pulsetech.core.module.EmitterModule;
 import dev.hyperlynx.pulsetech.core.module.SequenceModule;
+import net.minecraft.server.level.ServerLevel;
 
 public class RawSensorModule extends SequenceModule<PulseBlockEntity> {
     private static final int MAX_BUFFER = 14;
@@ -34,5 +34,19 @@ public class RawSensorModule extends SequenceModule<PulseBlockEntity> {
         }
         pulser.handleInput();
         return true;
+    }
+
+    @Override
+    public void tick(ServerLevel level, PulseBlockEntity pulser) {
+        assert level != null;
+        if(level.isClientSide) {
+            return;
+        }
+        if(delay_timer > 0) {
+            delay_timer--;
+            return;
+        }
+        run(pulser);
+        delay(2);
     }
 }

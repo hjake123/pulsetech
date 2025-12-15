@@ -29,14 +29,12 @@ public class ScopeBlockRenderer implements BlockEntityRenderer<ScopeBlockEntity>
         stack.pushPose();
         adjustForFacing(stack, scope.getBlockState().getValue(PulseBlock.FACING));
         Sequence pattern = scope.getPattern();
-        for (int i = pattern.length() - 14; i < pattern.length(); i++) {
-            if (i < 0) {
-                continue;
-            }
-            if (pattern.get(i)) {
-                drawDisplayBox(consumer, stack, 0xFFFF0000, i, 4, i + 1, 5);
-            } else {
+        for (int i = 0; i < 14; i++) {
+            if (i >= pattern.length() || !pattern.get(i)) {
                 drawDisplayBox(consumer, stack, 0xFFAA0000, i, 1, i + 1, 2);
+            }
+            else {
+                drawDisplayBox(consumer, stack, 0xFFFF0000, i, 4, i + 1, 5);
             }
         }
 
