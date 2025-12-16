@@ -33,6 +33,7 @@ public class ConsoleScreen extends Screen {
         super(Component.translatable("block.pulsetech.console"));
         this.pos = pos;
         this.prior_lines_str = lines;
+        past_commands.addAll(Arrays.stream(prior_lines_str.split("\n")).filter(line -> line.startsWith(">")).map(line -> line.substring(2)).toList());
 
         if (Minecraft.getInstance().level.getBlockState(pos).getBlock() instanceof ConsoleBlock console_block) {
             this.color = console_block.getColor();
