@@ -62,4 +62,45 @@ public class ScreenBlock extends PulseBlock {
                 }
             });
 
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> CLEAR_BG = ProtocolCommands.COMMANDS.register("screen/clear_bg", () ->
+            new ProtocolCommand(0) {
+                @Override
+                public void run(ExecutionContext context) {
+                    if(context.block() instanceof ScreenBlockEntity screen) {
+                        screen.setBackgroundColor(Color.black());
+                        screen.sendUpdate();
+                    }
+                }
+            });
+
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> PEN_COLOR = ProtocolCommands.COMMANDS.register("screen/pen_color", () ->
+            new ProtocolCommand(3) {
+                @Override
+                public void run(ExecutionContext context) {
+                    if(context.block() instanceof ScreenBlockEntity screen) {
+                        screen.setPenColor(new Color(Byte.toUnsignedInt(context.params().getFirst()), Byte.toUnsignedInt(context.params().get(1)), Byte.toUnsignedInt(context.params().get(2))));
+                    }
+                }
+            });
+
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> RESET_PEN_COLOR = ProtocolCommands.COMMANDS.register("screen/reset_pen_color", () ->
+            new ProtocolCommand(0) {
+                @Override
+                public void run(ExecutionContext context) {
+                    if(context.block() instanceof ScreenBlockEntity screen) {
+                        screen.setPenColor(Color.white());
+                    }
+                }
+            });
+
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> MARK = ProtocolCommands.COMMANDS.register("screen/mark", () ->
+            new ProtocolCommand(2) {
+                @Override
+                public void run(ExecutionContext context) {
+                    if(context.block() instanceof ScreenBlockEntity screen) {
+                        screen.drawPixel(context.params().getFirst(), context.params().get(1));
+                        screen.sendUpdate();
+                    }
+                }
+            });
 }

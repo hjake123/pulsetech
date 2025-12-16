@@ -34,7 +34,9 @@ public class ScreenBlockRenderer implements BlockEntityRenderer<ScreenBlockEntit
         ScreenData data = screen.getScreenData();
         drawDisplayBox(consumer, stack, 0xFF000000 | data.bg_color().hex(), 0, 0, 14, 14);
         stack.translate(0, 0, 0.005);
-
+        for(ScreenData.Pixel pixel : data.fg()) {
+            drawDisplayBox(consumer, stack, pixel.color().hex(), pixel.x(), pixel.y(), pixel.x() + 1, pixel.y()+1);
+        }
         stack.popPose();
     }
 

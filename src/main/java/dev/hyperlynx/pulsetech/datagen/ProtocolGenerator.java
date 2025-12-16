@@ -42,8 +42,12 @@ public class ProtocolGenerator extends DataMapProvider {
                 )
 
                 .add(ModBlockEntityTypes.SCREEN,
-                        ProtocolBuilder.builder(2)
+                        ProtocolBuilder.builder(3)
                                 .add(ScreenBlock.BG)
+                                .add(ScreenBlock.CLEAR_BG)
+                                .add(ScreenBlock.PEN_COLOR)
+                                .add(ScreenBlock.RESET_PEN_COLOR)
+                                .add(ScreenBlock.MARK)
                                 .build(), false
         );
 

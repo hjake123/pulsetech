@@ -75,6 +75,12 @@
   "protocol.pulsetech.name.scanner/check": "CHECK",
   "protocol.pulsetech.description.scanner/check": "Emit a pulse if any matching entities are within 16 blocks",
   "protocol.pulsetech.parameters.scanner/check": "",
+  "protocol.pulsetech.name.screen/bg": "SET BG",
+  "protocol.pulsetech.description.screen/bg": "Set the background color",
+  "protocol.pulsetech.parameters.screen/bg": "Red Green Blue",
+  "protocol.pulsetech.name.screen/clear_bg": "CLEAR BG",
+  "protocol.pulsetech.description.screen/clear_bg": "Reset the background color to black",
+  "protocol.pulsetech.parameters.screen/clear_bg": "",
   "pulsetech.parameters": "Parameters:",
   "pulsetech.none": "none",
   "console.pulsetech.invalid_color": "Invalid color string"

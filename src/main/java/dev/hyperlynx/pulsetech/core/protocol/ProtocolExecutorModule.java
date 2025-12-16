@@ -104,6 +104,11 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
                     if(active_parameters.size() == active_command.parameterCount()) {
                         state = State.RUN;
                     } else {
+                        if (active_parameters.size() > active_command.parameterCount()) {
+                            Pulsetech.LOGGER.error("Accepted too many parameters for command! This should never happen. Attempting to run anyway...");
+                            state= State.RUN;
+                            return true;
+                        }
                         return false;
                     }
                 }
