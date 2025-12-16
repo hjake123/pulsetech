@@ -124,7 +124,7 @@ public class Sequence implements Comparable<Sequence> {
     public static Sequence fromByte(byte n) {
         Sequence sequence = truncatedFromInt(Math.abs(n));
         while(sequence.length() < 7) {
-            sequence.append(false);
+            sequence.append(n < 0);
         }
         sequence.append(n < 0);
         return sequence;
@@ -134,13 +134,9 @@ public class Sequence implements Comparable<Sequence> {
     /// Affects the read cursor.
     public byte toByte() {
         byte n = 0;
-        boolean negative = get(7);
-        for(int i = length() - 2; i >= 0; i--) {
+        for(int i = length() - 1; i >= 0; i--) {
             boolean b = get(i);
             n = (byte) (n << 1 | (b ? 1 : 0));
-        }
-        if(negative) {
-            n *= -1;
         }
         return n;
     }
