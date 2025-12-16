@@ -11,6 +11,7 @@ import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternBlock;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlock;
 import dev.hyperlynx.pulsetech.feature.scope.ScopeBlock;
+import dev.hyperlynx.pulsetech.feature.screen.ScreenBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -55,4 +56,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<ScopeBlock> SCOPE = BLOCKS.register("scope", () ->
             new ScopeBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BULB).lightLevel(state -> 0)));
+
+    public static final DeferredBlock<ScreenBlock> SCREEN = BLOCKS.register("screen", () ->
+            new ScreenBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_TRAPDOOR)));
 }

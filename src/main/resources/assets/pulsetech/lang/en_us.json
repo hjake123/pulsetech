@@ -76,5 +76,6 @@
   "protocol.pulsetech.description.scanner/check": "Emit a pulse if any matching entities are within 16 blocks",
   "protocol.pulsetech.parameters.scanner/check": "",
   "pulsetech.parameters": "Parameters:",
-  "pulsetech.none": "none"
+  "pulsetech.none": "none",
+  "console.pulsetech.invalid_color": "Invalid color string"
 }

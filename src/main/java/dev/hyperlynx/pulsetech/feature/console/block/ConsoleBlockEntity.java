@@ -9,6 +9,7 @@ import dev.hyperlynx.pulsetech.feature.console.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.feature.console.macros.Macros;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
+import dev.hyperlynx.pulsetech.util.Color;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
@@ -24,6 +25,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+
+import static java.util.Map.entry;
 
 public class ConsoleBlockEntity extends PulseBlockEntity {
     ConsoleEmitterModule emitter = new ConsoleEmitterModule();
@@ -54,7 +57,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
         DEFINE,
         SET_DELAY,
         FORGET,
-        NUM, EMIT
+        NUM, COLOR, EMIT
     }
 
     // The mode of the entire Console block. Only changed by specific commands.
@@ -65,8 +68,8 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
         OUTPUT_THEN_LISTEN
     }
 
-    private final Map<String, BiConsumer<ServerPlayer, ConsoleBlockEntity>> BUILT_IN_COMMANDS = Map.of(
-            "help", (player, console) -> {
+    private final Map<String, BiConsumer<ServerPlayer, ConsoleBlockEntity>> BUILT_IN_COMMANDS = Map.ofEntries(
+            entry("help", (player, console) -> {
                 StringBuilder help_builder = new StringBuilder();
                 addBuiltInInfo(help_builder);
                 help_builder.append("\n");
@@ -78,38 +81,41 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
                     help_builder.append("\n");
                 }
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), help_builder.toString()));
-            },
-            "clear", (player, console) -> {
+            }),
+            entry("clear", (player, console) -> {
                 PacketDistributor.sendToPlayer(player, new ConsolePriorLinesPayload(getBlockPos(), ""));
-            },
-            "stop", (player, console) -> {
+            }),
+            entry("stop", (player, console) -> {
                 console.setOperationMode(OperationMode.OUTPUT);
                 console.setMode(CommandMode.PARSE);
                 emitter.reset();
                 setChanged();
-            },
-            "define", (player, console) -> {
+            }),
+            entry("define", (player, console) -> {
                 console.setMode(CommandMode.DEFINE);
-            },
-            "forget", (player, console) -> {
+            }),
+            entry("forget", (player, console) -> {
                 console.setMode(CommandMode.FORGET);
-            },
-            "loop", (player, console) -> {
+            }),
+            entry("loop", (player, console) -> {
                 console.setOperationMode(OperationMode.LOOP_OUTPUT);
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.looping").getString()));
-            },
-            "wait", (player, console) -> {
+            }),
+            entry("wait", (player, console) -> {
                 console.setMode(CommandMode.SET_DELAY);
-           },
-            "listen", (player, console) -> {
+            }),
+            entry("listen", (player, console) -> {
                 console.setOperationMode(OperationMode.OUTPUT_THEN_LISTEN);
-            },
-            "emit", (player, console) -> {
+            }),
+            entry("emit", (player, console) -> {
                 console.setMode(CommandMode.EMIT);
-            },
-            "num", (player, console) -> {
+            }),
+            entry("num", (player, console) -> {
                 console.setMode(CommandMode.NUM);
-            }
+            }),
+            entry("color", (player, console) -> {
+                console.setMode(CommandMode.COLOR);
+            })
     );
 
     private void setOperationMode(OperationMode operation_mode) {
@@ -187,6 +193,19 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
                     }
                     catch (NumberFormatException e) {
                         PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_number").getString()));
+                    }
+                    command_mode = CommandMode.PARSE;
+                }
+                case COLOR -> {
+                    try {
+                        Color color = new Color(Integer.parseInt(token, 16));
+                        emitter.enqueueTransmission(Sequence.fromByte((byte) color.red));
+                        emitter.enqueueTransmission(Sequence.fromByte((byte) color.green));
+                        emitter.enqueueTransmission(Sequence.fromByte((byte) color.blue));
+                        emitter.setActive(true);
+                    }
+                    catch (NumberFormatException e) {
+                        PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_color").getString()));
                     }
                     command_mode = CommandMode.PARSE;
                 }

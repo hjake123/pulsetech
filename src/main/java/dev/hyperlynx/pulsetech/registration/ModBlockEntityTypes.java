@@ -9,6 +9,7 @@ import dev.hyperlynx.pulsetech.feature.pattern.block.PatternDetectorBlockEntity;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlockEntity;
 import dev.hyperlynx.pulsetech.feature.scope.ScopeBlockEntity;
+import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -56,4 +57,8 @@ public class ModBlockEntityTypes {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ScopeBlockEntity>> SCOPE =
             TYPES.register("scope", () ->
                     BlockEntityType.Builder.of(ScopeBlockEntity::new, ModBlocks.SCOPE.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ScreenBlockEntity>> SCREEN =
+            TYPES.register("screen", () ->
+                    BlockEntityType.Builder.of(ScreenBlockEntity::new, ModBlocks.SCREEN.get()).build(null));
 }

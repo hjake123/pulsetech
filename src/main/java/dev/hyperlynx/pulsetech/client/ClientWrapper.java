@@ -1,7 +1,9 @@
 package dev.hyperlynx.pulsetech.client;
 
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
+import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
 import net.minecraft.core.BlockPos;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /// The ONLY class within the client package that is safe to call upon from outside the package!
 public class ClientWrapper {
@@ -25,5 +27,7 @@ public class ClientWrapper {
         PulsetechClient.openDatasheetScreen(datasheet);
     }
 
-
+    public static void acceptScreenBlockPayload(ScreenData screenData, IPayloadContext context) {
+        PulsetechClient.updateScreenBlock(screenData);
+    }
 }

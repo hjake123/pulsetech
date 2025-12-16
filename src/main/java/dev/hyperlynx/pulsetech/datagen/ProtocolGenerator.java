@@ -3,6 +3,7 @@ package dev.hyperlynx.pulsetech.datagen;
 import dev.hyperlynx.pulsetech.core.protocol.*;
 import dev.hyperlynx.pulsetech.feature.controller.ControllerBlock;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlock;
+import dev.hyperlynx.pulsetech.feature.screen.ScreenBlock;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -38,7 +39,13 @@ public class ProtocolGenerator extends DataMapProvider {
                                 .add(ScannerBlock.COUNT)
                                 .add(ScannerBlock.FIND_NEAREST)
                                 .build(), false
-                );
+                )
+
+                .add(ModBlockEntityTypes.SCREEN,
+                        ProtocolBuilder.builder(2)
+                                .add(ScreenBlock.BG)
+                                .build(), false
+        );
 
     }
 }

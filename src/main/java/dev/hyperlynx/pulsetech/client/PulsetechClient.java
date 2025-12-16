@@ -7,8 +7,11 @@ import dev.hyperlynx.pulsetech.client.pattern.SequenceChooseScreen;
 import dev.hyperlynx.pulsetech.client.blocktag.NumberBlockRenderer;
 import dev.hyperlynx.pulsetech.client.blocktag.PatternBlockRenderer;
 import dev.hyperlynx.pulsetech.client.console.ConsoleScreen;
+import dev.hyperlynx.pulsetech.client.screen.ScreenBlockRenderer;
 import dev.hyperlynx.pulsetech.core.PatternHolder;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
+import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
+import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -37,6 +40,7 @@ public class PulsetechClient {
         event.registerBlockEntityRenderer(ModBlockEntityTypes.NUMBER_EMITTER.get(), NumberBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.NUMBER_MONITOR.get(), NumberBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.SCOPE.get(), ScopeBlockRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntityTypes.SCREEN.get(), ScreenBlockRenderer::new);
     }
 
     protected static void openConsoleScreen(BlockPos pos, String prior_lines) {
@@ -70,5 +74,11 @@ public class PulsetechClient {
 
     public static void openDatasheetScreen(Datasheet datasheet) {
         Minecraft.getInstance().setScreen(new DatasheetScreen(datasheet));
+    }
+
+    public static void updateScreenBlock(ScreenData screenData) {
+        if(Minecraft.getInstance().level.getBlockEntity(screenData.pos()) instanceof ScreenBlockEntity screen) {
+            screen.setScreenData(screenData);
+        }
     }
 }
