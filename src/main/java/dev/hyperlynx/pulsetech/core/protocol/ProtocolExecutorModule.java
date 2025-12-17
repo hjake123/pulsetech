@@ -7,6 +7,8 @@ import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.core.module.NumberSensorModule;
 import dev.hyperlynx.pulsetech.core.module.SequenceModule;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetEntry;
+import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -19,10 +21,15 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
     private final List<Byte> active_parameters;
     private final NumberSensorModule parameter_sensor;
 
-    private enum State {
+    private enum State implements StringRepresentable {
         AWAIT_COMMAND,
         AWAIT_PARAMETER,
-        RUN
+        RUN;
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return this.name();
+        }
     }
 
     public @Nullable Protocol fetchProtocol(ProtocolBlockEntity block) {
@@ -37,7 +44,8 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
                     Codec.BOOL.fieldOf("active").forGetter(SequenceModule::isActive),
                     ProtocolCommand.CODEC.optionalFieldOf("active_command").forGetter(ProtocolExecutorModule::activeCommand),
                     Codec.BYTE.listOf().fieldOf("params").forGetter(ProtocolExecutorModule::activeParams),
-                    NumberSensorModule.CODEC.fieldOf("param_sensor").forGetter(ProtocolExecutorModule::paramSensor)
+                    NumberSensorModule.CODEC.fieldOf("param_sensor").forGetter(ProtocolExecutorModule::paramSensor),
+                    Codec.STRING.xmap(State::valueOf, State::getSerializedName).fieldOf("state").forGetter(ProtocolExecutorModule::state)
             ).apply(instance, ProtocolExecutorModule::new)
     );
 
@@ -53,19 +61,24 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
         return Optional.ofNullable(active_command);
     }
 
+    private State state() {
+        return state;
+    }
+
     public ProtocolExecutorModule() {
         this.active_parameters = new ArrayList<>();
         this.parameter_sensor = new NumberSensorModule();
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private ProtocolExecutorModule(Sequence buffer, int delay, boolean active, Optional<ProtocolCommand> active_command, List<Byte> active_parameters, NumberSensorModule parameter_sensor) {
+    private ProtocolExecutorModule(Sequence buffer, int delay, boolean active, Optional<ProtocolCommand> active_command, List<Byte> active_parameters, NumberSensorModule parameter_sensor, State state) {
         this.buffer = buffer;
         delay_timer = delay;
         this.active = active;
         active_command.ifPresent(protocolCommand -> this.active_command = protocolCommand);
         this.active_parameters = new ArrayList<>(active_parameters);
         this.parameter_sensor = parameter_sensor;
+        this.state = state;
     }
 
     @Override
@@ -86,6 +99,7 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
                 } else if (buffer.length() == protocol.sequenceLength()) {
                     ProtocolCommand command = protocol.getCommand(buffer);
                     if(command != null) {
+                        Pulsetech.LOGGER.debug("Matched command for {} with {} parameters", buffer, command.parameterCount());
                         active_command = command;
                         active_parameters.clear();
                         buffer.clear();

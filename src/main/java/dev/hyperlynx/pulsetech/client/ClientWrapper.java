@@ -2,6 +2,7 @@ package dev.hyperlynx.pulsetech.client;
 
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
+import dev.hyperlynx.pulsetech.feature.screen.ScreenUpdatePayload;
 import net.minecraft.core.BlockPos;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -27,7 +28,7 @@ public class ClientWrapper {
         PulsetechClient.openDatasheetScreen(datasheet);
     }
 
-    public static void acceptScreenBlockPayload(ScreenData screenData, IPayloadContext context) {
-        PulsetechClient.updateScreenBlock(screenData);
+    public static void acceptScreenBlockPayload(ScreenUpdatePayload payload, IPayloadContext context) {
+        PulsetechClient.updateScreenBlock(payload.data(), payload.pos());
     }
 }

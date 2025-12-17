@@ -7,6 +7,7 @@ import dev.hyperlynx.pulsetech.feature.console.OpenConsolePayload;
 import dev.hyperlynx.pulsetech.feature.console.macros.Macros;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
+import dev.hyperlynx.pulsetech.registration.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.chat.Component;
@@ -53,7 +54,7 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
         if(level.isClientSide()) {
             return ItemInteractionResult.SUCCESS;
         }
-        if (level.getBlockEntity(pos) instanceof ConsoleBlockEntity console && stack.is(Items.PAPER)) { // TODO Paper as placeholder
+        if (level.getBlockEntity(pos) instanceof ConsoleBlockEntity console && stack.is(ModItems.DATA_CELL)) {
             Macros console_macros = console.getMacros();
             if (stack.has(ModComponentTypes.MACROS)) {
                 // There are stored macros that need to be synced to the console, and merged into the data on the item

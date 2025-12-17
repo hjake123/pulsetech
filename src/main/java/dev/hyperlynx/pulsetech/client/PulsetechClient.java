@@ -76,8 +76,8 @@ public class PulsetechClient {
         Minecraft.getInstance().setScreen(new DatasheetScreen(datasheet));
     }
 
-    public static void updateScreenBlock(ScreenData screenData) {
-        if(Minecraft.getInstance().level.getBlockEntity(screenData.pos()) instanceof ScreenBlockEntity screen) {
+    public static void updateScreenBlock(ScreenData screenData, BlockPos pos) {
+        if(Minecraft.getInstance().level.getBlockEntity(pos) instanceof ScreenBlockEntity screen) {
             screen.setScreenData(screenData);
         }
     }

@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.registration;
 
+import dev.hyperlynx.pulsetech.feature.datacell.DataCellItem;
 import net.minecraft.world.item.BlockItem;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -26,5 +27,8 @@ public class ModItems {
 
     public static final DeferredItem<DatasheetItem> DATASHEET = ITEMS.registerItem("datasheet",  (props) ->
             new DatasheetItem(props.stacksTo(1)));
+
+    public static final DeferredItem<DataCellItem> DATA_CELL = ITEMS.registerItem("data_cell",  (props) ->
+            new DataCellItem(props.stacksTo(1)));
 
 }

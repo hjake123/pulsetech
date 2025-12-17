@@ -48,6 +48,9 @@ public class ProtocolGenerator extends DataMapProvider {
                                 .add(ScreenBlock.PEN_COLOR)
                                 .add(ScreenBlock.RESET_PEN_COLOR)
                                 .add(ScreenBlock.MARK)
+                                .add(ScreenBlock.BOX)
+                                .add(ScreenBlock.TOGGLE_FG)
+                                .add(ScreenBlock.CLEAR_FG)
                                 .build(), false
         );
 

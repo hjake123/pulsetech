@@ -4,8 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import dev.hyperlynx.pulsetech.core.PulseBlock;
-import dev.hyperlynx.pulsetech.core.Sequence;
-import dev.hyperlynx.pulsetech.feature.scope.ScopeBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
 import net.minecraft.client.renderer.LightTexture;
@@ -33,9 +31,13 @@ public class ScreenBlockRenderer implements BlockEntityRenderer<ScreenBlockEntit
         adjustForFacing(stack, screen.getBlockState().getValue(PulseBlock.FACING));
         ScreenData data = screen.getScreenData();
         drawDisplayBox(consumer, stack, 0xFF000000 | data.bg_color().hex(), 0, 0, 14, 14);
-        stack.translate(0, 0, 0.005);
-        for(ScreenData.Pixel pixel : data.fg()) {
-            drawDisplayBox(consumer, stack, pixel.color().hex(), pixel.x(), pixel.y(), pixel.x() + 1, pixel.y()+1);
+        if(data.fg_visible()) {
+            stack.translate(0, 0, 0.005);
+            for(int index : data.fg().keySet()) {
+                int x = index % 14;
+                int y = index / 14;
+                drawDisplayBox(consumer, stack, data.fg().get(index).hex(), x, y, x + 1, y + 1);
+            }
         }
         stack.popPose();
     }
@@ -64,7 +66,7 @@ public class ScreenBlockRenderer implements BlockEntityRenderer<ScreenBlockEntit
     }
 
     private void drawDisplayBox(VertexConsumer consumer, PoseStack stack, int color, int display_x1, int display_y1, int display_x2, int display_y2) {
-        drawDisplayBoxRaw(consumer, stack, color, display_x1 + 2, display_y1 + 2, display_x2 + 2, display_y2 + 2);
+        drawDisplayBoxRaw(consumer, stack, color, display_x1 + 1, display_y1 + 1, display_x2 + 1, display_y2 + 1);
     }
 
     private void drawDisplayBoxRaw(VertexConsumer consumer, PoseStack stack, int color, int display_x1, int display_y1, int display_x2, int display_y2) {

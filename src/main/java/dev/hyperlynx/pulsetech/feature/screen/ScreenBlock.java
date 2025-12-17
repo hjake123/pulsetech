@@ -5,16 +5,25 @@ import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.core.protocol.ExecutionContext;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommand;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
-import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlockEntity;
+import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlockEntity;
+import dev.hyperlynx.pulsetech.feature.console.macros.Macros;
+import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
+import dev.hyperlynx.pulsetech.registration.ModItems;
 import dev.hyperlynx.pulsetech.util.Color;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -22,10 +31,10 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
 public class ScreenBlock extends PulseBlock {
-    protected static final VoxelShape SHAPE_EAST = Shapes.or(Block.box(0, 0, 0, 2, 2, 16), Block.box(0, 2, 0, 2, 14, 2), Block.box(0, 2, 14, 2, 14, 16), Block.box(0, 14, 0, 2, 16, 16), Block.box(14, 0, 0, 16, 2, 16), Block.box(2, 0, 14, 14, 2, 16), Block.box(2, 0, 0, 14, 2, 2), Block.box(1, 2, 2, 6, 14, 14), Block.box(2, 2, 0, 6, 6, 2), Block.box(2, 2, 14, 6, 6, 16));
-    protected static final VoxelShape SHAPE_SOUTH = Shapes.or(Block.box(0, 0, 0, 16, 2, 2), Block.box(0, 2, 0, 2, 14, 2), Block.box(14, 2, 0, 16, 14, 2), Block.box(0, 14, 0, 16, 16, 2), Block.box(0, 0, 14, 16, 2, 16), Block.box(14, 0, 2, 16, 2, 14), Block.box(0, 0, 2, 2, 2, 14), Block.box(2, 2, 1, 14, 14, 6), Block.box(0, 2, 2, 2, 6, 6), Block.box(14, 2, 2, 16, 6, 6));
-    protected static final VoxelShape SHAPE_WEST = Shapes.or(Block.box(14, 0, 0, 16, 2, 16), Block.box(14, 2, 14, 16, 14, 16), Block.box(14, 2, 0, 16, 14, 2), Block.box(14, 14, 0, 16, 16, 16), Block.box(0, 0, 0, 2, 2, 16), Block.box(2, 0, 0, 14, 2, 2), Block.box(2, 0, 14, 14, 2, 16), Block.box(10, 2, 2, 15, 14, 14), Block.box(10, 2, 14, 14, 6, 16), Block.box(10, 2, 0, 14, 6, 2));
-    protected static final VoxelShape SHAPE_NORTH = Shapes.or(Block.box(0, 0, 14, 16, 2, 16), Block.box(14, 2, 14, 16, 14, 16), Block.box(0, 2, 14, 2, 14, 16), Block.box(0, 14, 14, 16, 16, 16), Block.box(0, 0, 0, 16, 2, 2), Block.box(0, 0, 2, 2, 2, 14), Block.box(14, 0, 2, 16, 2, 14), Block.box(2, 2, 10, 14, 14, 15), Block.box(14, 2, 10, 16, 6, 14), Block.box(0, 2, 10, 2, 6, 14));
+    protected static final VoxelShape SHAPE_EAST = Shapes.or(Block.box(0, 0, 0, 2, 1, 16), Block.box(0, 1, 0, 2, 15, 1), Block.box(0, 1, 15, 2, 15, 16), Block.box(0, 15, 0, 2, 16, 16), Block.box(14, 0, 0, 16, 2, 16), Block.box(2, 0, 14, 14, 2, 16), Block.box(2, 0, 0, 14, 2, 2), Block.box(1, 1, 1, 6, 15, 15), Block.box(2, 2, 0, 6, 6, 1), Block.box(2, 2, 15, 6, 6, 16));
+    protected static final VoxelShape SHAPE_SOUTH = Shapes.or(Block.box(0, 0, 0, 16, 1, 2), Block.box(0, 1, 0, 1, 15, 2), Block.box(15, 1, 0, 16, 15, 2), Block.box(0, 15, 0, 16, 16, 2), Block.box(0, 0, 14, 16, 2, 16), Block.box(14, 0, 2, 16, 2, 14), Block.box(0, 0, 2, 2, 2, 14), Block.box(1, 1, 1, 15, 15, 6), Block.box(0, 2, 2, 1, 6, 6), Block.box(15, 2, 2, 16, 6, 6));
+    protected static final VoxelShape SHAPE_WEST = Shapes.or(Block.box(14, 0, 0, 16, 1, 16), Block.box(14, 1, 15, 16, 15, 16), Block.box(14, 1, 0, 16, 15, 1), Block.box(14, 15, 0, 16, 16, 16), Block.box(0, 0, 0, 2, 2, 16), Block.box(2, 0, 0, 14, 2, 2), Block.box(2, 0, 14, 14, 2, 16), Block.box(10, 1, 1, 15, 15, 15), Block.box(10, 2, 15, 14, 6, 16), Block.box(10, 2, 0, 14, 6, 1));
+    protected static final VoxelShape SHAPE_NORTH = Shapes.or(Block.box(0, 0, 14, 16, 1, 16), Block.box(15, 1, 14, 16, 15, 16), Block.box(0, 1, 14, 1, 15, 16), Block.box(0, 15, 14, 16, 16, 16), Block.box(0, 0, 0, 16, 2, 2), Block.box(0, 0, 2, 2, 2, 14), Block.box(14, 0, 2, 16, 2, 14), Block.box(1, 1, 10, 15, 15, 15), Block.box(15, 2, 10, 16, 6, 14), Block.box(0, 2, 10, 1, 6, 14));
 
     public ScreenBlock(Properties properties) {
         super(properties);
@@ -49,6 +58,25 @@ public class ScreenBlock extends PulseBlock {
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new ScreenBlockEntity(blockPos, blockState);
+    }
+
+    @Override
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if(level.isClientSide()) {
+            return ItemInteractionResult.SUCCESS;
+        }
+        if (level.getBlockEntity(pos) instanceof ScreenBlockEntity screen && stack.is(ModItems.DATA_CELL)) {
+            ScreenData data = screen.getScreenData();
+            if (stack.has(ModComponentTypes.SCREEN_DATA)) {
+                screen.setScreenData(stack.get(ModComponentTypes.SCREEN_DATA));
+                screen.sendUpdate();
+            } else {
+                // There are no stored macros, or shift is being held, so just set them on the item
+                stack.set(ModComponentTypes.SCREEN_DATA, data);
+            }
+            return ItemInteractionResult.SUCCESS;
+        }
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     public static final DeferredHolder<ProtocolCommand, ProtocolCommand> BG = ProtocolCommands.COMMANDS.register("screen/bg", () ->
@@ -99,6 +127,39 @@ public class ScreenBlock extends PulseBlock {
                 public void run(ExecutionContext context) {
                     if(context.block() instanceof ScreenBlockEntity screen) {
                         screen.drawPixel(context.params().getFirst(), context.params().get(1));
+                        screen.sendUpdate();
+                    }
+                }
+            });
+
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> BOX = ProtocolCommands.COMMANDS.register("screen/box", () ->
+            new ProtocolCommand(4) {
+                @Override
+                public void run(ExecutionContext context) {
+                    if(context.block() instanceof ScreenBlockEntity screen) {
+                        screen.drawBox(context.params().getFirst(), context.params().get(1), context.params().get(2), context.params().get(3));
+                        screen.sendUpdate();
+                    }
+                }
+            });
+
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> TOGGLE_FG = ProtocolCommands.COMMANDS.register("screen/toggle_fg", () ->
+            new ProtocolCommand(0) {
+                @Override
+                public void run(ExecutionContext context) {
+                    if(context.block() instanceof ScreenBlockEntity screen) {
+                        screen.toggleForeground();
+                        screen.sendUpdate();
+                    }
+                }
+            });
+
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> CLEAR_FG = ProtocolCommands.COMMANDS.register("screen/clear_fg", () ->
+            new ProtocolCommand(0) {
+                @Override
+                public void run(ExecutionContext context) {
+                    if(context.block() instanceof ScreenBlockEntity screen) {
+                        screen.clearForeground();
                         screen.sendUpdate();
                     }
                 }

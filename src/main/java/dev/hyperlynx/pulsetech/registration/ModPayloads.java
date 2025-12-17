@@ -7,6 +7,7 @@ import dev.hyperlynx.pulsetech.feature.console.OpenConsolePayload;
 import dev.hyperlynx.pulsetech.feature.pattern.OpenSequenceChooserPayload;
 import dev.hyperlynx.pulsetech.feature.pattern.SequenceSelectPayload;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
+import dev.hyperlynx.pulsetech.feature.screen.ScreenUpdatePayload;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -56,8 +57,8 @@ public class ModPayloads {
         );
 
         registrar.playToClient(
-                ScreenData.TYPE,
-                ScreenData.STREAM_CODEC,
+                ScreenUpdatePayload.TYPE,
+                ScreenUpdatePayload.STREAM_CODEC,
                 ClientWrapper::acceptScreenBlockPayload
         );
     }

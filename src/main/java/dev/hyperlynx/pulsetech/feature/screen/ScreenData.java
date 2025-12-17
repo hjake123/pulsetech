@@ -4,53 +4,53 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.util.Color;
+import dev.hyperlynx.pulsetech.util.MapListPairConverter;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.util.Tuple;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-public record ScreenData(BlockPos pos, Color bg_color, List<Pixel> fg) implements CustomPacketPayload {
+public record ScreenData(Color bg_color, Map<Integer, Color> fg, boolean fg_visible) {
+    private static final MapListPairConverter<Integer, Color> converter = new MapListPairConverter<>();
+
     public static final Codec<ScreenData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            BlockPos.CODEC.fieldOf("pos").forGetter(ScreenData::pos),
             Color.CODEC.fieldOf("bg_color").forGetter(ScreenData::bg_color),
-            Pixel.CODEC.listOf().fieldOf("fg").forGetter(ScreenData::fg)
+            Codec.pair(
+                    Codec.INT.fieldOf("i").codec(),
+                    Color.CODEC.fieldOf("color").codec()
+            ).listOf().xmap(
+                    converter::toMap,
+                    converter::fromMap
+            ).fieldOf("fg").forGetter(ScreenData::fg),
+            Codec.BOOL.fieldOf("fg_visible").forGetter(ScreenData::fg_visible)
     ).apply(instance, ScreenData::new));
 
     public static final StreamCodec<ByteBuf, ScreenData> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
-    public static final Type<ScreenData> TYPE = new Type<>(Pulsetech.location("screen_data"));
-
-    public static ScreenData blank(BlockPos pos) {
-        return new ScreenData(pos, Color.black(), new ArrayList<>());
+    public static ScreenData blank() {
+        return new ScreenData(Color.black(), new HashMap<>(), true);
     }
 
     public ScreenData withBackgroundColor(Color color) {
-        return new ScreenData(pos(), color, fg());
+        return new ScreenData(color, fg(), fg_visible());
     }
 
-    public ScreenData withForegroundPixels(Color color, List<Tuple<Integer, Integer>> coords) {
-        List<Pixel> modified_fg = new ArrayList<>(fg);
-        for(var xy : coords) {
-            modified_fg.add(new Pixel(color, xy.getA(), xy.getB()));
+    public void setPixel(Color color, int x, int y) {
+        if(x < 0 || y < 0 || x > 13 || y > 13) {
+            return;
         }
-        return new ScreenData(pos(), bg_color(), modified_fg);
+        fg.put(y * 14 + x, color);
     }
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public ScreenData toggleForegroundVisible() {
+        return new ScreenData(bg_color(), fg(), !fg_visible());
     }
 
-    public record Pixel(Color color, int x, int y) {
-        public static final Codec<Pixel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Color.CODEC.fieldOf("color").forGetter(Pixel::color),
-                Codec.INT.fieldOf("x").forGetter(Pixel::x),
-                Codec.INT.fieldOf("y").forGetter(Pixel::y)
-        ).apply(instance, Pixel::new));
+    public void clearForeground() {
+        fg.clear();
     }
 }
