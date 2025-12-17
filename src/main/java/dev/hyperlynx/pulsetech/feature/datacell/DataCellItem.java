@@ -19,6 +19,10 @@ public class DataCellItem extends Item {
         super(properties);
     }
 
+    public static float getLoadedProperty(ItemStack stack) {
+        return stack.has(ModComponentTypes.MACROS) || stack.has(ModComponentTypes.SCREEN_DATA) ? 1.0F : 0.0F;
+    }
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         if(player.isShiftKeyDown()) {

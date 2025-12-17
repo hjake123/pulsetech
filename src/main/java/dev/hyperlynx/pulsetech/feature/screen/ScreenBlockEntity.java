@@ -13,6 +13,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.Objects;
+
 public class ScreenBlockEntity extends ProtocolBlockEntity {
     private ScreenData data = ScreenData.blank();
     private Color pen_color = Color.white();
@@ -67,13 +69,16 @@ public class ScreenBlockEntity extends ProtocolBlockEntity {
         data = data.toggleForegroundVisible();
     }
 
+    public boolean isNotBlank() {
+        return !data.fg().isEmpty() || !Objects.equals(data.bg_color(), Color.black());
+    }
+
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         data = ScreenData.CODEC.decode(NbtOps.INSTANCE, tag.get("ScreenData")).getPartialOrThrow().getFirst();
         pen_color = Color.CODEC.decode(NbtOps.INSTANCE, tag.get("PenColor")).getPartialOrThrow().getFirst();
     }
-
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
@@ -81,6 +86,7 @@ public class ScreenBlockEntity extends ProtocolBlockEntity {
         tag.put("PenColor", Color.CODEC.encodeStart(NbtOps.INSTANCE, pen_color).getPartialOrThrow());
     }
     // Create an update tag here. For block entities with only a few fields, this can just call #saveAdditional.
+
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();

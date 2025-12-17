@@ -10,6 +10,7 @@
   "block.pulsetech.scanner": "Scanner",
   "block.pulsetech.scope": "Pulse Scope",
   "item.pulsetech.datasheet": "Datasheet",
+  "item.pulsetech.data_cell": "Data Cell",
   "message.pulsetech.set_protocol": "Protocol has been updated",
   "message.pulsetech.no_protocol": "Please set a Protocol first",
   "pulsetech.needs_protocol": "Needs protocol",
@@ -102,8 +103,8 @@
   "pulsetech.parameters": "Parameters:",
   "pulsetech.none": "none",
   "console.pulsetech.invalid_color": "Invalid color string",
-  "pulsetech.synced_screen_data": "Synced screen data",
   "pulsetech.macros_stored": "macros stored",
   "pulsetech.contains_screen_data": "Contains screen data",
-  "pulsetech.data_cell_clear_instructions": "Shift + use to clear"
+  "pulsetech.data_cell_clear_instructions": "Shift + use to clear",
+  "pulsetech.screen_swapped": "Swapped screen data with data cell"
 }

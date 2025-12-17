@@ -60,7 +60,7 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
                 // There are stored macros that need to be synced to the console, and merged into the data on the item
                 Macros stored_macros = stack.get(ModComponentTypes.MACROS);
                 if (console_macros.equals(stored_macros)) {
-                    player.sendSystemMessage(Component.translatable("pulsetech.macros_up_to_date"));
+                    player.displayClientMessage(Component.translatable("pulsetech.macros_up_to_date"), true);
                     return ItemInteractionResult.SUCCESS;
                 }
                 Macros merged = console_macros.mergeWith(stored_macros);
@@ -68,9 +68,13 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
                 console.addMacros(merged.macros());
             } else {
                 // There are no stored macros, just set them on the item
+                if(console_macros.macros().isEmpty()) {
+                    // There are no macros at alL! Do nothing.
+                    return ItemInteractionResult.SUCCESS;
+                }
                 stack.set(ModComponentTypes.MACROS, console_macros);
             }
-            player.sendSystemMessage(Component.translatable("pulsetech.synced_macros"));
+            player.displayClientMessage(Component.translatable("pulsetech.synced_macros"), true);
             return ItemInteractionResult.SUCCESS;
         }
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;

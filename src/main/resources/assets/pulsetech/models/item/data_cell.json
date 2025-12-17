@@ -1,6 +1,16 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "pulsetech:item/data_cell"
-  }
+  "overrides": [
+    {
+      "predicate": {
+        "pulsetech:loaded": 0
+      },
+      "model": "pulsetech:item/data_cell_empty"
+    },
+    {
+      "predicate": {
+        "pulsetech:loaded": 1
+      },
+      "model": "pulsetech:item/data_cell_base"
+    }
+  ]
 }

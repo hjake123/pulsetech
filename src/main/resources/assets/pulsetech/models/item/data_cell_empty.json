@@ -1,0 +1,6 @@
+{
+  "parent": "pulsetech:item/data_cell_base",
+  "textures": {
+    "0": "pulsetech:item/data_cell_empty"
+  }
+}

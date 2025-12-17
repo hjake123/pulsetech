@@ -63,15 +63,23 @@ public class ScreenBlock extends PulseBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if(level.isClientSide()) {
-            return ItemInteractionResult.SUCCESS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (level.getBlockEntity(pos) instanceof ScreenBlockEntity screen && stack.is(ModItems.DATA_CELL)) {
             ScreenData data = screen.getScreenData();
             if (stack.has(ModComponentTypes.SCREEN_DATA)) {
-                screen.setScreenData(stack.get(ModComponentTypes.SCREEN_DATA));
+                ScreenData to_be_applied_to_screen = stack.get(ModComponentTypes.SCREEN_DATA);
+                if (screen.isNotBlank()) {
+                    // If the screen has existing screen data, swap them if they're different.
+                    if(data.equals(to_be_applied_to_screen)) {
+                        return ItemInteractionResult.SUCCESS;
+                    }
+                    stack.set(ModComponentTypes.SCREEN_DATA, screen.getScreenData());
+                    player.displayClientMessage(Component.translatable("pulsetech.screen_swapped"), true);
+                }
+                screen.setScreenData(to_be_applied_to_screen);
                 screen.sendUpdate();
-            } else {
-                // There are no stored macros, or shift is being held, so just set them on the item
+            } else if(screen.isNotBlank()) {
                 stack.set(ModComponentTypes.SCREEN_DATA, data);
             }
             return ItemInteractionResult.SUCCESS;

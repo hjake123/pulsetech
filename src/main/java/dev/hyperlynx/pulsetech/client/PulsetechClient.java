@@ -9,17 +9,22 @@ import dev.hyperlynx.pulsetech.client.blocktag.PatternBlockRenderer;
 import dev.hyperlynx.pulsetech.client.console.ConsoleScreen;
 import dev.hyperlynx.pulsetech.client.screen.ScreenBlockRenderer;
 import dev.hyperlynx.pulsetech.core.PatternHolder;
+import dev.hyperlynx.pulsetech.feature.datacell.DataCellItem;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
+import dev.hyperlynx.pulsetech.registration.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
 @Mod(value = Pulsetech.MODID, dist = Dist.CLIENT)
@@ -30,9 +35,19 @@ public class PulsetechClient {
         if(bus == null) {
             throw new IllegalStateException("Mod constructor needs event bus");
         }
+        bus.addListener(this::onClientSetup);
         bus.addListener(this::registerEntityRenderers);
     }
 
+    protected void onClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            ItemProperties.register(
+                    ModItems.DATA_CELL.get(),
+                    Pulsetech.location("loaded"),
+                    (stack, level, player, seed) -> DataCellItem.getLoadedProperty(stack)
+            );
+        });
+    }
 
     protected void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntityTypes.PATTERN_DETECTOR.get(), PatternBlockRenderer::new);
