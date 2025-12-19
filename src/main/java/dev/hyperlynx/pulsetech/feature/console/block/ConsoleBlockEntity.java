@@ -224,13 +224,17 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
             PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.num_usage").getString()));
         }
         if(command_mode.equals(CommandMode.DEFINE)) {
-            if(BUILT_IN_COMMANDS.containsKey(noun) || macros.containsKey(noun)) {
+            if(BUILT_IN_COMMANDS.containsKey(noun)) {
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.macro_name_taken").getString()));
             } else if(noun.isEmpty() || definition.isEmpty()) {
                 PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.define_help").getString() + noun));
             }
             else {
-                PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.defined").getString() + noun));
+                if (macros.containsKey(noun)) {
+                    PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.redefined").getString() + noun));
+                } else {
+                    PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.defined").getString() + noun));
+                }
                 macros.put(noun, new ArrayList<>(definition));
             }
         }
