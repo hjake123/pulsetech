@@ -143,5 +143,10 @@
   "pulsetech.macros_stored": "macros stored",
   "pulsetech.contains_screen_data": "Contains screen data",
   "pulsetech.data_cell_clear_instructions": "Shift + use to clear",
-  "pulsetech.screen_swapped": "Swapped screen data with data cell"
+  "pulsetech.screen_swapped": "Swapped screen data with data cell",
+  "tooltip.pulsetech.datasheet": "Right click on a Pulsetech block to view its info",
+  "pulsetech.linked_to_scanner": "Linked origin to scanner",
+  "pulsetech.failed_link_to_scanner": "Couldn't link to scanner",
+  "pulsetech.stored_scanner_pos": "Stored scanner position for linking",
+  "pulsetech.contains_scanner_link_pos": "Linked to a scanner"
 }

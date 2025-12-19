@@ -50,7 +50,7 @@ public class CannonBlock extends PulseBlock {
                 @Override
                 public void run(ExecutionContext context) {
                     if(context.block() instanceof CannonBlockEntity cannon) {
-                        cannon.setTarget(cannon.getBlockPos().offset(context.params().getFirst(), context.params().get(1), context.params().get(2)));
+                        cannon.setTargetOffset(context.params().getFirst(), context.params().get(1), context.params().get(2));
                     }
                 }
             });
