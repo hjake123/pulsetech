@@ -8,6 +8,9 @@ import dev.hyperlynx.pulsetech.feature.console.ConsoleEmitterModule;
 import dev.hyperlynx.pulsetech.feature.console.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.feature.console.macros.Macros;
+import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
+import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetEntry;
+import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetProvider;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import dev.hyperlynx.pulsetech.util.Color;
 import net.minecraft.core.BlockPos;
@@ -25,11 +28,10 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.stream.Stream;
 
 import static java.util.Map.entry;
 
-public class ConsoleBlockEntity extends PulseBlockEntity {
+public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetProvider {
     ConsoleEmitterModule emitter = new ConsoleEmitterModule();
     private BitSensorModule sensor = new BitSensorModule();
 
@@ -52,6 +54,8 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
         macros.putAll(other_macros);
     }
 
+
+
     // The mode of the current command being parsed. Resets with each new command.
     private enum CommandMode {
         PARSE,
@@ -64,11 +68,8 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
     // The mode of the entire Console block. Only changed by specific commands.
     private enum OperationMode {
         OUTPUT,
-        LOOP_OUTPUT,
-        LISTEN,
-        OUTPUT_THEN_LISTEN
+        LOOP_OUTPUT
     }
-
     private final Map<String, BiConsumer<ServerPlayer, ConsoleBlockEntity>> BUILT_IN_COMMANDS = Map.ofEntries(
             entry("help", (player, console) -> {
                 StringBuilder help_builder = new StringBuilder();
@@ -105,9 +106,6 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
             entry("wait", (player, console) -> {
                 console.setMode(CommandMode.SET_DELAY);
             }),
-            entry("listen", (player, console) -> {
-                console.setOperationMode(OperationMode.OUTPUT_THEN_LISTEN);
-            }),
             entry("emit", (player, console) -> {
                 console.setMode(CommandMode.EMIT);
             }),
@@ -132,8 +130,8 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
     public void processLine(String line, ServerPlayer player) {
         processTokenList(Arrays.stream(line.split(" ")).toList(), player, 0);
     }
-    private static final int MAX_STACK_DEPTH = 16;
 
+    private static final int MAX_STACK_DEPTH = 16;
     public void processTokenList(List<String> tokens, ServerPlayer player, int depth) {
         // If this function was recursively called by a macro too many times, don't execute.
         if(depth > MAX_STACK_DEPTH) {
@@ -348,12 +346,18 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
 
     @Override
     public void setActive(boolean active) {
-        if(operation_mode.equals(OperationMode.LISTEN)) {
-            // Don't change the activation outside of LISTEN mode.
-            if(sensor.getDelay() <= 0) {
-                sensor.setActive(active);
-            }
-        }
+        // NO-OP
+    }
+
+    @Override
+    public Datasheet getDatasheet() {
+        return new Datasheet(getBlockState().getBlock(), BUILT_IN_COMMANDS.keySet().stream().map(command ->
+            new DatasheetEntry(
+                    Component.literal(command),
+                    Component.translatable("console.pulsetech.description." + command),
+                    Component.translatable("console.pulsetech.parameters." + command),
+                    null)
+        ).toList());
     }
 
     @Override
@@ -367,24 +371,6 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
                 case LOOP_OUTPUT -> {
                     emitter.looping = true;
                     emitter.tick(slevel, this);
-                }
-                case OUTPUT_THEN_LISTEN -> {
-                    emitter.looping = false;
-                    emitter.tick(slevel, this);
-                    if(emitter.getBuffer().isEmpty()) {
-                        setOperationMode(OperationMode.LISTEN);
-                        emitter.setActive(false);
-                        sensor.reset();
-                        sensor.delay(2);
-                        if(saved_lines == null) {
-                            saved_lines = "/n";
-                        } else {
-                            saved_lines += "/n";
-                        }
-                    }
-                }
-                case LISTEN -> {
-                    sensor.tick(slevel, this);
                 }
             }
         }

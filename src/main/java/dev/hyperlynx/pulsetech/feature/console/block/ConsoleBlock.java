@@ -51,8 +51,11 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if(stack.is(ModItems.DATASHEET)) {
+            return ItemInteractionResult.FAIL;
+        }
         if(level.isClientSide()) {
-            return ItemInteractionResult.SUCCESS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (level.getBlockEntity(pos) instanceof ConsoleBlockEntity console && stack.is(ModItems.DATA_CELL)) {
             Macros console_macros = console.getMacros();
