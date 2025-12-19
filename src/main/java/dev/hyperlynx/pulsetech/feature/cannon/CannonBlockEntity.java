@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.feature.cannon;
 
+import com.mojang.datafixers.util.Pair;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerLinkable;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
@@ -8,13 +9,21 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 public class CannonBlockEntity extends ProtocolBlockEntity implements ScannerLinkable {
     private BlockPos target = getBlockPos();
     private BlockPos origin = getBlockPos();
+    private final List<Direction> nudge_directions = new ArrayList<>();
+    private int nudge_amount = 0;
 
     public CannonBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.CANNON.get(), pos, blockState);
@@ -36,10 +45,19 @@ public class CannonBlockEntity extends ProtocolBlockEntity implements ScannerLin
             level.destroyBlock(target, can_harvest, null);
             level.removeBlock(target, false);
         }
+        for(Direction n : nudge_directions) {
+            target = target.relative(n, nudge_amount);
+        }
     }
 
-    public void nudge(Direction direction, int amount) {
-        target = target.relative(direction, amount);
+    public void addNudge(Direction direction, int amount) {
+        nudge_directions.add(direction);
+        nudge_amount = amount;
+    }
+
+    public void resetNudge() {
+        nudge_directions.clear();
+        nudge_amount = 0;
     }
 
     @Override
@@ -47,12 +65,21 @@ public class CannonBlockEntity extends ProtocolBlockEntity implements ScannerLin
         super.loadAdditional(tag, registries);
         target = NbtUtils.readBlockPos(tag, "Target").orElseGet(this::getBlockPos);
         origin = NbtUtils.readBlockPos(tag, "Origin").orElseGet(this::getBlockPos);
+        if(tag.contains("NudgeDir")) {
+            nudge_directions.clear();
+            nudge_directions.addAll(Direction.CODEC.listOf().decode(NbtOps.INSTANCE, Objects.requireNonNull(tag.get("NudgeDirs"))).resultOrPartial().orElse(Pair.of(List.of(Direction.NORTH), new CompoundTag())).getFirst());
+
+        }
+        nudge_amount = tag.getInt("NudgeAmount");
     }
+
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.put("Target", NbtUtils.writeBlockPos(target));
         tag.put("Origin", NbtUtils.writeBlockPos(origin));
+        tag.put("NudgeDirs", Direction.CODEC.listOf().encodeStart(NbtOps.INSTANCE, nudge_directions).getPartialOrThrow());
+        tag.put("NudgeAmount", IntTag.valueOf(nudge_amount));
     }
 
     @Override

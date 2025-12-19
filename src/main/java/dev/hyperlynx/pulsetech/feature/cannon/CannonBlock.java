@@ -5,28 +5,11 @@ import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.core.protocol.ExecutionContext;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommand;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
-import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
-import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
-import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
-import dev.hyperlynx.pulsetech.registration.ModItems;
-import dev.hyperlynx.pulsetech.util.Color;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,23 +58,24 @@ public class CannonBlock extends PulseBlock {
                         int packed = context.params().getFirst() & 0xFF;
                         int reversed_distance = (packed & 0b11000000) >> 6;
                         int distance = ((reversed_distance & 0b01) << 1 ) | ((reversed_distance & 0b10) >> 1);
+                        cannon.resetNudge();
                         if((packed & 0b00000001) != 0) {
-                            cannon.nudge(Direction.UP, distance);
+                            cannon.addNudge(Direction.UP, distance);
                         }
                         if((packed & 0b00000010) != 0) {
-                            cannon.nudge(Direction.DOWN, distance);
+                            cannon.addNudge(Direction.DOWN, distance);
                         }
                         if((packed & 0b00000100) != 0) {
-                            cannon.nudge(Direction.NORTH, distance);
+                            cannon.addNudge(Direction.NORTH, distance);
                         }
                         if((packed & 0b00001000) != 0) {
-                            cannon.nudge(Direction.EAST, distance);
+                            cannon.addNudge(Direction.EAST, distance);
                         }
                         if((packed & 0b00010000) != 0) {
-                            cannon.nudge(Direction.SOUTH, distance);
+                            cannon.addNudge(Direction.SOUTH, distance);
                         }
                         if((packed & 0b00100000) != 0) {
-                            cannon.nudge(Direction.WEST, distance);
+                            cannon.addNudge(Direction.WEST, distance);
                         }
                     }
                 }
