@@ -81,6 +81,19 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
     }
 
     @Override
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        if(!(level.getBlockEntity(pos) instanceof PulseBlockEntity pulser)) {
+            return 0;
+        }
+        return pulser.isActive() ? 15 : 0;
+    }
+
+    @Override
+    protected boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         return (l, p, s, e) -> {
             if(e instanceof PulseBlockEntity entity) {
