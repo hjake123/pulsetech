@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -28,6 +29,11 @@ public class ProtocolBlockEntity extends PulseBlockEntity implements DatasheetPr
     public ProtocolBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
         executor = new ProtocolExecutorModule();
+    }
+
+    public @Nullable Protocol fetchProtocol() {
+        assert getType().builtInRegistryHolder() != null;
+        return getType().builtInRegistryHolder().getData(ProtocolDataMap.TYPE);
     }
 
     @Override
@@ -66,7 +72,7 @@ public class ProtocolBlockEntity extends PulseBlockEntity implements DatasheetPr
     @Override
     public Datasheet getDatasheet() {
         return new Datasheet(getBlockState().getBlock(), Component.translatable("description.pulsetech." + getBlockState().getBlock().getDescriptionId()),
-                executor.fetchProtocol(this).getCommands().entrySet().stream().map(entry -> {
+                fetchProtocol().getCommands().entrySet().stream().map(entry -> {
                     ResourceLocation command_location = ProtocolCommands.REGISTRY.getKey(entry.getKey());
                     Sequence command_sequence = entry.getValue();
                     return new DatasheetEntry(

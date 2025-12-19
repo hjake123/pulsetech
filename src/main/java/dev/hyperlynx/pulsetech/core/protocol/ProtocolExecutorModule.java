@@ -33,8 +33,7 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
     }
 
     public @Nullable Protocol fetchProtocol(ProtocolBlockEntity block) {
-        assert block.getType().builtInRegistryHolder() != null;
-        return block.getType().builtInRegistryHolder().getData(ProtocolDataMap.TYPE);
+        return block.fetchProtocol();
     }
 
     public static final Codec<ProtocolExecutorModule> CODEC = RecordCodecBuilder.create(instance ->
