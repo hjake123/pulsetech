@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.registration;
 
+import dev.hyperlynx.pulsetech.feature.cannon.CannonBlock;
 import dev.hyperlynx.pulsetech.feature.console.ConsoleColor;
 import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlock;
 import dev.hyperlynx.pulsetech.feature.controller.ControllerBlock;
@@ -59,4 +60,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<ScreenBlock> SCREEN = BLOCKS.register("screen", () ->
             new ScreenBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_TRAPDOOR)));
+
+    public static final DeferredBlock<CannonBlock> CANNON = BLOCKS.register("cannon", () ->
+            new CannonBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
 }

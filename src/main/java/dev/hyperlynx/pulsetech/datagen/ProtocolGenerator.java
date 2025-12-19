@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.datagen;
 
 import dev.hyperlynx.pulsetech.core.protocol.*;
+import dev.hyperlynx.pulsetech.feature.cannon.CannonBlock;
 import dev.hyperlynx.pulsetech.feature.controller.ControllerBlock;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlock;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlock;
@@ -52,7 +53,13 @@ public class ProtocolGenerator extends DataMapProvider {
                                 .add(ScreenBlock.TOGGLE_FG)
                                 .add(ScreenBlock.CLEAR_FG)
                                 .build(), false
-        );
-
+                )
+                .add(ModBlockEntityTypes.CANNON,
+                        ProtocolBuilder.builder(2)
+                                .add(CannonBlock.TARGET)
+                                .add(CannonBlock.NUDGE)
+                                .add(CannonBlock.FIRE)
+                                .build(), false
+                );
     }
 }

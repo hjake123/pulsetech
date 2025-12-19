@@ -126,6 +126,8 @@
   "protocol.pulsetech.name.screen/clear_fg": "CLEAR FG",
   "protocol.pulsetech.description.screen/clear_fg": "Unset all foreground pixels",
   "protocol.pulsetech.parameters.screen/clear_fg": "",
+  "protocol.pulsetech.error_none_loaded": "No protocol defined",
+  "protocol.pulsetech.error_none_loaded_description": "No protocol was defined for this block! Please check your datapacks, reinstall Pulsetech, or report this error to hyperlynx",
   "pulsetech.parameters": "Parameters:",
   "pulsetech.none": "none",
   "console.pulsetech.invalid_color": "Invalid color string",

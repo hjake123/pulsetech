@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.registration;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.feature.cannon.CannonBlockEntity;
 import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlockEntity;
 import dev.hyperlynx.pulsetech.feature.controller.ControllerBlockEntity;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
@@ -61,4 +62,8 @@ public class ModBlockEntityTypes {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ScreenBlockEntity>> SCREEN =
             TYPES.register("screen", () ->
                     BlockEntityType.Builder.of(ScreenBlockEntity::new, ModBlocks.SCREEN.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CannonBlockEntity>> CANNON =
+            TYPES.register("cannon", () ->
+                    BlockEntityType.Builder.of(CannonBlockEntity::new, ModBlocks.CANNON.get()).build(null));
 }
