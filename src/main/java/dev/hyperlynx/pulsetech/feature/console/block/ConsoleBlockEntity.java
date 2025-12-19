@@ -25,6 +25,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 import static java.util.Map.entry;
 
@@ -143,9 +144,11 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
         boolean error = false; // Tracks invalid tokens during parsing
         String noun = ""; // Used for define operations
         List<String> definition = new ArrayList<>(); // Used for define operations
-        for(String token : tokens) {
+        Iterator<String> token_iterator = tokens.iterator();
+        while (token_iterator.hasNext()) {
+            String token = token_iterator.next();
             switch(command_mode) {
-                case PARSE -> error = processToken(player, token, depth);
+                case PARSE -> error = processToken(player, token, depth, token_iterator);
                 case DEFINE -> {
                     if(noun.isEmpty()) {
                         noun = token;
@@ -240,12 +243,25 @@ public class ConsoleBlockEntity extends PulseBlockEntity {
         }
     }
 
-    private boolean processToken(ServerPlayer player, String token, int depth) {
+    private boolean processToken(ServerPlayer player, String token, int depth, Iterator<String> tokens) {
         if(BUILT_IN_COMMANDS.containsKey(token.toLowerCase())) {
             BUILT_IN_COMMANDS.get(token.toLowerCase()).accept(player, this);
         } else if(macros.containsKey(token)) {
+            // Check for '?' in the macro definition. If they're present, this is a macro with parameters, and we'll need to sub those in.
+            List<String> definition = new ArrayList<>(macros.get(token));
+            while(definition.stream().anyMatch(subtoken -> subtoken.equals("?"))) {
+                int unresolved_parameter_index = definition.indexOf("?");
+                if(!tokens.hasNext()) {
+                    PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.too_few_parameters").getString() + token));
+                    emitter.reset();
+                    return true;
+                }
+                String parameter = tokens.next();
+                definition.set(unresolved_parameter_index, parameter);
+            }
+
             // recursively process macros up to a set depth.
-            processTokenList(macros.get(token), player, depth + 1);
+            processTokenList(definition, player, depth + 1);
             return false;
         } else {
             PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_token").getString() + token));
