@@ -71,6 +71,14 @@ public class ProtocolBlockEntity extends PulseBlockEntity implements DatasheetPr
 
     @Override
     public Datasheet getDatasheet() {
+        if(fetchProtocol() == null) {
+            return new Datasheet(getBlockState().getBlock(), List.of(new DatasheetEntry(
+                    Component.translatable("protocol.pulsetech.error_none_loaded"),
+                    Component.translatable("protocol.pulsetech.error_none_loaded_description"),
+                    Component.literal(""),
+                    null
+                    )));
+        }
         return new Datasheet(getBlockState().getBlock(),
                 fetchProtocol().getCommands().entrySet().stream().map(entry -> {
                     ResourceLocation command_location = ProtocolCommands.REGISTRY.getKey(entry.getKey());
