@@ -21,6 +21,7 @@ public class Pulsetech {
         ModBlocks.BLOCKS.register(bus);
         ModBlockEntityTypes.TYPES.register(bus);
         ModItems.ITEMS.register(bus);
+        ModEntityTypes.TYPES.register(bus);
         ModCreativeTab.TABS.register(bus);
         ModComponentTypes.TYPES.register(bus);
         ProtocolCommands.COMMANDS.register(bus);

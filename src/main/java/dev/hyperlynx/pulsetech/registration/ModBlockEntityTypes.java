@@ -6,15 +6,14 @@ import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlockEntity;
 import dev.hyperlynx.pulsetech.feature.controller.ControllerBlockEntity;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberMonitorBlockEntity;
+import dev.hyperlynx.pulsetech.feature.orb.OrbBlockEntity;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternDetectorBlockEntity;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlockEntity;
 import dev.hyperlynx.pulsetech.feature.scope.ScopeBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -66,4 +65,8 @@ public class ModBlockEntityTypes {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CannonBlockEntity>> CANNON =
             TYPES.register("cannon", () ->
                     BlockEntityType.Builder.of(CannonBlockEntity::new, ModBlocks.CANNON.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<OrbBlockEntity>> ORB =
+            TYPES.register("orb", () ->
+                    BlockEntityType.Builder.of(OrbBlockEntity::new, ModBlocks.ORB.get()).build(null));
 }

@@ -6,6 +6,7 @@ import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlock;
 import dev.hyperlynx.pulsetech.feature.controller.ControllerBlock;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlock;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberMonitorBlock;
+import dev.hyperlynx.pulsetech.feature.orb.OrbBlock;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternDetectorBlock;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternEmitterBlock;
 import dev.hyperlynx.pulsetech.core.PulseBlock;
@@ -63,4 +64,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<CannonBlock> CANNON = BLOCKS.register("cannon", () ->
             new CannonBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
+
+    public static final DeferredBlock<OrbBlock> ORB = BLOCKS.register("orb", () ->
+            new OrbBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BONE_BLOCK)));
 }

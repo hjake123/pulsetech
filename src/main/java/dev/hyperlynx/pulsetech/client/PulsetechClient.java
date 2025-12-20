@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.client;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.client.orb.OrbRenderer;
 import dev.hyperlynx.pulsetech.client.scope.ScopeBlockRenderer;
 import dev.hyperlynx.pulsetech.client.datasheet.DatasheetScreen;
 import dev.hyperlynx.pulsetech.client.pattern.SequenceChooseScreen;
@@ -14,12 +15,12 @@ import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
+import dev.hyperlynx.pulsetech.registration.ModEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -56,6 +57,8 @@ public class PulsetechClient {
         event.registerBlockEntityRenderer(ModBlockEntityTypes.NUMBER_MONITOR.get(), NumberBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.SCOPE.get(), ScopeBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.SCREEN.get(), ScreenBlockRenderer::new);
+
+        event.registerEntityRenderer(ModEntityTypes.ORB.get(), OrbRenderer::new);
     }
 
     protected static void openConsoleScreen(BlockPos pos, String prior_lines) {
