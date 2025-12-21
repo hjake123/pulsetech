@@ -77,4 +77,8 @@ public class OrbBlockEntity extends ProtocolBlockEntity implements ScannerLinkab
         this.orb_uuid = orb.getUUID();
         level.addFreshEntity(orb);
     }
+
+    public BlockPos getOrigin() {
+        return origin;
+    }
 }

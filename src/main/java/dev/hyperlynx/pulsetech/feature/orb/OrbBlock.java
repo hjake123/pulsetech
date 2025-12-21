@@ -88,7 +88,7 @@ public class OrbBlock extends PulseBlock {
                         if(orb == null) {
                             return;
                         }
-                        BlockPos pos = orb_machine.getBlockPos();
+                        BlockPos pos = orb_machine.getOrigin();
                         orb.addDestination(pos.getX() + context.params().getFirst(), pos.getY() + context.params().get(1), pos.getZ() + context.params().get(2), false);
                     }
                 }

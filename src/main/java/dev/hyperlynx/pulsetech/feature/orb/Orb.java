@@ -30,6 +30,7 @@ public class Orb extends Entity {
 
     public Orb(EntityType<?> entityType, Level level) {
         super(entityType, level);
+        noPhysics = true;
     }
 
     @Override

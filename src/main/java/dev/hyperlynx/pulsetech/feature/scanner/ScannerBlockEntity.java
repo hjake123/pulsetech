@@ -1,11 +1,9 @@
 package dev.hyperlynx.pulsetech.feature.scanner;
 
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolBlockEntity;
-import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
-import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetEntry;
+import dev.hyperlynx.pulsetech.feature.orb.Orb;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Animal;
@@ -58,7 +56,7 @@ public class ScannerBlockEntity extends ProtocolBlockEntity {
                 return level.getEntities((Entity) null, scan_area, entity -> entity instanceof ItemEntity);
             }
             case ScannerBlock.Mode.OBJECT -> {
-                return level.getEntities((Entity) null, scan_area, entity -> entity.getType().getCategory().isFriendly() && !(entity instanceof AgeableMob) && !(entity instanceof ItemEntity) &&!(entity instanceof Player));
+                return level.getEntities((Entity) null, scan_area, entity -> entity.getType().getCategory().isFriendly() && !(entity instanceof AgeableMob) && !(entity instanceof ItemEntity) &&!(entity instanceof Player) && !(entity instanceof Orb));
             }
             case ScannerBlock.Mode.PLAYER -> {
                 return level.getEntities((Entity) null, scan_area, entity -> entity instanceof Player);
@@ -95,6 +93,6 @@ public class ScannerBlockEntity extends ProtocolBlockEntity {
         if(nearest == null) {
             return BlockPos.ZERO;
         }
-        return new BlockPos(getBlockPos().getX() - nearest.getBlockX(), getBlockPos().getY() - nearest.getBlockY(), getBlockPos().getZ() - nearest.getBlockZ());
+        return new BlockPos(nearest.getBlockX() - getBlockPos().getX(), nearest.getBlockY() - getBlockPos().getY(), nearest.getBlockZ() - getBlockPos().getZ());
     }
 }
