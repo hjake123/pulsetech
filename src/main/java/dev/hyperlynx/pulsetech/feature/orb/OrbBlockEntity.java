@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.feature.orb;
 
+import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerLinkable;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
@@ -10,13 +11,15 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.UUID;
 
 public class OrbBlockEntity extends ProtocolBlockEntity implements ScannerLinkable {
-    private @Nullable UUID orb = null;
+    private @Nullable UUID orb_uuid = null;
     private BlockPos origin = getBlockPos();
 
     public OrbBlockEntity(BlockPos pos, BlockState blockState) {
@@ -28,7 +31,7 @@ public class OrbBlockEntity extends ProtocolBlockEntity implements ScannerLinkab
         super.loadAdditional(tag, registries);
         origin = NbtUtils.readBlockPos(tag, "Origin").orElseGet(this::getBlockPos);
         if(tag.contains("Orb")) {
-            orb = tag.getUUID("Orb");
+            orb_uuid = tag.getUUID("Orb");
         }
     }
 
@@ -36,8 +39,8 @@ public class OrbBlockEntity extends ProtocolBlockEntity implements ScannerLinkab
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.put("Origin", NbtUtils.writeBlockPos(origin));
-        if(orb != null) {
-            tag.putUUID("Orb", orb);
+        if(orb_uuid != null) {
+            tag.putUUID("Orb", orb_uuid);
         }
     }
 
@@ -51,14 +54,27 @@ public class OrbBlockEntity extends ProtocolBlockEntity implements ScannerLinkab
         return false;
     }
 
+    public @Nullable Orb getOrb() {
+        if(level == null || level.isClientSide || orb_uuid == null) {
+            return null;
+        }
+        Entity fetched = ((ServerLevel) level).getEntity(orb_uuid);
+        if(!(fetched instanceof Orb orb_entity)) {
+            Pulsetech.LOGGER.error("Entity {} should have been an orb! Unlinking...", orb_uuid);
+            orb_uuid = null;
+            return null;
+        }
+        return orb_entity;
+    }
+
     public void spawnOrb() {
         assert level != null;
-        if(level instanceof ServerLevel slevel && slevel.getEntity(orb) != null) {
-            slevel.getEntity(orb).kill();
+        if(level instanceof ServerLevel slevel && orb_uuid != null && slevel.getEntity(orb_uuid) != null) {
+            Objects.requireNonNull(slevel.getEntity(orb_uuid)).kill();
         }
         Orb orb = ModEntityTypes.ORB.get().create(level);
         orb.setPos(getBlockPos().above().getCenter());
-        this.orb = orb.getUUID();
+        this.orb_uuid = orb.getUUID();
         level.addFreshEntity(orb);
     }
 }

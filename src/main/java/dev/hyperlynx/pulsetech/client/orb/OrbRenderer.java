@@ -18,6 +18,9 @@ public class OrbRenderer extends EntityRenderer<Orb> {
     @Override
     public void render(Orb orb, float entityYaw, float partialTick, PoseStack stack, MultiBufferSource source, int packedLight) {
         Minecraft.getInstance().level.addParticle(ParticleTypes.END_ROD, orb.getX(), orb.getY(), orb.getZ(), 0, 0, 0);
+        if(orb.grabbing) {
+            Minecraft.getInstance().level.addParticle(ParticleTypes.SMOKE, orb.getX(), orb.getY(), orb.getZ(), 0, 0, 0);
+        }
     }
 
     @Override

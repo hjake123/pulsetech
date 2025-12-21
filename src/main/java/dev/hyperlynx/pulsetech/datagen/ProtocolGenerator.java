@@ -65,6 +65,11 @@ public class ProtocolGenerator extends DataMapProvider {
                 .add(ModBlockEntityTypes.ORB,
                         ProtocolBuilder.builder(3)
                                 .add(OrbBlock.SPAWN)
+                                .add(OrbBlock.MOVE_RELATIVE_X)
+                                .add(OrbBlock.MOVE_RELATIVE_Y)
+                                .add(OrbBlock.MOVE_RELATIVE_Z)
+                                .add(OrbBlock.MOVE_TO)
+                                .add(OrbBlock.GRAB)
                                 .build(), false
                 );
 
