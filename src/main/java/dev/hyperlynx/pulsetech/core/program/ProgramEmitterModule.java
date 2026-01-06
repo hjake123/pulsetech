@@ -1,4 +1,4 @@
-package dev.hyperlynx.pulsetech.feature.console;
+package dev.hyperlynx.pulsetech.core.program;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -10,12 +10,12 @@ import dev.hyperlynx.pulsetech.util.MapListPairConverter;
 
 import java.util.*;
 
-public class ConsoleEmitterModule extends EmitterModule {
+public class ProgramEmitterModule extends EmitterModule {
     public Map<Integer, Short> delay_points = new HashMap<>();
     public boolean looping = false;
     private static final MapListPairConverter<Integer, Short> converter = new MapListPairConverter<>();
 
-    public static final Codec<ConsoleEmitterModule> CODEC = RecordCodecBuilder.create(instance ->
+    public static final Codec<ProgramEmitterModule> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Sequence.CODEC.fieldOf("buffer").forGetter(SequenceModule::getBuffer),
                     Codec.INT.fieldOf("delay_timer").forGetter(SequenceModule::getDelay),
@@ -28,9 +28,9 @@ public class ConsoleEmitterModule extends EmitterModule {
                     ).listOf().xmap(
                             converter::toMap,
                             converter::fromMap
-                    ).fieldOf("delays").forGetter(ConsoleEmitterModule::getDelays),
-                    Codec.BOOL.fieldOf("looping").forGetter(ConsoleEmitterModule::isLooping)
-            ).apply(instance, ConsoleEmitterModule::new)
+                    ).fieldOf("delays").forGetter(ProgramEmitterModule::getDelays),
+                    Codec.BOOL.fieldOf("looping").forGetter(ProgramEmitterModule::isLooping)
+            ).apply(instance, ProgramEmitterModule::new)
     );
 
     private Map<Integer, Short> getDelays() {
@@ -41,9 +41,9 @@ public class ConsoleEmitterModule extends EmitterModule {
         return looping;
     }
 
-    public ConsoleEmitterModule() {}
+    public ProgramEmitterModule() {}
 
-    protected ConsoleEmitterModule(Sequence buffer, int delay, boolean active, int output_cursor, boolean output_initialized, Map<Integer, Short> delays, boolean looping) {
+    protected ProgramEmitterModule(Sequence buffer, int delay, boolean active, int output_cursor, boolean output_initialized, Map<Integer, Short> delays, boolean looping) {
         super(buffer, delay, active, output_cursor, output_initialized);
         this.delay_points = new HashMap<>(delays);
         this.looping = looping;

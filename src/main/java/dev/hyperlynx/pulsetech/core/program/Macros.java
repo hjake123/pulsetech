@@ -1,4 +1,4 @@
-package dev.hyperlynx.pulsetech.feature.console.macros;
+package dev.hyperlynx.pulsetech.core.program;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

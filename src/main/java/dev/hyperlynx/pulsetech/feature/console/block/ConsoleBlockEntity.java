@@ -1,18 +1,13 @@
 package dev.hyperlynx.pulsetech.feature.console.block;
 
 import com.mojang.serialization.Codec;
-import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.core.PulseBlockEntity;
-import dev.hyperlynx.pulsetech.feature.console.BitSensorModule;
-import dev.hyperlynx.pulsetech.feature.console.ConsoleEmitterModule;
-import dev.hyperlynx.pulsetech.feature.console.ConsoleLinePayload;
-import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
-import dev.hyperlynx.pulsetech.feature.console.macros.Macros;
+import dev.hyperlynx.pulsetech.core.program.*;
+import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetEntry;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetProvider;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
-import dev.hyperlynx.pulsetech.util.Color;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
@@ -24,17 +19,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
-import static java.util.Map.entry;
-
-public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetProvider {
-    ConsoleEmitterModule emitter = new ConsoleEmitterModule();
-    private BitSensorModule sensor = new BitSensorModule();
-
+public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetProvider, ProgramExecutor {
+    ProgramEmitterModule emitter = new ProgramEmitterModule();
     private CommandMode command_mode = CommandMode.PARSE;
     private OperationMode operation_mode = OperationMode.OUTPUT;
     private String saved_lines = "";
@@ -50,223 +39,22 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         return new Macros(macros);
     }
 
+    @Override
+    public boolean isConsole() {
+        return true;
+    }
+
     public void addMacros(Map<String, List<String>> other_macros) {
         macros.putAll(other_macros);
     }
 
-
-
-    // The mode of the current command being parsed. Resets with each new command.
-    private enum CommandMode {
-        PARSE,
-        DEFINE,
-        SET_DELAY,
-        FORGET,
-        NUM, COLOR, EMIT
-    }
-
-    // The mode of the entire Console block. Only changed by specific commands.
-    private enum OperationMode {
-        OUTPUT,
-        LOOP_OUTPUT
-    }
-    private final Map<String, BiConsumer<ServerPlayer, ConsoleBlockEntity>> BUILT_IN_COMMANDS = Map.ofEntries(
-            entry("help", (player, console) -> {
-                StringBuilder help_builder = new StringBuilder();
-                addBuiltInInfo(help_builder);
-                help_builder.append("\n");
-                for(String key : macros.keySet()) {
-                    help_builder.append(key).append(": ");
-                    for(String token : macros.get(key)) {
-                        help_builder.append(token).append(" ");
-                    }
-                    help_builder.append("\n");
-                }
-                PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), help_builder.toString()));
-            }),
-            entry("clear", (player, console) -> {
-                PacketDistributor.sendToPlayer(player, new ConsolePriorLinesPayload(getBlockPos(), ""));
-            }),
-            entry("stop", (player, console) -> {
-                console.setOperationMode(OperationMode.OUTPUT);
-                console.setMode(CommandMode.PARSE);
-                emitter.reset();
-                setChanged();
-            }),
-            entry("define", (player, console) -> {
-                console.setMode(CommandMode.DEFINE);
-            }),
-            entry("forget", (player, console) -> {
-                console.setMode(CommandMode.FORGET);
-            }),
-            entry("loop", (player, console) -> {
-                console.setOperationMode(OperationMode.LOOP_OUTPUT);
-                PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.looping").getString()));
-            }),
-            entry("wait", (player, console) -> {
-                console.setMode(CommandMode.SET_DELAY);
-            }),
-            entry("emit", (player, console) -> {
-                console.setMode(CommandMode.EMIT);
-            }),
-            entry("num", (player, console) -> {
-                console.setMode(CommandMode.NUM);
-            }),
-            entry("color", (player, console) -> {
-                console.setMode(CommandMode.COLOR);
-            })
-    );
-
-    private void setOperationMode(OperationMode operation_mode) {
+    @Override
+    public void setOperationMode(OperationMode operation_mode) {
         this.operation_mode = operation_mode;
     }
 
-    private void addBuiltInInfo(StringBuilder help_builder) {
-        for (String built_in : BUILT_IN_COMMANDS.keySet().stream().sorted().toList()) {
-            help_builder.append(built_in).append(": ").append(Component.translatable("help.pulsetech." + built_in).getString()).append("\n");
-        }
-    }
-
     public void processLine(String line, ServerPlayer player) {
-        processTokenList(Arrays.stream(line.split(" ")).toList(), player, 0);
-    }
-
-    private static final int MAX_STACK_DEPTH = 16;
-    public void processTokenList(List<String> tokens, ServerPlayer player, int depth) {
-        // If this function was recursively called by a macro too many times, don't execute.
-        if(depth > MAX_STACK_DEPTH) {
-            PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.stack_overflow").getString()));
-            return;
-        }
-        command_mode = CommandMode.PARSE;
-        boolean error = false; // Tracks invalid tokens during parsing
-        String noun = ""; // Used for define operations
-        List<String> definition = new ArrayList<>(); // Used for define operations
-        Iterator<String> token_iterator = tokens.iterator();
-        while (token_iterator.hasNext()) {
-            String token = token_iterator.next();
-            switch(command_mode) {
-                case PARSE -> error = processToken(player, token, depth, token_iterator);
-                case DEFINE -> {
-                    if(noun.isEmpty()) {
-                        noun = token;
-                    } else {
-                        definition.add(token);
-                    }
-                }
-                case FORGET -> {
-                    if(macros.remove(token) != null) {
-                        PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.forgot").getString() + token));
-                    }
-                }
-                case SET_DELAY -> {
-                    try {
-                        emitter.delay_points.put(emitter.getBuffer().length(), Short.parseShort(token)); // Add a new delay to the sequence.
-                        emitter.getBuffer().append(false); // Add extra bit to be a placeholder for the delay.
-                    } catch (NumberFormatException e) {
-                        error = true;
-                    }
-                    command_mode = CommandMode.PARSE;
-                }
-                case EMIT -> {
-                    Sequence sequence = new Sequence();
-                    for(char c : token.toCharArray()) {
-                        if(c == '0') {
-                            sequence.append(false);
-                        } else if (c == '1') {
-                            sequence.append(true);
-                        } else {
-                            error = true;
-                            break;
-                        }
-                    }
-                    if(!error) {
-                        emitter.enqueueTransmission(sequence);
-                        emitter.setActive(true);
-                    }
-                    command_mode = CommandMode.PARSE;
-                }
-                case NUM -> {
-                    try {
-                        Sequence sequence = Sequence.fromByte(Byte.parseByte(token));
-                        emitter.enqueueTransmission(sequence);
-                        emitter.setActive(true);
-                    }
-                    catch (NumberFormatException e) {
-                        PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_number").getString()));
-                    }
-                    command_mode = CommandMode.PARSE;
-                }
-                case COLOR -> {
-                    try {
-                        Color color = new Color(Integer.parseInt(token, 16));
-                        emitter.enqueueTransmission(Sequence.fromByte((byte) color.red));
-                        emitter.enqueueTransmission(Sequence.fromByte((byte) color.green));
-                        emitter.enqueueTransmission(Sequence.fromByte((byte) color.blue));
-                        emitter.setActive(true);
-                    }
-                    catch (NumberFormatException e) {
-                        PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_color").getString()));
-                    }
-                    command_mode = CommandMode.PARSE;
-                }
-            }
-        }
-        if(!emitter.getBuffer().isEmpty() && !error) {
-            setActive(true);
-        }
-        if(command_mode.equals(CommandMode.SET_DELAY)) {
-            PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.wait_usage").getString()));
-        }
-        if(command_mode.equals(CommandMode.EMIT)) {
-            PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.emit_usage").getString()));
-        }
-        if(command_mode.equals(CommandMode.NUM)) {
-            PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.num_usage").getString()));
-        }
-        if(command_mode.equals(CommandMode.DEFINE)) {
-            if(BUILT_IN_COMMANDS.containsKey(noun)) {
-                PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.macro_name_taken").getString()));
-            } else if(noun.isEmpty() || definition.isEmpty()) {
-                PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.define_help").getString() + noun));
-            }
-            else {
-                if (macros.containsKey(noun)) {
-                    PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.redefined").getString() + noun));
-                } else {
-                    PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.defined").getString() + noun));
-                }
-                macros.put(noun, new ArrayList<>(definition));
-            }
-        }
-    }
-
-    private boolean processToken(ServerPlayer player, String token, int depth, Iterator<String> tokens) {
-        if(BUILT_IN_COMMANDS.containsKey(token.toLowerCase())) {
-            BUILT_IN_COMMANDS.get(token.toLowerCase()).accept(player, this);
-        } else if(macros.containsKey(token)) {
-            // Check for '?' in the macro definition. If they're present, this is a macro with parameters, and we'll need to sub those in.
-            List<String> definition = new ArrayList<>(macros.get(token));
-            while(definition.stream().anyMatch(subtoken -> subtoken.equals("?"))) {
-                int unresolved_parameter_index = definition.indexOf("?");
-                if(!tokens.hasNext()) {
-                    PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.too_few_parameters").getString() + token));
-                    emitter.reset();
-                    return true;
-                }
-                String parameter = tokens.next();
-                definition.set(unresolved_parameter_index, parameter);
-            }
-
-            // recursively process macros up to a set depth.
-            processTokenList(definition, player, depth + 1);
-            return false;
-        } else {
-            PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), Component.translatable("console.pulsetech.invalid_token").getString() + token));
-            emitter.reset();
-            return true;
-        }
-        return false;
+        ProgramInterpreter.processTokenList(this, Arrays.stream(line.split(" ")).toList(), player, 0);
     }
 
     private void limitPriorLineLength() {
@@ -279,7 +67,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         limitPriorLineLength();
-        var encode_result = ConsoleEmitterModule.CODEC.encodeStart(NbtOps.INSTANCE, emitter);
+        var encode_result = ProgramEmitterModule.CODEC.encodeStart(NbtOps.INSTANCE, emitter);
         if(encode_result.hasResultOrPartial()) {
             tag.put("Emitter", encode_result.getPartialOrThrow());
         }
@@ -295,7 +83,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        var decode_result = ConsoleEmitterModule.CODEC.decode(NbtOps.INSTANCE, tag.get("Emitter"));
+        var decode_result = ProgramEmitterModule.CODEC.decode(NbtOps.INSTANCE, tag.get("Emitter"));
         if(decode_result.hasResultOrPartial()) {
             emitter = decode_result.getPartialOrThrow().getFirst();
         }
@@ -308,21 +96,6 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         if(tag.contains("OperationMode")) {
             operation_mode = OperationMode.valueOf(tag.getString("OperationMode"));
         }
-    }
-
-    @Override
-    public void handleInput() {
-        if(!sensor.ready()) {
-            return;
-        }
-        String input = sensor.read() ? "1" : "0";
-        if(saved_lines.isEmpty()) {
-            saved_lines = input;
-        } else {
-            saved_lines += input;
-        }
-        setChanged();
-        PacketDistributor.sendToAllPlayers(new ConsoleLinePayload(getBlockPos(), input));
     }
 
     @Override
@@ -351,7 +124,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
 
     @Override
     public Datasheet getDatasheet() {
-        return new Datasheet(getBlockState().getBlock(), BUILT_IN_COMMANDS.keySet().stream().map(command ->
+        return new Datasheet(getBlockState().getBlock(), ProgramInterpreter.BUILT_IN_COMMANDS.keySet().stream().map(command ->
             new DatasheetEntry(
                     Component.literal(command),
                     Component.translatable("console.pulsetech.description." + command),
@@ -376,8 +149,13 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         }
     }
 
-    private void setMode(CommandMode command_mode) {
+    public void setMode(CommandMode command_mode) {
         this.command_mode = command_mode;
+    }
+
+    @Override
+    public void resetEmitter() {
+        emitter.reset();
     }
 
     // Create an update tag here, like above.
@@ -403,5 +181,15 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         super.setChanged();
         if(level != null)
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
+    }
+
+    @Override
+    public CommandMode getCommandMode() {
+        return command_mode;
+    }
+
+    @Override
+    public ProgramEmitterModule getEmitter() {
+        return emitter;
     }
 }

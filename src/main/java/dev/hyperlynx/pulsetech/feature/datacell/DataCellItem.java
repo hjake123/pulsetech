@@ -1,6 +1,6 @@
 package dev.hyperlynx.pulsetech.feature.datacell;
 
-import dev.hyperlynx.pulsetech.feature.console.macros.Macros;
+import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerLinkable;
 import dev.hyperlynx.pulsetech.registration.ModBlocks;
 import dev.hyperlynx.pulsetech.registration.ModComponentTypes;

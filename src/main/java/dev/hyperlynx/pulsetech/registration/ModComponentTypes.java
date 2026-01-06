@@ -1,9 +1,8 @@
 package dev.hyperlynx.pulsetech.registration;
 
-import com.jcraft.jorbis.Block;
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.protocol.Protocol;
-import dev.hyperlynx.pulsetech.feature.console.macros.Macros;
+import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
