@@ -1,13 +1,13 @@
 package dev.hyperlynx.pulsetech.core.program;
 
 import dev.hyperlynx.pulsetech.core.Sequence;
-import dev.hyperlynx.pulsetech.feature.console.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.util.Color;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,31 +39,31 @@ public class ProgramInterpreter {
             }),
             entry("stop", (player, executor) -> {
                 executor.setOperationMode(OperationMode.OUTPUT);
-                executor.setMode(CommandMode.PARSE);
-                executor.resetEmitter();
+                executor.setCommandMode(CommandMode.PARSE);
+                executor.getEmitter().reset();
                 executor.setChanged();
             }),
             entry("define", (player, executor) -> {
-                executor.setMode(CommandMode.DEFINE);
+                executor.setCommandMode(CommandMode.DEFINE);
             }),
             entry("forget", (player, executor) -> {
-                executor.setMode(CommandMode.FORGET);
+                executor.setCommandMode(CommandMode.FORGET);
             }),
             entry("loop", (player, executor) -> {
                 executor.setOperationMode(OperationMode.LOOP_OUTPUT);
                 executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.looping").getString());
             }),
             entry("wait", (player, executor) -> {
-                executor.setMode(CommandMode.SET_DELAY);
+                executor.setCommandMode(CommandMode.SET_DELAY);
             }),
             entry("emit", (player, executor) -> {
-                executor.setMode(CommandMode.EMIT);
+                executor.setCommandMode(CommandMode.EMIT);
             }),
             entry("num", (player, executor) -> {
-                executor.setMode(CommandMode.NUM);
+                executor.setCommandMode(CommandMode.NUM);
             }),
             entry("color", (player, executor) -> {
-                executor.setMode(CommandMode.COLOR);
+                executor.setCommandMode(CommandMode.COLOR);
             })
     );
 
@@ -74,13 +74,13 @@ public class ProgramInterpreter {
     }
 
     private static final int MAX_STACK_DEPTH = 16;
-    public static void processTokenList(ProgramExecutor executor, List<String> tokens, ServerPlayer player, int depth) {
+    public static void processTokenList(ProgramExecutor executor, List<String> tokens, @Nullable ServerPlayer player, int depth) {
         // If this function was recursively called by a macro too many times, don't execute.
         if(depth > MAX_STACK_DEPTH) {
-            PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(executor.getBlockPos(), Component.translatable("console.pulsetech.stack_overflow").getString()));
+            executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.stack_overflow").getString());
             return;
         }
-        executor.setMode(CommandMode.PARSE);
+        executor.setCommandMode(CommandMode.PARSE);
         boolean error = false; // Tracks invalid tokens during parsing
         String noun = ""; // Used for define operations
         List<String> definition = new ArrayList<>(); // Used for define operations
@@ -108,7 +108,7 @@ public class ProgramInterpreter {
                     } catch (NumberFormatException e) {
                         error = true;
                     }
-                    executor.setMode(CommandMode.PARSE);
+                    executor.setCommandMode(CommandMode.PARSE);
                 }
                 case EMIT -> {
                     Sequence sequence = new Sequence();
@@ -126,7 +126,7 @@ public class ProgramInterpreter {
                         executor.getEmitter().enqueueTransmission(sequence);
                         executor.getEmitter().setActive(true);
                     }
-                    executor.setMode(CommandMode.PARSE);
+                    executor.setCommandMode(CommandMode.PARSE);
 
                 }
                 case NUM -> {
@@ -138,7 +138,7 @@ public class ProgramInterpreter {
                     catch (NumberFormatException e) {
                         executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.invalid_number").getString());
                     }
-                    executor.setMode(CommandMode.PARSE);
+                    executor.setCommandMode(CommandMode.PARSE);
                 }
                 case COLOR -> {
                     try {
@@ -151,7 +151,7 @@ public class ProgramInterpreter {
                     catch (NumberFormatException e) {
                         executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.invalid_color").getString());
                     }
-                    executor.setMode(CommandMode.PARSE);
+                    executor.setCommandMode(CommandMode.PARSE);
                 }
             }
         }
@@ -184,7 +184,7 @@ public class ProgramInterpreter {
         }
     }
 
-    private static boolean processToken(ProgramExecutor executor, ServerPlayer player, String token, int depth, Iterator<String> tokens) {
+    private static boolean processToken(ProgramExecutor executor, @Nullable ServerPlayer player, String token, int depth, Iterator<String> tokens) {
         if(BUILT_IN_COMMANDS.containsKey(token.toLowerCase())) {
             BUILT_IN_COMMANDS.get(token.toLowerCase()).accept(player, executor);
         } else if(executor.getMacros().macros().containsKey(token)) {

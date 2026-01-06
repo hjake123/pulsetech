@@ -149,13 +149,8 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         }
     }
 
-    public void setMode(CommandMode command_mode) {
+    public void setCommandMode(CommandMode command_mode) {
         this.command_mode = command_mode;
-    }
-
-    @Override
-    public void resetEmitter() {
-        emitter.reset();
     }
 
     // Create an update tag here, like above.
