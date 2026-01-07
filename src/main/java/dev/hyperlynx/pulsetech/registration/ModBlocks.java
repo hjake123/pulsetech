@@ -11,6 +11,7 @@ import dev.hyperlynx.pulsetech.feature.pattern.block.PatternDetectorBlock;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternEmitterBlock;
 import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternBlock;
+import dev.hyperlynx.pulsetech.feature.processor.ProcessorBlock;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlock;
 import dev.hyperlynx.pulsetech.feature.scope.ScopeBlock;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlock;
@@ -67,4 +68,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<OrbBlock> ORB = BLOCKS.register("orb", () ->
             new OrbBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BONE_BLOCK)));
+
+    public static final DeferredBlock<ProcessorBlock> PROCESSOR = BLOCKS.register("processor", () ->
+            new ProcessorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COMPARATOR)));
 }

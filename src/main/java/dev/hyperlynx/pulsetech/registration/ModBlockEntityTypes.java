@@ -9,6 +9,7 @@ import dev.hyperlynx.pulsetech.feature.number.block.NumberMonitorBlockEntity;
 import dev.hyperlynx.pulsetech.feature.orb.OrbBlockEntity;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternDetectorBlockEntity;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternEmitterBlockEntity;
+import dev.hyperlynx.pulsetech.feature.processor.ProcessorBlockEntity;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlockEntity;
 import dev.hyperlynx.pulsetech.feature.scope.ScopeBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
@@ -69,4 +70,8 @@ public class ModBlockEntityTypes {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<OrbBlockEntity>> ORB =
             TYPES.register("orb", () ->
                     BlockEntityType.Builder.of(OrbBlockEntity::new, ModBlocks.ORB.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessorBlockEntity>> PROCESSOR =
+            TYPES.register("processor", () ->
+                    BlockEntityType.Builder.of(ProcessorBlockEntity::new, ModBlocks.PROCESSOR.get()).build(null));
 }

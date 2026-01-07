@@ -6,6 +6,7 @@ import dev.hyperlynx.pulsetech.core.program.*;
 import dev.hyperlynx.pulsetech.core.protocol.*;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetEntry;
+import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -16,11 +17,9 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,14 +35,9 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
 
     // Recomputed when needed
     private Protocol computed_protocol;
-    private final Map<ProtocolCommand, String> command_name_reference = new HashMap<>();
 
-    public ProcessorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        super(type, pos, blockState);
-    }
-
-    private void runProgram(List<String> tokens) {
-        ProgramInterpreter.processTokenList(this, tokens, null, 0);
+    public ProcessorBlockEntity(BlockPos pos, BlockState blockState) {
+        super(ModBlockEntityTypes.PROCESSOR.get(), pos, blockState);
     }
 
     public void setMacros(Macros macros) {
@@ -59,21 +53,7 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
             var builder = ProtocolBuilder.builder(needed_bits);
             for(String key : macros.macros().keySet()) {
                 int parameter_count = Math.toIntExact(macros.macros().get(key).stream().filter(token -> token.equals("?")).count());
-                var command = new ProtocolCommand(parameter_count) {
-                    @Override
-                    public void run(ExecutionContext context) {
-                        if(context.block() instanceof ProcessorBlockEntity processor) {
-                            List<String> command_sequence = new ArrayList<>();
-                            command_sequence.add(key);
-                            for(int i = 0; i < parameter_count; i++) {
-                                command_sequence.add(context.params().get(i).toString());
-                            }
-                            processor.runProgram(command_sequence);
-                        }
-                    }
-                };
-                command_name_reference.put(command, key);
-                builder.add(() -> command);
+                builder.add(() -> new MacroProtocolCommand(parameter_count, key));
             }
             computed_protocol = builder.build();
         }
@@ -97,6 +77,7 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
 
     @Override
     public void tick() {
+        super.tick();
         if(level instanceof ServerLevel slevel) {
             switch (operation_mode) {
                 case OUTPUT -> {
@@ -130,14 +111,16 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
     public Datasheet getDatasheet() {
         return new Datasheet(getBlockState().getBlock(),
                 fetchProtocol().getCommands().entrySet().stream().map(entry -> {
-                    String key = command_name_reference.get(entry.getKey());
-                    Sequence command_sequence = entry.getValue();
-                    return new DatasheetEntry(
-                            Component.literal(key),
-                            Component.literal(macros.macros().get(key).stream().reduce((a, b) -> a + " " + b).orElse("??MISSING??")),
-                            Component.empty(),
-                            command_sequence
-                    );
+                    if(entry.getKey() instanceof MacroProtocolCommand mcommand) {
+                        Sequence command_sequence = entry.getValue();
+                        return new DatasheetEntry(
+                                Component.literal(mcommand.macro()),
+                                Component.literal(macros.macros().get(mcommand.macro()).stream().reduce((a, b) -> a + " " + b).orElse("??MISSING??")),
+                                Component.empty(),
+                                command_sequence
+                        );
+                    }
+                    return new DatasheetEntry(Component.literal("??INVALID??"), Component.empty(), Component.empty(), null);
                 }).toList());
     }
 
@@ -171,7 +154,7 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
         super.saveAdditional(tag, registries);
         var encode_result = ProgramEmitterModule.CODEC.encodeStart(NbtOps.INSTANCE, emitter);
         if(encode_result.hasResultOrPartial()) {
-            tag.put("Emitter", encode_result.getPartialOrThrow());
+            tag.put("ProgramEmitter", encode_result.getPartialOrThrow());
         }
         if(!macros.macros().isEmpty()) {
             MACRO_CODEC.encodeStart(NbtOps.INSTANCE, macros.macros()).ifSuccess(encoded -> tag.put("macros", encoded));
@@ -182,7 +165,7 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        var decode_result = ProgramEmitterModule.CODEC.decode(NbtOps.INSTANCE, tag.get("Emitter"));
+        var decode_result = ProgramEmitterModule.CODEC.decode(NbtOps.INSTANCE, tag.get("ProgramEmitter"));
         if(decode_result.hasResultOrPartial()) {
             emitter = decode_result.getPartialOrThrow().getFirst();
         }
@@ -193,5 +176,4 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
             operation_mode = OperationMode.valueOf(tag.getString("OperationMode"));
         }
     }
-
 }

@@ -41,7 +41,7 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
                     Sequence.CODEC.fieldOf("buffer").forGetter(SequenceModule::getBuffer),
                     Codec.INT.fieldOf("delay_timer").forGetter(SequenceModule::getDelay),
                     Codec.BOOL.fieldOf("active").forGetter(SequenceModule::isActive),
-                    ProtocolCommand.CODEC.optionalFieldOf("active_command").forGetter(ProtocolExecutorModule::activeCommand),
+                    ProtocolCommandSerializer.CODEC.optionalFieldOf("active_command").forGetter(ProtocolExecutorModule::activeCommand),
                     Codec.BYTE.listOf().fieldOf("params").forGetter(ProtocolExecutorModule::activeParams),
                     NumberSensorModule.CODEC.fieldOf("param_sensor").forGetter(ProtocolExecutorModule::paramSensor),
                     Codec.STRING.xmap(State::valueOf, State::getSerializedName).fieldOf("state").forGetter(ProtocolExecutorModule::state)
