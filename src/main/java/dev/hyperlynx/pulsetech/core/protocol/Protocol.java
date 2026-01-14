@@ -2,9 +2,11 @@ package dev.hyperlynx.pulsetech.core.protocol;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.core.Sequence;
+import dev.hyperlynx.pulsetech.feature.processor.MacroProtocolCommand;
 import dev.hyperlynx.pulsetech.util.MapListPairConverter;
 
 import javax.annotation.Nullable;
@@ -18,11 +20,27 @@ public class Protocol {
 
     private static final MapListPairConverter<ProtocolCommand, Sequence> converter = new MapListPairConverter<>();
 
+    /// Cheat a little to allow Macro Commands to exist
+    public static final Codec<ProtocolCommand> COMMAND_CODEC = Codec.either(
+            ProtocolCommands.REGISTRY.byNameCodec(),
+            MacroProtocolCommand.CODEC
+    ).xmap(either -> {
+        if(either.left().isPresent()) {
+            return either.left().orElseThrow();
+        }
+        return either.right().orElseThrow();
+    }, command -> {
+        if(command instanceof MacroProtocolCommand macro_command) {
+            return Either.right(macro_command);
+        }
+        return Either.left(command);
+    });
+
     public static final Codec<Protocol> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Codec.INT.fieldOf("sequence_length").forGetter(Protocol::sequenceLength),
                     Codec.pair(
-                            ProtocolCommands.REGISTRY.byNameCodec().fieldOf("command").codec(),
+                            COMMAND_CODEC.fieldOf("command").codec(),
                             Sequence.CODEC.fieldOf("sequence").codec()
                     ).listOf().xmap(
                             converter::toMap,
