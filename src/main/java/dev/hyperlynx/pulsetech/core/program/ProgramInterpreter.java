@@ -19,6 +19,9 @@ import static java.util.Map.entry;
 /// Helper class which can run a List of tokens as a program, given a ProgramExecutor instance.
 public class ProgramInterpreter {
     public static final Map<String, BiConsumer<ServerPlayer, ProgramExecutor>> BUILT_IN_COMMANDS = Map.ofEntries(
+            entry("about", (player, executor) -> {
+                executor.sendLineIfConsole(player, Component.translatable("pulsetech.about").getString());
+            }),
             entry("help", (player, executor) -> {
                 StringBuilder help_builder = new StringBuilder();
                 addBuiltInInfo(help_builder);
