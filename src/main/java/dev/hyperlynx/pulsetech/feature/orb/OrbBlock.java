@@ -6,13 +6,20 @@ import dev.hyperlynx.pulsetech.core.protocol.ExecutionContext;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommand;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
 public class OrbBlock extends PulseBlock {
+    protected static final VoxelShape SHAPE = Shapes.or(Block.box(6, 2, 12, 10, 3, 14), Block.box(12, 2, 6, 14, 3, 10), Block.box(6, 2, 2, 10, 3, 4), Block.box(2, 2, 6, 4, 3, 10), Block.box(4, 2, 4, 12, 7, 12), Block.box(0, 0, 0, 16, 2, 16), Block.box(3, 7, 3, 13, 9, 13), Block.box(0, 8, 0, 3, 11, 16), Block.box(13, 8, 0, 16, 11, 16), Block.box(3, 8, 13, 13, 11, 16), Block.box(3, 8, 0, 13, 11, 3), Block.box(11, 9, 11, 13, 15, 13), Block.box(3, 9, 11, 5, 15, 13), Block.box(3, 9, 3, 5, 15, 5), Block.box(11, 9, 3, 13, 15, 5), Block.box(6, 9, 6, 10, 11, 10));
+
     public OrbBlock(Properties properties) {
         super(properties);
     }
@@ -20,6 +27,11 @@ public class OrbBlock extends PulseBlock {
     @Override
     protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
         return simpleCodec(OrbBlock::new);
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
     }
 
     @Override
@@ -104,6 +116,20 @@ public class OrbBlock extends PulseBlock {
                             return;
                         }
                         orb.toggleGrab();
+                    }
+                }
+            });
+
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> TOGGLE_PEN = ProtocolCommands.COMMANDS.register("orb/toggle_pen", () ->
+            new ProtocolCommand(0) {
+                @Override
+                public void run(ExecutionContext context) {
+                    if(context.block() instanceof OrbBlockEntity orb_machine) {
+                        Orb orb = orb_machine.getOrb();
+                        if(orb == null) {
+                            return;
+                        }
+                        orb.togglePen();
                     }
                 }
             });

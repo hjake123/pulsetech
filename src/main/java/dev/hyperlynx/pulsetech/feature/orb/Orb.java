@@ -6,12 +6,22 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -21,21 +31,34 @@ import java.util.Queue;
 
 public class Orb extends Entity {
     private static final float SPEED = 0.06F;
-    private static final float HITBOX_SIZE = 1.0F;
+    private static final float HITBOX_SIZE = 1.5F;
+    private static final int DROP_ITEM_DELAY = 6;
 
     Queue<Destination> destinations = new ArrayDeque<>();
     BlockPos next_destination = null;
-    public boolean grabbing = false;
-    private @Nullable Entity grabbed = null;
+    private int drop_item_timer = 0; // Used to space out the dropped items in pen mode.
+
+    public static final EntityDataAccessor<Boolean> PEN_DOWN = SynchedEntityData.defineId(Orb.class, EntityDataSerializers.BOOLEAN);
 
     public Orb(EntityType<?> entityType, Level level) {
         super(entityType, level);
         noPhysics = true;
     }
 
+    private @Nullable Entity getGrabbed() {
+        if(getPassengers().isEmpty()) {
+            return null;
+        }
+        return getPassengers().getFirst();
+    }
+
+    public boolean grabbing()
+    {
+        return !getPassengers().isEmpty();
+    }
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-
+        builder.define(PEN_DOWN, false);
     }
 
     @Override
@@ -55,13 +78,35 @@ public class Orb extends Entity {
                 Vec3 displacement = destination_pos.subtract(this.position());
                 Vec3 step = displacement.normalize().multiply(SPEED, SPEED, SPEED);
                 this.move(MoverType.SELF, step);
-            }
-        }
-
-        if(grabbed != null) {
-            if(grabbed.isRemoved()) {
-                grabbed = null;
-                grabbing = false;
+                if(penDown()) {
+                    if(getGrabbed() instanceof ItemEntity item_entity) {
+                        ItemStack stack = item_entity.getItem();
+                        if(stack.getItem() instanceof BlockItem block_item) {
+                            BlockPos pos = BlockPos.containing(position());
+                            if(level().getBlockState(pos).canBeReplaced()) {
+                                BlockState state = block_item.getBlock().getStateForPlacement(new BlockPlaceContext(level(), null, InteractionHand.MAIN_HAND, stack, BlockHitResult.miss(position(), getDirection(), pos)));
+                                if(state != null) {
+                                    level().setBlock(pos, state, Block.UPDATE_ALL);
+                                    stack.shrink(1);
+                                }
+                            }
+                        } else {
+                            if(drop_item_timer < 1) {
+                                drop_item_timer = DROP_ITEM_DELAY;
+                                ItemEntity drop = new ItemEntity(level(), position().x, position().y, position().z, stack.copyWithCount(1));
+                                drop.setDeltaMovement(Vec3.ZERO);
+                                drop.setPickUpDelay(20);
+                                level().addFreshEntity(drop);
+                                stack.shrink(1);
+                            } else {
+                                drop_item_timer--;
+                            }
+                        }
+                        if(stack.isEmpty()) {
+                            item_entity.kill();
+                        }
+                    }
+                }
             }
         }
     }
@@ -91,22 +136,26 @@ public class Orb extends Entity {
     }
 
     public void toggleGrab() {
-        if(grabbing) {
-            if(grabbed != null) {
-                grabbed.dismountTo(position().x, position().y, position().z);
-                grabbed = null;
+        if(grabbing()) {
+            if(getGrabbed() != null) {
+                getGrabbed().dismountTo(position().x, position().y, position().z);
             }
-            grabbing = false;
         } else {
             AABB hitbox = AABB.ofSize(position(), HITBOX_SIZE, HITBOX_SIZE, HITBOX_SIZE);
             List<Entity> in_range = level().getEntities(this, hitbox, entity -> !entity.is(this));
             if(in_range.isEmpty()) {
                 return;
             }
-            grabbed = in_range.getFirst();
-            grabbed.startRiding(this);
-            grabbing = true;
+            in_range.getFirst().startRiding(this);
         }
+    }
+
+    public void togglePen() {
+        entityData.set(PEN_DOWN, !entityData.get(PEN_DOWN));
+    }
+
+    public boolean penDown() {
+        return entityData.get(PEN_DOWN);
     }
 
     private record Destination(BlockPos pos, boolean relative) {

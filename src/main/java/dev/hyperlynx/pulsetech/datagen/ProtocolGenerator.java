@@ -70,6 +70,7 @@ public class ProtocolGenerator extends DataMapProvider {
                                 .add(OrbBlock.MOVE_RELATIVE_Z)
                                 .add(OrbBlock.MOVE_TO)
                                 .add(OrbBlock.GRAB)
+                                .add(OrbBlock.TOGGLE_PEN)
                                 .build(), false
                 );
 
