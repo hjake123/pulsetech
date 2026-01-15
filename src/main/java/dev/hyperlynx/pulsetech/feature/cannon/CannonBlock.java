@@ -5,15 +5,28 @@ import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.core.protocol.ExecutionContext;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommand;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
+import dev.hyperlynx.pulsetech.util.ParticleScribe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
 public class CannonBlock extends PulseBlock {
+    protected static final VoxelShape SHAPE_X = Shapes.or(Block.box(12, 2, 6, 14, 3, 10), Block.box(2, 2, 6, 4, 3, 10), Block.box(6, 2, 2, 10, 3, 4), Block.box(6, 2, 12, 10, 3, 14), Block.box(4, 2, 4, 12, 7, 12), Block.box(0, 0, 0, 16, 2, 16), Block.box(2, 8, 9, 14, 16, 14), Block.box(2, 8, 2, 14, 16, 7), Block.box(7, 7, 3, 9, 8, 13));
+    protected static final VoxelShape SHAPE_Z = Shapes.or(Block.box(6, 2, 12, 10, 3, 14), Block.box(6, 2, 2, 10, 3, 4), Block.box(2, 2, 6, 4, 3, 10), Block.box(12, 2, 6, 14, 3, 10), Block.box(4, 2, 4, 12, 7, 12), Block.box(0, 0, 0, 16, 2, 16), Block.box(9, 8, 2, 14, 16, 14), Block.box(2, 8, 2, 7, 16, 14), Block.box(3, 7, 7, 13, 8, 9));
+
     public CannonBlock(Properties properties) {
         super(properties);
     }
@@ -21,6 +34,20 @@ public class CannonBlock extends PulseBlock {
     @Override
     protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
         return simpleCodec(CannonBlock::new);
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return state.getValue(FACING).getAxis().equals(Direction.Axis.X) ? SHAPE_X : SHAPE_Z;
+    }
+
+
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        ParticleScribe.drawParticleBox(level, ParticleTypes.ELECTRIC_SPARK, state.getValue(FACING).getAxis().equals(Direction.Axis.X)
+                ? AABB.ofSize(pos.getCenter().add(0, 0.25, 0), 0.8, 0.5, 0.1)
+                : AABB.ofSize(pos.getCenter().add(0, 0.25, 0), 0.1, 0.5, 0.8)
+                , 1);
     }
 
     @Override

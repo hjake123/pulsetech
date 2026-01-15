@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "pulsetech:block/cannon",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "pulsetech:block/cannon"
+    },
+    "facing=south": {
+      "model": "pulsetech:block/cannon",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "pulsetech:block/cannon",
+      "y": 270
+    }
+  }
+}

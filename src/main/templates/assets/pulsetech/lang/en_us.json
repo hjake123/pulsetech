@@ -14,6 +14,7 @@
   "block.pulsetech.scope": "Pulse Scope",
   "block.pulsetech.screen": "Screen",
   "block.pulsetech.processor": "Program Emitter",
+  "block.pulsetech.cannon": "Coil Cannon",
   "item.pulsetech.datasheet": "Datasheet",
   "item.pulsetech.data_cell": "Data Cell",
   "message.pulsetech.set_protocol": "Protocol has been updated",
