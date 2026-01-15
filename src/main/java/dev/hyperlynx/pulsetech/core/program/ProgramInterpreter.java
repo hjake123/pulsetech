@@ -172,7 +172,7 @@ public class ProgramInterpreter {
         }
         if(executor.getCommandMode().equals(CommandMode.DEFINE)) {
             if(BUILT_IN_COMMANDS.containsKey(noun)) {
-                executor.sendLineIfConsole(player,  Component.translatable("console.pulsetech.macro_name_taken").getString());
+                executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.macro_name_taken_1").append("\"" + noun + "\"").append(Component.translatable("console.pulsetech.macro_name_taken_2")).getString());
             } else if(noun.isEmpty() || definition.isEmpty()) {
                 executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.define_help").getString() + noun);
             }
