@@ -79,6 +79,11 @@ public class ProgramInterpreter {
     }
 
     private static List<String> processLoopCommands(ProgramExecutor executor, List<String> tokens, @Nullable ServerPlayer player) {
+        if(tokens.contains("define")) {
+            // Don't process loops during definitions
+            return tokens;
+        }
+
         List<String> tokens_before_outermost_loop = new ArrayList<>();
         List<String> tokens_inside_outermost_loop = new ArrayList<>();
         List<String> tokens_after_outermost_loop = new ArrayList<>();
