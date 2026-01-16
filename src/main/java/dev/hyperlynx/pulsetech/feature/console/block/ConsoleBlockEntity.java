@@ -25,7 +25,6 @@ import java.util.*;
 public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetProvider, ProgramExecutor {
     ProgramEmitterModule emitter = new ProgramEmitterModule();
     private CommandMode command_mode = CommandMode.PARSE;
-    private OperationMode operation_mode = OperationMode.OUTPUT;
     private String saved_lines = "";
 
     private Map<String, List<String>> macros = new HashMap<>(); // Defined macros for this console. TODO better persistence?
@@ -46,11 +45,6 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
 
     public void addMacros(Map<String, List<String>> other_macros) {
         macros.putAll(other_macros);
-    }
-
-    @Override
-    public void setOperationMode(OperationMode operation_mode) {
-        this.operation_mode = operation_mode;
     }
 
     public void processLine(String line, ServerPlayer player) {
@@ -77,7 +71,6 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         if(!macros.isEmpty()) {
             MACRO_CODEC.encodeStart(NbtOps.INSTANCE, macros).ifSuccess(encoded -> tag.put("macros", encoded));
         }
-        tag.putString("OperationMode", operation_mode.name());
     }
 
     @Override
@@ -92,9 +85,6 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         }
         if(tag.contains("macros")) {
             MACRO_CODEC.decode(NbtOps.INSTANCE, tag.get("macros")).ifSuccess(pair -> macros = new HashMap<>(pair.getFirst()));
-        }
-        if(tag.contains("OperationMode")) {
-            operation_mode = OperationMode.valueOf(tag.getString("OperationMode"));
         }
     }
 
@@ -136,16 +126,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
     @Override
     public void tick() {
         if(level instanceof ServerLevel slevel) {
-            switch (operation_mode) {
-                case OUTPUT -> {
-                    emitter.looping = false;
-                    emitter.tick(slevel, this);
-                }
-                case LOOP_OUTPUT -> {
-                    emitter.looping = true;
-                    emitter.tick(slevel, this);
-                }
-            }
+            emitter.tick(slevel, this);
         }
     }
 

@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.core.program;
 
+import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.util.Color;
@@ -41,7 +42,6 @@ public class ProgramInterpreter {
                 }
             }),
             entry("stop", (player, executor) -> {
-                executor.setOperationMode(OperationMode.OUTPUT);
                 executor.setCommandMode(CommandMode.PARSE);
                 executor.getEmitter().reset();
                 executor.setChanged();
@@ -53,8 +53,10 @@ public class ProgramInterpreter {
                 executor.setCommandMode(CommandMode.FORGET);
             }),
             entry("loop", (player, executor) -> {
-                executor.setOperationMode(OperationMode.LOOP_OUTPUT);
-                executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.looping").getString());
+                executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.error_loop_not_processed").getString());
+            }),
+            entry("repeat", (player, executor) -> {
+                executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.repeat_outside_loop").getString());
             }),
             entry("wait", (player, executor) -> {
                 executor.setCommandMode(CommandMode.SET_DELAY);
@@ -76,6 +78,69 @@ public class ProgramInterpreter {
         }
     }
 
+    private static List<String> processLoopCommands(ProgramExecutor executor, List<String> tokens, @Nullable ServerPlayer player) {
+        List<String> tokens_before_outermost_loop = new ArrayList<>();
+        List<String> tokens_inside_outermost_loop = new ArrayList<>();
+        List<String> tokens_after_outermost_loop = new ArrayList<>();
+        boolean awaiting_loop_count = false;
+        int loop_count = 1;
+        boolean inside_outermost_loop = false;
+        boolean loop_done = false;
+
+        if(!tokens.contains("loop")) {
+            return tokens;
+        }
+
+        int last_repeat_index = tokens.lastIndexOf("repeat");
+        if(last_repeat_index < 0) {
+            executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.missing_repeat").getString());
+            return List.of();
+        }
+
+        for(int i = 0; i < tokens.size(); i++) {
+            String token = tokens.get(i);
+
+            if(loop_done) {
+                tokens_after_outermost_loop.add(token);
+            }
+
+            if(inside_outermost_loop) {
+                if(i >= last_repeat_index) {
+                    inside_outermost_loop = false;
+                    loop_done = true;
+                } else {
+                    tokens_inside_outermost_loop.add(token);
+                }
+            } else if(!awaiting_loop_count && !token.equalsIgnoreCase("loop") && !loop_done) {
+                tokens_before_outermost_loop.add(token);
+            }
+
+            if(awaiting_loop_count) {
+                try {
+                    loop_count = Integer.parseInt(token);
+                    inside_outermost_loop = true;
+                    awaiting_loop_count = false;
+                } catch(NumberFormatException exception) {
+                    executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.no_loop_parameter").append(token).getString());
+                    return List.of();
+                }
+            }
+
+            if(!loop_done && token.equalsIgnoreCase("loop")) {
+                awaiting_loop_count = true;
+            }
+        }
+
+        List<String> modifiable_tokens = new ArrayList<>(tokens_before_outermost_loop);
+        List<String> recursively_processed_interior = processLoopCommands(executor, tokens_inside_outermost_loop, player);
+        for(int i = 0; i < loop_count; i++) {
+            modifiable_tokens.addAll(recursively_processed_interior);
+        }
+        modifiable_tokens.addAll(tokens_after_outermost_loop);
+
+        return modifiable_tokens;
+    }
+
     private static final int MAX_STACK_DEPTH = 16;
     public static void processTokenList(ProgramExecutor executor, List<String> tokens, @Nullable ServerPlayer player, int depth) {
         // If this function was recursively called by a macro too many times, don't execute.
@@ -87,7 +152,7 @@ public class ProgramInterpreter {
         boolean error = false; // Tracks invalid tokens during parsing
         String noun = ""; // Used for define operations
         List<String> definition = new ArrayList<>(); // Used for define operations
-        Iterator<String> token_iterator = tokens.iterator();
+        Iterator<String> token_iterator = processLoopCommands(executor, tokens, player).iterator();
         while (token_iterator.hasNext()) {
             String token = token_iterator.next();
             switch(executor.getCommandMode()) {

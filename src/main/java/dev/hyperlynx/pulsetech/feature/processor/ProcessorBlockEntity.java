@@ -71,11 +71,6 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
     }
 
     @Override
-    public void setOperationMode(OperationMode operationMode) {
-        operation_mode = operationMode;
-    }
-
-    @Override
     public void tick() {
         super.tick();
         if(level instanceof ServerLevel slevel) {

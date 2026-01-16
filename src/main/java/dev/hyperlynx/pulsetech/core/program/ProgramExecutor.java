@@ -12,7 +12,6 @@ public interface ProgramExecutor {
     Macros getMacros();
     BlockPos getBlockPos();
     boolean isConsole();
-    void setOperationMode(OperationMode operationMode);
     void setCommandMode(CommandMode commandMode);
     void setChanged();
     CommandMode getCommandMode();

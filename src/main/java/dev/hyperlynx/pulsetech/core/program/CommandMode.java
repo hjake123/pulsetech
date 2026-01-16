@@ -6,6 +6,8 @@ public enum CommandMode {
     DEFINE,
     SET_DELAY,
     FORGET,
-    NUM, COLOR, EMIT
+    NUM,
+    COLOR,
+    EMIT
 }
 
