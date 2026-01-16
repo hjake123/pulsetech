@@ -126,7 +126,7 @@ public class ProgramInterpreter {
                 }
             }
 
-            if(!loop_done && token.equalsIgnoreCase("loop")) {
+            if(!loop_done && !inside_outermost_loop && token.equalsIgnoreCase("loop")) {
                 awaiting_loop_count = true;
             }
         }
