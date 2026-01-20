@@ -38,6 +38,9 @@ public record ConsolePriorLinesPayload(BlockPos pos, String lines) implements Cu
             Pulsetech.LOGGER.error("Received command for nonexistent console at {}", pos);
             return;
         }
+        if(!context.player().level().isLoaded(pos)) {
+            return;
+        }
         console.savePriorLines(lines);
     }
 }

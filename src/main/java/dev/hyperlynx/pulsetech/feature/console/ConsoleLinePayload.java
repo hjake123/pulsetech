@@ -38,6 +38,9 @@ public record ConsoleLinePayload(BlockPos pos, String line) implements CustomPac
             Pulsetech.LOGGER.error("Received command {} for nonexistent console at {}", line, pos);
             return;
         }
+        if(!context.player().level().isLoaded(pos)) {
+            return;
+        }
         console.processLine(line, (ServerPlayer) context.player());
     }
 }

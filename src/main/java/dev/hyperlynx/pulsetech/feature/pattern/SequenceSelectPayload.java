@@ -26,7 +26,7 @@ public record SequenceSelectPayload(BlockPos pos, Sequence sequence) implements 
     );
 
     public void handler(IPayloadContext context) {
-        if(context.player().level().getBlockEntity(pos) instanceof PatternBlockEntity sbe) {
+        if(context.player().level().isLoaded(pos) && context.player().level().getBlockEntity(pos) instanceof PatternBlockEntity sbe) {
             sbe.setPattern(sequence);
         }
     }
