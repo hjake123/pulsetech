@@ -124,10 +124,32 @@ public class Sequence implements Comparable<Sequence> {
     public static Sequence fromByte(byte n) {
         Sequence sequence = truncatedFromInt(Math.abs(n));
         while(sequence.length() < 7) {
-            sequence.append(n < 0);
+            sequence.append(false);
         }
-        sequence.append(n < 0);
+        if(sequence.length() == 7) {
+            // Unless we're encoding -128, add a 0 sign bit for now
+            sequence.append(false);
+        }
+        if(n < 0) {
+            sequence = sequence.negateNumberValue();
+        }
         return sequence;
+    }
+
+    /// Flip the bits and add one
+    /// to twos-compliment negate the value of the number
+    private Sequence negateNumberValue() {
+        Sequence negated = new Sequence();
+        boolean carry = false;
+        boolean ones_place = true;
+        for(boolean bit : getAsBooleans()) {
+            boolean flipped = !bit;
+            boolean result = (flipped ^ ones_place) ^ carry;
+            carry = (flipped && ones_place) || (carry && (flipped ^ ones_place));
+            negated.append(result);
+            ones_place = false;
+        }
+        return negated;
     }
 
     /// Returns the short value of this Sequence as a little endian signed byte.
