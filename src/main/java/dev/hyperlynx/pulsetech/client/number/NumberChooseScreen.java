@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.client.number;
 
+import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.feature.number.NumberSelectPayload;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
 import net.minecraft.client.Minecraft;
@@ -10,9 +11,7 @@ import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.checkerframework.checker.units.qual.N;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
@@ -26,6 +25,7 @@ public class NumberChooseScreen extends Screen {
     private Button plus_ten_button;
     private Button minus_one_button;
     private Button minus_ten_button;
+    private SequenceDisplayWidget sequence_display;
 
     public NumberChooseScreen(BlockPos pos, NumberEmitterBlockEntity emitter) {
         super(Component.empty());
@@ -75,7 +75,13 @@ public class NumberChooseScreen extends Screen {
         minus_ten_button.setSize(24, 20);
         addRenderableWidget(minus_ten_button);
 
+        sequence_display = new SequenceDisplayWidget(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 66,
+                this.getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - 50,10, 10);
+        sequence_display.visible = false;
+        addRenderableWidget(sequence_display);
+
         updateValidity(number_box.getValue());
+        setInitialFocus(number_box);
     }
 
     private void pressModifyValue(int amount) {
@@ -106,12 +112,16 @@ public class NumberChooseScreen extends Screen {
             plus_ten_button.active = (value + 10) <= Byte.MAX_VALUE;
             minus_one_button.active = value > Byte.MIN_VALUE;
             minus_ten_button.active = (value - 10) >= Byte.MIN_VALUE;
+
+            sequence_display.setSequence(Sequence.fromByte(value));
+            sequence_display.visible = true;
             return;
         }
         plus_one_button.active = false;
         plus_ten_button.active = false;
         minus_one_button.active = false;
         minus_ten_button.active = false;
+        sequence_display.visible = false;
 
         // Test if it's a valid integer of the wrong size for tooltip
         int parsed_value;
