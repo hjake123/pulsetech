@@ -10,8 +10,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class SequenceDisplayWidget extends AbstractWidget implements Renderable {
-    private static final ResourceLocation on_bit_icon = Pulsetech.location("bit_button_on");
-    private static final ResourceLocation off_bit_icon = Pulsetech.location("bit_button_off");
+    private static final ResourceLocation on_bit_icon = Pulsetech.location("bit_light_on");
+    private static final ResourceLocation off_bit_icon = Pulsetech.location("bit_light_off");
     private Sequence sequence = null;
 
     public SequenceDisplayWidget(int x, int y, int width, int height) {
@@ -27,7 +27,7 @@ public class SequenceDisplayWidget extends AbstractWidget implements Renderable 
         int cursor = getX();
         for(int i = 0; i < sequence.length(); i++) {
             boolean bit = sequence.get(i);
-            graphics.blitSprite(bit ? on_bit_icon : off_bit_icon, cursor, bit ? getY() + 12 : getY(), 20, 32);
+            graphics.blitSprite(bit ? on_bit_icon : off_bit_icon, cursor, getY() + 12, 20, 20);
             cursor += 16;
         }
     }
