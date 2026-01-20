@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.client;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.client.number.NumberChooseScreen;
 import dev.hyperlynx.pulsetech.client.orb.OrbRenderer;
 import dev.hyperlynx.pulsetech.client.scope.ScopeBlockRenderer;
 import dev.hyperlynx.pulsetech.client.datasheet.DatasheetScreen;
@@ -12,6 +13,7 @@ import dev.hyperlynx.pulsetech.client.screen.ScreenBlockRenderer;
 import dev.hyperlynx.pulsetech.core.PatternHolder;
 import dev.hyperlynx.pulsetech.feature.datacell.DataCellItem;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
+import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
@@ -87,6 +89,12 @@ public class PulsetechClient {
     public static void openSequenceScreen(BlockPos pos) {
         if(Minecraft.getInstance().level != null && Minecraft.getInstance().level.getBlockEntity(pos) instanceof PatternHolder bearer) {
             Minecraft.getInstance().setScreen(new SequenceChooseScreen(pos, bearer));
+        }
+    }
+
+    public static void openNumberChooseScreen(BlockPos pos) {
+        if(Minecraft.getInstance().level != null && Minecraft.getInstance().level.getBlockEntity(pos) instanceof NumberEmitterBlockEntity emitter) {
+            Minecraft.getInstance().setScreen(new NumberChooseScreen(pos, emitter));
         }
     }
 

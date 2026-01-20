@@ -163,5 +163,9 @@
   "pulsetech.failed_link_to_scanner": "Couldn't link to scanner",
   "pulsetech.stored_scanner_pos": "Stored scanner position for linking",
   "pulsetech.contains_scanner_link_pos": "Linked to a scanner",
-  "pulsetech.about": "Pulsetech ${mod_version} for Minecraft ${minecraft_version}"
+  "pulsetech.about": "Pulsetech ${mod_version} for Minecraft ${minecraft_version}",
+  "gui.pulsetech.apply": "Apply",
+  "gui.pulsetech.invalid_number": "Invalid number",
+  "gui.pulsetech.number_too_big": "Value must be at most 127",
+  "gui.pulsetech.number_too_small": "Value must be at least -128"
 }

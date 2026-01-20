@@ -97,4 +97,8 @@ public class NumberEmitterBlockEntity extends PulseBlockEntity implements Number
     public boolean isDelayed() {
         return emitter.getDelay() > 0;
     }
+
+    public void setNumber(byte number) {
+        this.number = number;
+    }
 }

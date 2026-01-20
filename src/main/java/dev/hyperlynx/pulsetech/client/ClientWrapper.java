@@ -31,4 +31,8 @@ public class ClientWrapper {
     public static void acceptScreenBlockPayload(ScreenUpdatePayload payload, IPayloadContext context) {
         PulsetechClient.updateScreenBlock(payload.data(), payload.pos());
     }
+
+    public static void openNumberChooseScreen(BlockPos pos) {
+        PulsetechClient.openNumberChooseScreen(pos);
+    }
 }

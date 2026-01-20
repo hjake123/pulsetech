@@ -4,6 +4,7 @@ import dev.hyperlynx.pulsetech.client.ClientWrapper;
 import dev.hyperlynx.pulsetech.feature.console.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.feature.console.OpenConsolePayload;
+import dev.hyperlynx.pulsetech.feature.number.NumberSelectPayload;
 import dev.hyperlynx.pulsetech.feature.pattern.OpenSequenceChooserPayload;
 import dev.hyperlynx.pulsetech.feature.pattern.SequenceSelectPayload;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
@@ -60,6 +61,12 @@ public class ModPayloads {
                 ScreenUpdatePayload.TYPE,
                 ScreenUpdatePayload.STREAM_CODEC,
                 ClientWrapper::acceptScreenBlockPayload
+        );
+
+        registrar.playToServer(
+                NumberSelectPayload.TYPE,
+                NumberSelectPayload.STREAM_CODEC,
+                NumberSelectPayload::handler
         );
     }
 }

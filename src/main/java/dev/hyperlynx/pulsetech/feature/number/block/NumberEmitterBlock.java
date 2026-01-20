@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.feature.number.block;
 
 import com.mojang.serialization.MapCodec;
+import dev.hyperlynx.pulsetech.client.ClientWrapper;
 import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -53,16 +54,11 @@ public class NumberEmitterBlock extends PulseBlock implements EntityBlock {
     }
     @Override
     protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if(level.isClientSide) {
-            return InteractionResult.FAIL;
+        if(!level.isClientSide) {
+            return InteractionResult.SUCCESS;
         }
-
-        // Clicking without an item changes which pattern from the protocol is selected.
-        if(level.getBlockEntity(pos) instanceof NumberEmitterBlockEntity emitter) {
-            emitter.adjustNumber(player.isShiftKeyDown() ? -1 : 1);
-            level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
-        }
-        return super.useWithoutItem(state, level, pos, player, hitResult);
+        ClientWrapper.openNumberChooseScreen(pos);
+        return InteractionResult.SUCCESS;
     }
 
     @Override
