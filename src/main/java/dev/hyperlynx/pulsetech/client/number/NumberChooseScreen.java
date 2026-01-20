@@ -22,9 +22,9 @@ public class NumberChooseScreen extends Screen {
     private EditBox number_box;
     private Button submit_button;
     private Button plus_one_button;
-    private Button plus_ten_button;
+    private Button plus_sixteen_button;
     private Button minus_one_button;
-    private Button minus_ten_button;
+    private Button minus_sixteen_button;
     private SequenceDisplayWidget sequence_display;
 
     public NumberChooseScreen(BlockPos pos, NumberEmitterBlockEntity emitter) {
@@ -57,11 +57,11 @@ public class NumberChooseScreen extends Screen {
         plus_one_button.setSize(16, 20);
         addRenderableWidget(plus_one_button);
 
-        plus_ten_button = Button.builder(Component.translatable("gui.pulsetech.plus_ten"), button -> pressModifyValue(10)).build();
-        plus_ten_button.setPosition(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) + 36,
+        plus_sixteen_button = Button.builder(Component.translatable("gui.pulsetech.plus_sixteen"), button -> pressModifyValue(16)).build();
+        plus_sixteen_button.setPosition(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) + 36,
                 this.getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - 20);
-        plus_ten_button.setSize(24, 20);
-        addRenderableWidget(plus_ten_button);
+        plus_sixteen_button.setSize(24, 20);
+        addRenderableWidget(plus_sixteen_button);
 
         minus_one_button = Button.builder(Component.translatable("gui.pulsetech.minus_one"), button -> pressModifyValue(-1)).build();
         minus_one_button.setPosition(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 34,
@@ -69,11 +69,11 @@ public class NumberChooseScreen extends Screen {
         minus_one_button.setSize(16, 20);
         addRenderableWidget(minus_one_button);
 
-        minus_ten_button = Button.builder(Component.translatable("gui.pulsetech.minus_ten"), button -> pressModifyValue(-10)).build();
-        minus_ten_button.setPosition(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 60,
+        minus_sixteen_button = Button.builder(Component.translatable("gui.pulsetech.minus_sixteen"), button -> pressModifyValue(-16)).build();
+        minus_sixteen_button.setPosition(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 60,
                 this.getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - 20);
-        minus_ten_button.setSize(24, 20);
-        addRenderableWidget(minus_ten_button);
+        minus_sixteen_button.setSize(24, 20);
+        addRenderableWidget(minus_sixteen_button);
 
         sequence_display = new SequenceDisplayWidget(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 66,
                 this.getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - 50,10, 10);
@@ -109,18 +109,18 @@ public class NumberChooseScreen extends Screen {
         if(valid) {
             submit_button.setTooltip(Tooltip.create(Component.literal("")));
             plus_one_button.active = value < Byte.MAX_VALUE;
-            plus_ten_button.active = (value + 10) <= Byte.MAX_VALUE;
+            plus_sixteen_button.active = (value + 16) <= Byte.MAX_VALUE;
             minus_one_button.active = value > Byte.MIN_VALUE;
-            minus_ten_button.active = (value - 10) >= Byte.MIN_VALUE;
+            minus_sixteen_button.active = (value - 16) >= Byte.MIN_VALUE;
 
             sequence_display.setSequence(Sequence.fromByte(value));
             sequence_display.visible = true;
             return;
         }
         plus_one_button.active = false;
-        plus_ten_button.active = false;
+        plus_sixteen_button.active = false;
         minus_one_button.active = false;
-        minus_ten_button.active = false;
+        minus_sixteen_button.active = false;
         sequence_display.visible = false;
 
         // Test if it's a valid integer of the wrong size for tooltip

@@ -167,8 +167,8 @@
   "gui.pulsetech.apply": "Apply",
   "gui.pulsetech.plus_one": "+1",
   "gui.pulsetech.minus_one": "-1",
-  "gui.pulsetech.plus_ten": "+10",
-  "gui.pulsetech.minus_ten": "-10",
+  "gui.pulsetech.plus_sixteen": "+16",
+  "gui.pulsetech.minus_sixteen": "-16",
   "gui.pulsetech.invalid_number": "Invalid number",
   "gui.pulsetech.number_too_big": "Value must be at most 127",
   "gui.pulsetech.number_too_small": "Value must be at least -128"
