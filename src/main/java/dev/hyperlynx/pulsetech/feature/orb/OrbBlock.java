@@ -133,4 +133,18 @@ public class OrbBlock extends PulseBlock {
                     }
                 }
             });
+
+    public static final DeferredHolder<ProtocolCommand, ProtocolCommand> TOGGLE_PROJECTILE = ProtocolCommands.COMMANDS.register("orb/toggle_projectile", () ->
+            new ProtocolCommand(0) {
+                @Override
+                public void run(ExecutionContext context) {
+                    if(context.block() instanceof OrbBlockEntity orb_machine) {
+                        Orb orb = orb_machine.getOrb();
+                        if(orb == null) {
+                            return;
+                        }
+                        orb.toggleProjectile();
+                    }
+                }
+            });
 }
