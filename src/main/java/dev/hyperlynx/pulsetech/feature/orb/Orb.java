@@ -193,7 +193,7 @@ public class Orb extends Entity {
     }
 
     public void toggleProjectile() {
-        entityData.set(PROJECTILE, !entityData.get(PEN_DOWN));
+        entityData.set(PROJECTILE, !entityData.get(PROJECTILE));
     }
 
     public boolean isProjectile() {

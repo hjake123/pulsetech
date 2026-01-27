@@ -45,7 +45,7 @@ public class OrbRenderer extends EntityRenderer<Orb> {
             Minecraft.getInstance().level.addParticle(DustParticleOptions.REDSTONE, render_pos.x(), render_pos.y() + 0.15, render_pos.z(), 0, 0, 0);
         }
         if(orb.penDown()) {
-            Minecraft.getInstance().level.addParticle(ParticleTypes.END_ROD, render_pos.x(), render_pos.y(), render_pos.z(), 0, 0, 0);
+            Minecraft.getInstance().level.addParticle(ParticleTypes.END_ROD, render_pos.x(), render_pos.y() + 0.15, render_pos.z(), 0, 0, 0);
         }
         if(orb.isProjectile()) {
             Minecraft.getInstance().level.addParticle(ParticleTypes.FLAME, render_pos.x(), render_pos.y() + 0.40, render_pos.z(), 0, 0, 0);
