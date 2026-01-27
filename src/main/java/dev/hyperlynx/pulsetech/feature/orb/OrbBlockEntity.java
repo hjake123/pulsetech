@@ -6,8 +6,10 @@ import dev.hyperlynx.pulsetech.feature.scanner.ScannerLinkable;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModBlocks;
 import dev.hyperlynx.pulsetech.registration.ModEntityTypes;
+import dev.hyperlynx.pulsetech.util.ParticleScribe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
@@ -76,6 +78,7 @@ public class OrbBlockEntity extends ProtocolBlockEntity implements ScannerLinkab
         orb.setPos(getBlockPos().above().getCenter());
         this.orb_uuid = orb.getUUID();
         level.addFreshEntity(orb);
+        ParticleScribe.drawParticleBox(level, DustParticleOptions.REDSTONE, orb.getBoundingBox().inflate(0.5F), 10);
     }
 
     public BlockPos getOrigin() {

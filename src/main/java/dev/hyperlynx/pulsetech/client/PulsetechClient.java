@@ -2,6 +2,7 @@ package dev.hyperlynx.pulsetech.client;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.client.number.NumberChooseScreen;
+import dev.hyperlynx.pulsetech.client.orb.OrbModel;
 import dev.hyperlynx.pulsetech.client.orb.OrbRenderer;
 import dev.hyperlynx.pulsetech.client.scope.ScopeBlockRenderer;
 import dev.hyperlynx.pulsetech.client.datasheet.DatasheetScreen;
@@ -40,6 +41,7 @@ public class PulsetechClient {
         }
         bus.addListener(this::onClientSetup);
         bus.addListener(this::registerEntityRenderers);
+        bus.addListener(this::registerLayerDefinitions);
     }
 
     protected void onClientSetup(FMLClientSetupEvent event) {
@@ -61,6 +63,10 @@ public class PulsetechClient {
         event.registerBlockEntityRenderer(ModBlockEntityTypes.SCREEN.get(), ScreenBlockRenderer::new);
 
         event.registerEntityRenderer(ModEntityTypes.ORB.get(), OrbRenderer::new);
+    }
+
+    protected void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(OrbModel.LAYER_LOCATION, OrbModel::createBodyLayer);
     }
 
     protected static void openConsoleScreen(BlockPos pos, String prior_lines) {
