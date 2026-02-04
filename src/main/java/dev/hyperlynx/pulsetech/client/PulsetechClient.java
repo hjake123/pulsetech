@@ -58,7 +58,8 @@ public class PulsetechClient {
     public static void acceptDebuggerSequenceInfo(DebuggerSequenceInfo info) {
         if(Minecraft.getInstance().screen instanceof DebuggerScreen screen) {
             screen.acceptInfo(info.sequence());
-        }    }
+        }
+    }
 
     public static void acceptDebuggerByteInfo(DebuggerByteInfo info) {
         if(Minecraft.getInstance().screen instanceof DebuggerScreen screen) {

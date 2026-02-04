@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.client.debugger;
 
+import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
 import net.minecraft.client.gui.GuiGraphics;
@@ -8,11 +9,16 @@ import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DebuggerScreen extends Screen {
+    private static final ResourceLocation BACKGROUND = Pulsetech.location("textures/gui/debugger_background.png");
+    private int bg_top_x;
+    private int bg_top_y;
+
     private final BlockPos pos;
     private int current_page = 0;
     private final List<DebuggerPage> pages = new ArrayList<>();
@@ -32,8 +38,10 @@ public class DebuggerScreen extends Screen {
     protected void init() {
         super.init();
         int i = 0;
-        int widget_x = getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL);
-        int widget_y = getRectangle().getCenterInAxis(ScreenAxis.VERTICAL);
+        bg_top_x = getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 90;
+        bg_top_y = getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - 70;
+        int widget_x = bg_top_x + 8;
+        int widget_y = bg_top_y + 8;
         for(DebuggerInfoManifest.Entry entry : manifest.entries()) {
             if (entry.type().equals(DebuggerInfoTypes.TEXT.value())) {
                 pages.add(new DebuggerTextPage(pos, i, entry.title(), widget_x, widget_y));
@@ -46,13 +54,13 @@ public class DebuggerScreen extends Screen {
             }
             i++;
         }
-        next_page_button.setPosition(getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) + 50, getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + 20);
+        next_page_button.setPosition(getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) + 65, getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + 50);
         next_page_button.setSize(10, 10);
-        previous_page_button.setPosition(getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 50, getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + 20);
+        previous_page_button.setPosition(getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 65, getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + 50);
         previous_page_button.setSize(10, 10);
         pager = new PagerWidget(
-                getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 40,
-                getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + 40,
+                bg_top_x + 47,
+                bg_top_y + 106,
                 100, 20,
                 pages.size()
                 );
@@ -87,19 +95,26 @@ public class DebuggerScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        pages.get(current_page).render(guiGraphics, mouseX, mouseY, partialTick);
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(graphics, mouseX, mouseY, partialTick);
+        graphics.blit(BACKGROUND, bg_top_x, bg_top_y, 0, 0, 180, 141, 180, 141);
+
+    }
+
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+        pages.get(current_page).render(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if(!super.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
-            if(scrollY > 0) {
+            if(scrollY < 0) {
                 changePage(1);
                 return true;
             }
-            if(scrollY < 0) {
+            if(scrollY > 0) {
                 changePage(-1);
                 return true;
             }

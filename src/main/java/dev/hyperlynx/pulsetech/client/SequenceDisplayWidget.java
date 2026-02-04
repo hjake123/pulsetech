@@ -1,4 +1,4 @@
-package dev.hyperlynx.pulsetech.client.number;
+package dev.hyperlynx.pulsetech.client;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.Sequence;

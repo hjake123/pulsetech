@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.client.number;
 
+import dev.hyperlynx.pulsetech.client.SequenceDisplayWidget;
 import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.feature.number.NumberSelectPayload;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
