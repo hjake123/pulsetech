@@ -7,6 +7,11 @@ import dev.hyperlynx.pulsetech.core.module.NumberSensorModule;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetEntry;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetProvider;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoSource;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerSequenceInfo;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerTextInfo;
 import dev.hyperlynx.pulsetech.feature.pattern.PatternSensorModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -22,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /// A block entity capable of hearing and responding to {@link ProtocolCommand}s.
-public class ProtocolBlockEntity extends PulseBlockEntity implements DatasheetProvider {
+public class ProtocolBlockEntity extends PulseBlockEntity implements DatasheetProvider, DebuggerInfoSource {
     private ProtocolExecutorModule executor;
     private EmitterModule emitter = new EmitterModule();
 
@@ -104,5 +109,53 @@ public class ProtocolBlockEntity extends PulseBlockEntity implements DatasheetPr
         super.loadAdditional(tag, registries);
         ProtocolExecutorModule.CODEC.decode(NbtOps.INSTANCE, tag.get("Executor")).ifSuccess(success -> executor = success.getFirst());
         EmitterModule.CODEC.decode(NbtOps.INSTANCE, tag.get("Emitter")).ifSuccess(success -> emitter = success.getFirst());
+    }
+
+    @Override
+    public DebuggerInfoManifest getDebuggerInfoManifest() {
+        return new DebuggerInfoManifest(List.of(
+                new DebuggerInfoManifest.Entry(
+                        Component.translatable("debugger.pulsetech.protocol_status").getString(),
+                        DebuggerInfoTypes.TEXT.value(),
+                        () -> {
+                            StringBuilder builder = new StringBuilder().append(Component.translatable("debugger.pulsetech." + executor.state().getSerializedName().toLowerCase()).getString());
+
+                            if(executor.activeCommand().isPresent()) {
+                                ResourceLocation command_location = ProtocolCommands.REGISTRY.getKey(executor.activeCommand().get());
+                                builder.append(" ").append(Component.translatable("protocol.pulsetech.name." + command_location.getPath()).getString());
+                            }
+
+                            if(!executor.activeParams().isEmpty()) {
+                                builder.append("\n[");
+                                for(Byte param : executor.activeParams()) {
+                                    builder.append(param).append(", ");
+                                }
+                                builder.deleteCharAt(builder.length() - 1);
+                                builder.deleteCharAt(builder.length() - 1);
+                                builder.append("]");
+                            }
+
+                            return new DebuggerTextInfo(builder.toString());
+                        }
+                ),
+                new DebuggerInfoManifest.Entry(
+                        Component.translatable("debugger.pulsetech.command_input_buffer").getString(),
+                        DebuggerInfoTypes.SEQUENCE.value(),
+                        () -> new DebuggerSequenceInfo(executor.getBuffer())
+                ),
+                new DebuggerInfoManifest.Entry(
+                        Component.translatable("debugger.pulsetech.parameter_input_buffer").getString(),
+                        DebuggerInfoTypes.SEQUENCE.value(),
+                        () -> new DebuggerSequenceInfo(executor.parameter_sensor.getBuffer())
+                ),
+                new DebuggerInfoManifest.Entry(
+                        Component.translatable("debugger.pulsetech.output_buffer").getString(),
+                        DebuggerInfoTypes.SEQUENCE.value(),
+                        () -> new DebuggerSequenceInfo(emitter.getBuffer())
+                )
+
+        ),
+        getBlockPos()
+        );
     }
 }

@@ -19,9 +19,9 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
     private State state = State.AWAIT_COMMAND;
     @Nullable private ProtocolCommand active_command = null;
     private final List<Byte> active_parameters;
-    private final NumberSensorModule parameter_sensor;
+    public final NumberSensorModule parameter_sensor;
 
-    private enum State implements StringRepresentable {
+    public enum State implements StringRepresentable {
         AWAIT_COMMAND,
         AWAIT_PARAMETER,
         RUN;
@@ -52,15 +52,15 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
         return parameter_sensor;
     }
 
-    private List<Byte> activeParams() {
+    public List<Byte> activeParams() {
         return active_parameters;
     }
 
-    private Optional<ProtocolCommand> activeCommand() {
+    public Optional<ProtocolCommand> activeCommand() {
         return Optional.ofNullable(active_command);
     }
 
-    private State state() {
+    public State state() {
         return state;
     }
 

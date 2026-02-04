@@ -26,4 +26,5 @@ public class DebuggerInfoTypes {
 
     public static final DeferredHolder<DebuggerInfoType, DebuggerInfoType> SEQUENCE = TYPES.register("sequence", DebuggerInfoType::new);
     public static final DeferredHolder<DebuggerInfoType, DebuggerInfoType> NUMBER = TYPES.register("number", DebuggerInfoType::new);
+    public static final DeferredHolder<DebuggerInfoType, DebuggerInfoType> TEXT = TYPES.register("text", DebuggerInfoType::new);
 }

@@ -197,7 +197,13 @@
   "gui.pulsetech.number_too_big": "Value must be at most 127",
   "gui.pulsetech.number_too_small": "Value must be at least -128",
   "debugger.pulsetech.input_buffer": "Input Buffer",
+  "debugger.pulsetech.parameter_input_buffer": "Parameter Input Buffer",
+  "debugger.pulsetech.command_input_buffer": "Protocol Input Buffer",
   "debugger.pulsetech.output_buffer": "Output Buffer",
   "debugger.pulsetech.pattern": "Pattern",
-  "debugger.pulsetech.number": "Number"
+  "debugger.pulsetech.number": "Number",
+  "debugger.pulsetech.protocol_status": "Protocol Execution Status",
+  "debugger.pulsetech.run": "Running command:",
+  "debugger.pulsetech.await_parameter": "Awaiting parameter for command:",
+  "debugger.pulsetech.await_command": "Awaiting command"
 }
