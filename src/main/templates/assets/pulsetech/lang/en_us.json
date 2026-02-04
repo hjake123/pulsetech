@@ -18,6 +18,7 @@
   "block.pulsetech.orb": "Orb Projector",
   "item.pulsetech.datasheet": "Datasheet",
   "item.pulsetech.data_cell": "Data Cell",
+  "item.pulsetech.debugger": "Debugger",
   "message.pulsetech.set_protocol": "Protocol has been updated",
   "message.pulsetech.no_protocol": "Please set a Protocol first",
   "pulsetech.needs_protocol": "Needs protocol",
