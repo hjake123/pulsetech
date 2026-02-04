@@ -115,7 +115,7 @@ public class NumberMonitorBlockEntity extends PulseBlockEntity implements Number
                         DebuggerInfoTypes.NUMBER.value(),
                         () -> new DebuggerByteInfo(getNumber())),
                 new DebuggerInfoManifest.Entry(
-                        Component.translatable("debugger.pulsetech.output_buffer").getString(),
+                        Component.translatable("debugger.pulsetech.input_buffer").getString(),
                         DebuggerInfoTypes.SEQUENCE.value(),
                         () -> new DebuggerSequenceInfo(module.getBuffer()))
         ), getBlockPos());
