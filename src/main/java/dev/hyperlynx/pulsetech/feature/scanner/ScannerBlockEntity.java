@@ -1,9 +1,13 @@
 package dev.hyperlynx.pulsetech.feature.scanner;
 
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolBlockEntity;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerTextInfo;
 import dev.hyperlynx.pulsetech.feature.orb.Orb;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Animal;
@@ -94,5 +98,14 @@ public class ScannerBlockEntity extends ProtocolBlockEntity {
             return BlockPos.ZERO;
         }
         return new BlockPos(nearest.getBlockX() - getBlockPos().getX(), nearest.getBlockY() - getBlockPos().getY(), nearest.getBlockZ() - getBlockPos().getZ());
+    }
+
+    @Override
+    public DebuggerInfoManifest getDebuggerInfoManifest() {
+        return super.getDebuggerInfoManifest().append(new DebuggerInfoManifest.Entry(
+                Component.translatable("debugger.pulsetech.scan_mode").getString(),
+                DebuggerInfoTypes.TEXT.value(),
+                () -> new DebuggerTextInfo(getBlockState().getValue(ScannerBlock.MODE).getSerializedName().toUpperCase())
+        ));
     }
 }

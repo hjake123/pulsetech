@@ -42,7 +42,7 @@ public record DebuggerInfoManifest(List<Entry> entries, BlockPos pos) implements
 
     public DebuggerInfoManifest append(Entry additional_entry) {
         ArrayList<Entry> mutable_entries = new ArrayList<>(entries);
-        mutable_entries.add(additional_entry);
+        mutable_entries.addFirst(additional_entry);
         return new DebuggerInfoManifest(mutable_entries, pos);
     }
 

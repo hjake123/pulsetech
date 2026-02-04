@@ -212,5 +212,6 @@
   "debugger.pulsetech.orb_grabbing": "Holding: ",
   "debugger.pulsetech.orb_pen_down": "Pen down",
   "debugger.pulsetech.orb_projectile": "Projectile mode",
-  "debugger.pulsetech.no_orb": "No linked orb"
+  "debugger.pulsetech.no_orb": "No linked orb",
+  "debugger.pulsetech.scan_mode": "Scan Mode"
 }
