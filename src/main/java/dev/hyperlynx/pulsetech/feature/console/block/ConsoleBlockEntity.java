@@ -7,6 +7,10 @@ import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetEntry;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetProvider;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoSource;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerSequenceInfo;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -22,7 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 
-public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetProvider, ProgramExecutor {
+public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetProvider, ProgramExecutor, DebuggerInfoSource {
     ProgramEmitterModule emitter = new ProgramEmitterModule();
     private CommandMode command_mode = CommandMode.PARSE;
     private String saved_lines = "";
@@ -167,5 +171,15 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
     @Override
     public ProgramEmitterModule getEmitter() {
         return emitter;
+    }
+
+    @Override
+    public DebuggerInfoManifest getDebuggerInfoManifest() {
+        return new DebuggerInfoManifest(List.of(
+                new DebuggerInfoManifest.Entry(
+                        Component.translatable("debugger.pulsetech.output_buffer").getString(),
+                        DebuggerInfoTypes.SEQUENCE.value(),
+                        () -> new DebuggerSequenceInfo(emitter.getBuffer()))
+        ), getBlockPos());
     }
 }

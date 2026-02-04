@@ -6,6 +6,10 @@ import dev.hyperlynx.pulsetech.core.program.*;
 import dev.hyperlynx.pulsetech.core.protocol.*;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetEntry;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoSource;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerSequenceInfo;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -20,11 +24,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ProcessorBlockEntity extends ProtocolBlockEntity implements ProgramExecutor  {
+public class ProcessorBlockEntity extends ProtocolBlockEntity implements ProgramExecutor, DebuggerInfoSource {
     private static final Codec<Map<String, List<String>>> MACRO_CODEC = Codec.unboundedMap(Codec.STRING, Codec.STRING.listOf());
 
     // Saved in data tags
@@ -170,5 +175,16 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
         if(tag.contains("OperationMode")) {
             operation_mode = OperationMode.valueOf(tag.getString("OperationMode"));
         }
+    }
+
+    @Override
+    public DebuggerInfoManifest getDebuggerInfoManifest() {
+        var protocol_manifest_list = new ArrayList<>(super.getDebuggerInfoManifest().entries());
+        protocol_manifest_list.removeLast();
+        protocol_manifest_list.add(new DebuggerInfoManifest.Entry(
+                Component.translatable("debugger.pulsetech.output_buffer").getString(),
+                DebuggerInfoTypes.SEQUENCE.value(),
+                () -> new DebuggerSequenceInfo(emitter.getBuffer())));
+        return new DebuggerInfoManifest(protocol_manifest_list, getBlockPos());
     }
 }
