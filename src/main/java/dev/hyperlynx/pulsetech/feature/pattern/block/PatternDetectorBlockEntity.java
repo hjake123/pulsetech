@@ -2,6 +2,9 @@ package dev.hyperlynx.pulsetech.feature.pattern.block;
 
 import dev.hyperlynx.pulsetech.core.PatternHolder;
 import dev.hyperlynx.pulsetech.core.Sequence;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoSource;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoTypes;
 import dev.hyperlynx.pulsetech.feature.pattern.PatternSensorModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -15,7 +18,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class PatternDetectorBlockEntity extends PatternBlockEntity implements PatternHolder {
+import java.util.List;
+
+public class PatternDetectorBlockEntity extends PatternBlockEntity implements PatternHolder, DebuggerInfoSource {
     private PatternSensorModule detector = new PatternSensorModule();
 
     public PatternDetectorBlockEntity(BlockPos pos, BlockState blockState) {
@@ -94,5 +99,10 @@ public class PatternDetectorBlockEntity extends PatternBlockEntity implements Pa
     @Override
     public boolean isDelayed() {
         return detector.getDelay() > 0;
+    }
+
+    @Override
+    public DebuggerInfoManifest debuggerInfoManifest() {
+        return new DebuggerInfoManifest(List.of(DebuggerInfoTypes.SEQUENCE.value()));
     }
 }

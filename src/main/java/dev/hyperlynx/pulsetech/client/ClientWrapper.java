@@ -1,7 +1,7 @@
 package dev.hyperlynx.pulsetech.client;
 
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
-import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenUpdatePayload;
 import net.minecraft.core.BlockPos;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -34,5 +34,9 @@ public class ClientWrapper {
 
     public static void openNumberChooseScreen(BlockPos pos) {
         PulsetechClient.openNumberChooseScreen(pos);
+    }
+
+    public static void openDebuggerScreen(DebuggerInfoManifest manifest, IPayloadContext context) {
+        PulsetechClient.openDebuggerScreen(manifest);
     }
 }

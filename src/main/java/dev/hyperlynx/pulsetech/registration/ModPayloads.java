@@ -4,10 +4,10 @@ import dev.hyperlynx.pulsetech.client.ClientWrapper;
 import dev.hyperlynx.pulsetech.feature.console.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.feature.console.OpenConsolePayload;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
 import dev.hyperlynx.pulsetech.feature.number.NumberSelectPayload;
 import dev.hyperlynx.pulsetech.feature.pattern.OpenSequenceChooserPayload;
 import dev.hyperlynx.pulsetech.feature.pattern.SequenceSelectPayload;
-import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenUpdatePayload;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -67,6 +67,12 @@ public class ModPayloads {
                 NumberSelectPayload.TYPE,
                 NumberSelectPayload.STREAM_CODEC,
                 NumberSelectPayload::handler
+        );
+
+        registrar.playToClient(
+                DebuggerInfoManifest.TYPE,
+                DebuggerInfoManifest.STREAM_CODEC,
+                ClientWrapper::openDebuggerScreen
         );
     }
 }

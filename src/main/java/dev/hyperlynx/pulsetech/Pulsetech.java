@@ -2,6 +2,7 @@ package dev.hyperlynx.pulsetech;
 
 import com.mojang.logging.LogUtils;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoTypes;
 import dev.hyperlynx.pulsetech.registration.*;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -25,6 +26,7 @@ public class Pulsetech {
         ModCreativeTab.TABS.register(bus);
         ModComponentTypes.TYPES.register(bus);
         ProtocolCommands.COMMANDS.register(bus);
+        DebuggerInfoTypes.TYPES.register(bus);
         container.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 

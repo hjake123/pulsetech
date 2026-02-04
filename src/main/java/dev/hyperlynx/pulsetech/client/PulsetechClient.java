@@ -14,6 +14,7 @@ import dev.hyperlynx.pulsetech.client.screen.ScreenBlockRenderer;
 import dev.hyperlynx.pulsetech.core.PatternHolder;
 import dev.hyperlynx.pulsetech.feature.datacell.DataCellItem;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
@@ -24,6 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -42,6 +44,10 @@ public class PulsetechClient {
         bus.addListener(this::onClientSetup);
         bus.addListener(this::registerEntityRenderers);
         bus.addListener(this::registerLayerDefinitions);
+    }
+
+    public static void openDebuggerScreen(DebuggerInfoManifest manifest) {
+        Minecraft.getInstance().player.sendSystemMessage(Component.literal(manifest.toString()));
     }
 
     protected void onClientSetup(FMLClientSetupEvent event) {
