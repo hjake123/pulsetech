@@ -1,4 +1,4 @@
-package dev.hyperlynx.pulsetech.feature.debugger;
+package dev.hyperlynx.pulsetech.feature.debugger.infotype;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.Sequence;

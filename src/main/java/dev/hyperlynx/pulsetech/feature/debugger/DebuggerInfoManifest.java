@@ -1,6 +1,8 @@
 package dev.hyperlynx.pulsetech.feature.debugger;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoType;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -39,7 +41,7 @@ public record DebuggerInfoManifest(List<Entry> entries, BlockPos pos) implements
 
     public static class Entry {
         private String title;
-        private DebuggerInfoType<?> type;
+        private DebuggerInfoType type;
         private Supplier<CustomPacketPayload> getter;
 
         static final StreamCodec<RegistryFriendlyByteBuf, Entry> STREAM_CODEC = StreamCodec.composite(
@@ -48,13 +50,13 @@ public record DebuggerInfoManifest(List<Entry> entries, BlockPos pos) implements
                 Entry::new
         );
 
-        public Entry(String title, DebuggerInfoType<?> type) {
+        public Entry(String title, DebuggerInfoType type) {
             this(title, type, () -> {
                 throw new IllegalStateException("Cannot get S -> C payload from the client side!");
             });
         }
 
-        public Entry(String title, DebuggerInfoType<?> type, Supplier<CustomPacketPayload> getter) {
+        public Entry(String title, DebuggerInfoType type, Supplier<CustomPacketPayload> getter) {
             this.title = title;
             this.type = type;
             this.getter = getter;
@@ -64,7 +66,7 @@ public record DebuggerInfoManifest(List<Entry> entries, BlockPos pos) implements
             return title;
         }
 
-        public DebuggerInfoType<?> type() {
+        public DebuggerInfoType type() {
             return type;
         }
 

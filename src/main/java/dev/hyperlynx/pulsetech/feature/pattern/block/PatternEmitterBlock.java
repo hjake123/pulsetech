@@ -56,7 +56,7 @@ public class PatternEmitterBlock extends PatternBlock implements EntityBlock {
             stack.shrink(1);
             return ItemInteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
     @Override

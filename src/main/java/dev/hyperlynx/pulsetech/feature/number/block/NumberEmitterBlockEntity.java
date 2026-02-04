@@ -3,12 +3,18 @@ package dev.hyperlynx.pulsetech.feature.number.block;
 import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.core.PulseBlockEntity;
 import dev.hyperlynx.pulsetech.core.module.EmitterModule;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoSource;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerByteInfo;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerSequenceInfo;
 import dev.hyperlynx.pulsetech.feature.number.NumberKnower;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -16,7 +22,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class NumberEmitterBlockEntity extends PulseBlockEntity implements NumberKnower {
+import java.util.List;
+
+public class NumberEmitterBlockEntity extends PulseBlockEntity implements NumberKnower, DebuggerInfoSource {
     private EmitterModule emitter = new EmitterModule();
 
     public NumberEmitterBlockEntity(BlockPos pos, BlockState blockState) {
@@ -100,5 +108,19 @@ public class NumberEmitterBlockEntity extends PulseBlockEntity implements Number
 
     public void setNumber(byte number) {
         this.number = number;
+    }
+
+    @Override
+    public DebuggerInfoManifest getDebuggerInfoManifest() {
+        return new DebuggerInfoManifest(List.of(
+                new DebuggerInfoManifest.Entry(
+                        Component.translatable("debugger.pulsetech.output_buffer").getString(),
+                        DebuggerInfoTypes.SEQUENCE.value(),
+                        () -> new DebuggerSequenceInfo(emitter.getBuffer())),
+                new DebuggerInfoManifest.Entry(
+                        Component.translatable("debugger.pulsetech.number").getString(),
+                        DebuggerInfoTypes.NUMBER.value(),
+                        () -> new DebuggerByteInfo(getNumber()))
+        ), getBlockPos());
     }
 }

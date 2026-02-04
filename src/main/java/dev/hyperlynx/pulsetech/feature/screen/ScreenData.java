@@ -20,7 +20,7 @@ public record ScreenData(Color bg_color, Map<Integer, Color> fg, boolean fg_visi
     public static final Codec<ScreenData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Color.CODEC.fieldOf("bg_color").forGetter(ScreenData::bg_color),
             Codec.pair(
-                    Codec.INT.fieldOf("i").codec(),
+                    Codec.INT.fieldOf("number").codec(),
                     Color.CODEC.fieldOf("color").codec()
             ).listOf().xmap(
                     converter::toMap,

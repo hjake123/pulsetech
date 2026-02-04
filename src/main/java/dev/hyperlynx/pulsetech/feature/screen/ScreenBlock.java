@@ -60,7 +60,7 @@ public class ScreenBlock extends PulseBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if(level.isClientSide()) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
         }
         if (level.getBlockEntity(pos) instanceof ScreenBlockEntity screen && stack.is(ModItems.DATA_CELL)) {
             ScreenData data = screen.getScreenData();
@@ -81,7 +81,7 @@ public class ScreenBlock extends PulseBlock {
             }
             return ItemInteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
     public static final DeferredHolder<ProtocolCommand, ProtocolCommand> BG = ProtocolCommands.COMMANDS.register("screen/bg", () ->

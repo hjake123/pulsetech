@@ -54,7 +54,7 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
             return ItemInteractionResult.FAIL;
         }
         if(level.isClientSide()) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
         }
         if (level.getBlockEntity(pos) instanceof ConsoleBlockEntity console && stack.is(ModItems.DATA_CELL)) {
             Macros console_macros = console.getMacros();
@@ -79,7 +79,7 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
             player.displayClientMessage(Component.translatable("pulsetech.synced_macros"), true);
             return ItemInteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
     @Override

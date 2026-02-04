@@ -198,5 +198,6 @@
   "gui.pulsetech.number_too_small": "Value must be at least -128",
   "debugger.pulsetech.input_buffer": "Input Buffer",
   "debugger.pulsetech.output_buffer": "Output Buffer",
-  "debugger.pulsetech.pattern": "Pattern"
+  "debugger.pulsetech.pattern": "Pattern",
+  "debugger.pulsetech.number": "Number"
 }

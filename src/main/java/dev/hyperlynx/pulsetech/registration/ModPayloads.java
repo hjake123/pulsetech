@@ -6,7 +6,8 @@ import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.feature.console.OpenConsolePayload;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoRequest;
-import dev.hyperlynx.pulsetech.feature.debugger.DebuggerSequenceInfo;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerByteInfo;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerSequenceInfo;
 import dev.hyperlynx.pulsetech.feature.number.NumberSelectPayload;
 import dev.hyperlynx.pulsetech.feature.pattern.OpenSequenceChooserPayload;
 import dev.hyperlynx.pulsetech.feature.pattern.SequenceSelectPayload;
@@ -87,6 +88,12 @@ public class ModPayloads {
                 DebuggerSequenceInfo.TYPE,
                 DebuggerSequenceInfo.STREAM_CODEC,
                 ClientWrapper::acceptDebuggerSequenceInfo
+        );
+
+        registrar.playToClient(
+                DebuggerByteInfo.TYPE,
+                DebuggerByteInfo.STREAM_CODEC,
+                ClientWrapper::acceptDebuggerByteInfo
         );
     }
 }

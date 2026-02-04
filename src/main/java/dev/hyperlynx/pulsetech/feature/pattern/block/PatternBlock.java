@@ -21,15 +21,6 @@ public abstract class PatternBlock extends PulseBlock {
         super(properties);
     }
 
-
-    @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if(stack.is(PulsetechTags.preventNormalUsage)) {
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
-        }
-        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
-    }
-
     @Override
     protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if(level.isClientSide) {
