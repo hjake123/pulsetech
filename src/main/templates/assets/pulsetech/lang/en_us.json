@@ -207,11 +207,14 @@
   "debugger.pulsetech.await_parameter": "Awaiting parameter for command:",
   "debugger.pulsetech.await_command": "Awaiting command",
   "debugger.pulsetech.target": "Target Offset",
-  "debugger.pulsetech.next_target": "Next Target Offset",
-  "debugger.pulsetech.orb_data": "Orb Information",
+  "debugger.pulsetech.nudge": "Nudge Per Activation",
+  "debugger.pulsetech.orb_data": "Orb Status",
   "debugger.pulsetech.orb_grabbing": "Holding: ",
   "debugger.pulsetech.orb_pen_down": "Pen down",
   "debugger.pulsetech.orb_projectile": "Projectile mode",
   "debugger.pulsetech.no_orb": "No linked orb",
-  "debugger.pulsetech.scan_mode": "Scan Mode"
+  "debugger.pulsetech.scan_mode": "Scan Mode",
+  "debugger.pulsetech.orb_position": "Orb Position Offset",
+  "debugger.pulsetech.orb_next_destination": "Moving to: ",
+  "debugger.pulsetech.orb_stationary": "Stationary"
 }

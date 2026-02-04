@@ -24,7 +24,7 @@ public class DebuggerSequencePage extends DebuggerPage {
         }
     }
 
-    private final int LINE_LENGTH = 16;
+    private final int LINE_LENGTH = 10;
 
     @Override
     public void acceptInfo(Object info) {
@@ -38,7 +38,7 @@ public class DebuggerSequencePage extends DebuggerPage {
                     widget.setSequence(new Sequence(current));
                     sequence_displays.add(widget);
                     current.clear();
-                    y_cursor += 20;
+                    y_cursor += 16;
                 }
                 current.append(sequence.get(i));
             }

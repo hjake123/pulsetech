@@ -54,14 +54,14 @@ public class DebuggerScreen extends Screen {
             }
             i++;
         }
-        next_page_button.setPosition(getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) + 65, getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + 50);
-        next_page_button.setSize(10, 10);
-        previous_page_button.setPosition(getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 65, getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + 50);
-        previous_page_button.setSize(10, 10);
+        previous_page_button.setPosition(getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 85, getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + 48);
+        previous_page_button.setSize(39, 19);
+        next_page_button.setPosition(getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) + 46, getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + 48);
+        next_page_button.setSize(39, 19);
         pager = new PagerWidget(
-                bg_top_x + 47,
-                bg_top_y + 106,
-                100, 20,
+                bg_top_x + 54,
+                bg_top_y + 121,
+                82, 15,
                 pages.size()
                 );
         addRenderableWidget(previous_page_button);
@@ -98,7 +98,6 @@ public class DebuggerScreen extends Screen {
     public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.renderBackground(graphics, mouseX, mouseY, partialTick);
         graphics.blit(BACKGROUND, bg_top_x, bg_top_y, 0, 0, 180, 141, 180, 141);
-
     }
 
     @Override
@@ -109,6 +108,7 @@ public class DebuggerScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        clearFocus();
         if(!super.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
             if(scrollY < 0) {
                 changePage(1);

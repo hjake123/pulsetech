@@ -114,13 +114,14 @@ public class NumberEmitterBlockEntity extends PulseBlockEntity implements Number
     public DebuggerInfoManifest getDebuggerInfoManifest() {
         return new DebuggerInfoManifest(List.of(
                 new DebuggerInfoManifest.Entry(
-                        Component.translatable("debugger.pulsetech.output_buffer").getString(),
-                        DebuggerInfoTypes.SEQUENCE.value(),
-                        () -> new DebuggerSequenceInfo(emitter.getBuffer())),
-                new DebuggerInfoManifest.Entry(
                         Component.translatable("debugger.pulsetech.number").getString(),
                         DebuggerInfoTypes.NUMBER.value(),
-                        () -> new DebuggerByteInfo(getNumber()))
+                        () -> new DebuggerByteInfo(getNumber())),
+                new DebuggerInfoManifest.Entry(
+                        Component.translatable("debugger.pulsetech.output_buffer").getString(),
+                        DebuggerInfoTypes.SEQUENCE.value(),
+                        () -> new DebuggerSequenceInfo(emitter.getBuffer()))
+
         ), getBlockPos());
     }
 }

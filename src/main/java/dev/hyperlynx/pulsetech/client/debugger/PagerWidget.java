@@ -4,15 +4,13 @@ import dev.hyperlynx.pulsetech.Pulsetech;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class PagerWidget extends AbstractWidget implements Renderable {
-    private static final ResourceLocation on_bit_icon = Pulsetech.location("bit_light_on");
-    private static final ResourceLocation off_bit_icon = Pulsetech.location("bit_light_off");
+    private static final ResourceLocation FULL_PIP = Pulsetech.location("full_pip");
+    private static final ResourceLocation EMPTY_PIP = Pulsetech.location("empty_pip");
 
     public int page = 0;
     private final int total_page_count;
@@ -24,10 +22,10 @@ public class PagerWidget extends AbstractWidget implements Renderable {
 
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        int cursor = getX();
+        int cursor = total_page_count % 2 == 0 ? getX() + 29 - ((total_page_count-1) / 2) * 10 : getX() + 34 - ((total_page_count) / 2) * 10;
         for(int i = 0; i < total_page_count; i++) {
-            graphics.blitSprite(i == page ? on_bit_icon : off_bit_icon, cursor, getY() + 12, 20, 20);
-            cursor += 16;
+            graphics.blitSprite(i == page ? FULL_PIP : EMPTY_PIP, cursor, getY() + 4, 5, 5);
+            cursor += 10;
         }
     }
 

@@ -109,15 +109,17 @@ public class CannonBlockEntity extends ProtocolBlockEntity implements ScannerLin
 
     @Override
     public DebuggerInfoManifest getDebuggerInfoManifest() {
-        BlockPos next = target;
-        for(Direction n : nudge_directions) {
-            next = next.relative(n, nudge_amount);
-        }
-        BlockPos finalNext = next;
+
         return super.getDebuggerInfoManifest().append(new DebuggerInfoManifest.Entry(
-                Component.translatable("debugger.pulsetech.next_target").getString(),
+                Component.translatable("debugger.pulsetech.nudge").getString(),
                 DebuggerInfoTypes.BLOCK_POS.value(),
-                () -> new DebuggerPosInfo(finalNext.subtract(origin))
+                () -> {
+                    BlockPos nudge = BlockPos.ZERO;
+                    for(Direction n : nudge_directions) {
+                        nudge = nudge.relative(n, nudge_amount);
+                    }
+                    return new DebuggerPosInfo(nudge);
+                }
         )).append(new DebuggerInfoManifest.Entry(
                 Component.translatable("debugger.pulsetech.target").getString(),
                 DebuggerInfoTypes.BLOCK_POS.value(),

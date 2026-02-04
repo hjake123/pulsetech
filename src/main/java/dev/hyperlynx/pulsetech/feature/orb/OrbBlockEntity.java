@@ -4,6 +4,7 @@ import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerPosInfo;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerTextInfo;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerLinkable;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
@@ -94,7 +95,11 @@ public class OrbBlockEntity extends ProtocolBlockEntity implements ScannerLinkab
         Orb orb = getOrb();
         StringBuilder orb_status_builder = new StringBuilder();
         if(orb != null) {
-            orb_status_builder.append(orb.blockPosition().subtract(origin).toShortString());
+            if(orb.hasNextDestination()) {
+                orb_status_builder.append(Component.translatable("debugger.pulsetech.orb_next_destination").getString()).append(Objects.requireNonNull(orb.nextDestination()).subtract(origin).toShortString());
+            } else {
+                orb_status_builder.append(Component.translatable("debugger.pulsetech.orb_stationary").getString());
+            }
             if(orb.grabbing()) {
                 orb_status_builder.append("\n").append(Component.translatable("debugger.pulsetech.orb_grabbing").getString()).append(orb.getGrabbed().getName().getString());
             }
@@ -107,10 +112,22 @@ public class OrbBlockEntity extends ProtocolBlockEntity implements ScannerLinkab
         } else {
             orb_status_builder.append(Component.translatable("debugger.pulsetech.no_orb").getString());
         }
-        return super.getDebuggerInfoManifest().append(new DebuggerInfoManifest.Entry(
-                Component.translatable("debugger.pulsetech.orb_data").getString(),
-                DebuggerInfoTypes.TEXT.value(),
-                () -> new DebuggerTextInfo(orb_status_builder.toString())
+        var manifest = super.getDebuggerInfoManifest().append(
+                new DebuggerInfoManifest.Entry(
+                        Component.translatable("debugger.pulsetech.orb_data").getString(),
+                        DebuggerInfoTypes.TEXT.value(),
+                        () -> new DebuggerTextInfo(orb_status_builder.toString())
+                ));
+
+        if(orb == null) {
+            return manifest;
+        }
+
+        return manifest.append(
+                new DebuggerInfoManifest.Entry(
+                    Component.translatable("debugger.pulsetech.orb_position").getString(),
+                    DebuggerInfoTypes.BLOCK_POS.value(),
+                    () -> new DebuggerPosInfo(orb.blockPosition().subtract(origin))
         ));
     }
 }
