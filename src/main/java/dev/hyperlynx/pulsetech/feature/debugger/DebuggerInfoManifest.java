@@ -10,6 +10,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -37,6 +38,12 @@ public record DebuggerInfoManifest(List<Entry> entries, BlockPos pos) implements
             i++;
         }
         return builder.toString();
+    }
+
+    public DebuggerInfoManifest append(Entry additional_entry) {
+        ArrayList<Entry> mutable_entries = new ArrayList<>(entries);
+        mutable_entries.add(additional_entry);
+        return new DebuggerInfoManifest(mutable_entries, pos);
     }
 
     public static class Entry {

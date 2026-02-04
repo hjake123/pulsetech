@@ -2,6 +2,9 @@ package dev.hyperlynx.pulsetech.feature.cannon;
 
 import com.mojang.datafixers.util.Pair;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolBlockEntity;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerPosInfo;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerLinkable;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModBlocks;
@@ -16,6 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -101,5 +105,23 @@ public class CannonBlockEntity extends ProtocolBlockEntity implements ScannerLin
             return true;
         }
         return false;
+    }
+
+    @Override
+    public DebuggerInfoManifest getDebuggerInfoManifest() {
+        BlockPos next = target;
+        for(Direction n : nudge_directions) {
+            next = next.relative(n, nudge_amount);
+        }
+        BlockPos finalNext = next;
+        return super.getDebuggerInfoManifest().append(new DebuggerInfoManifest.Entry(
+                Component.translatable("debugger.pulsetech.target").getString(),
+                DebuggerInfoTypes.BLOCK_POS.value(),
+                () -> new DebuggerPosInfo(target.subtract(origin))
+        )).append(new DebuggerInfoManifest.Entry(
+                Component.translatable("debugger.pulsetech.next_target").getString(),
+                DebuggerInfoTypes.BLOCK_POS.value(),
+                () -> new DebuggerPosInfo(finalNext.subtract(origin))
+        ));
     }
 }

@@ -3,6 +3,7 @@ package dev.hyperlynx.pulsetech.client;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerByteInfo;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerPosInfo;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerSequenceInfo;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerTextInfo;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenUpdatePayload;
@@ -53,5 +54,9 @@ public class ClientWrapper {
 
     public static void acceptDebuggerTextInfo(DebuggerTextInfo info, IPayloadContext context) {
         PulsetechClient.acceptDebuggerTextInfo(info);
+    }
+
+    public static void acceptDebuggerPosInfo(DebuggerPosInfo info, IPayloadContext context) {
+        PulsetechClient.acceptDebuggerPosInfo(info);
     }
 }

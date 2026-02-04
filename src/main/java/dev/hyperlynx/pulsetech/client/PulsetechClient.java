@@ -17,6 +17,7 @@ import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoRequest;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerByteInfo;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerPosInfo;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerSequenceInfo;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerTextInfo;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
@@ -68,6 +69,10 @@ public class PulsetechClient {
 
     public static void acceptDebuggerTextInfo(DebuggerTextInfo info) {
         Minecraft.getInstance().player.sendSystemMessage(Component.literal(info.text()));
+    }
+
+    public static void acceptDebuggerPosInfo(DebuggerPosInfo info) {
+        Minecraft.getInstance().player.sendSystemMessage(Component.literal(info.pos().toShortString()));
     }
 
     protected void onClientSetup(FMLClientSetupEvent event) {
