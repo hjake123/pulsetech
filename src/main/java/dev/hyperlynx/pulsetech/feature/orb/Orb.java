@@ -62,7 +62,7 @@ public class Orb extends Entity {
         builder.define(HAS_DESTINATION, false);
     }
 
-    private @Nullable Entity getGrabbed() {
+    public @Nullable Entity getGrabbed() {
         if(getPassengers().isEmpty()) {
             return null;
         }
