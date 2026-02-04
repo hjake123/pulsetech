@@ -38,7 +38,7 @@ public class NumberSensorModule extends SequenceModule<PulseBlockEntity> {
     @Override
     public void reset() {
         super.reset();
-        number = 0;
+        // number = 0;
     }
 
     @Override
