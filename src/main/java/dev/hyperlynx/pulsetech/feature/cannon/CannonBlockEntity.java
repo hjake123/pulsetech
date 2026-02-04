@@ -115,13 +115,13 @@ public class CannonBlockEntity extends ProtocolBlockEntity implements ScannerLin
         }
         BlockPos finalNext = next;
         return super.getDebuggerInfoManifest().append(new DebuggerInfoManifest.Entry(
-                Component.translatable("debugger.pulsetech.target").getString(),
-                DebuggerInfoTypes.BLOCK_POS.value(),
-                () -> new DebuggerPosInfo(target.subtract(origin))
-        )).append(new DebuggerInfoManifest.Entry(
                 Component.translatable("debugger.pulsetech.next_target").getString(),
                 DebuggerInfoTypes.BLOCK_POS.value(),
                 () -> new DebuggerPosInfo(finalNext.subtract(origin))
+        )).append(new DebuggerInfoManifest.Entry(
+                Component.translatable("debugger.pulsetech.target").getString(),
+                DebuggerInfoTypes.BLOCK_POS.value(),
+                () -> new DebuggerPosInfo(target.subtract(origin))
         ));
     }
 }

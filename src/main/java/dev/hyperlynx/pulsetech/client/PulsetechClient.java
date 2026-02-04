@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.client;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.client.debugger.DebuggerScreen;
 import dev.hyperlynx.pulsetech.client.number.NumberChooseScreen;
 import dev.hyperlynx.pulsetech.client.orb.OrbModel;
 import dev.hyperlynx.pulsetech.client.orb.OrbRenderer;
@@ -15,7 +16,6 @@ import dev.hyperlynx.pulsetech.core.PatternHolder;
 import dev.hyperlynx.pulsetech.feature.datacell.DataCellItem;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
-import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoRequest;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerByteInfo;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerPosInfo;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerSequenceInfo;
@@ -37,7 +37,6 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 @Mod(value = Pulsetech.MODID, dist = Dist.CLIENT)
 public class PulsetechClient {
@@ -53,26 +52,29 @@ public class PulsetechClient {
     }
 
     public static void openDebuggerScreen(DebuggerInfoManifest manifest) {
-        Minecraft.getInstance().player.sendSystemMessage(Component.literal(manifest.toString()));
-        for(int i = 0; i < manifest.entries().size(); i++) {
-            PacketDistributor.sendToServer(new DebuggerInfoRequest(manifest.pos(), i));
-        }
+        Minecraft.getInstance().setScreen(new DebuggerScreen(manifest));
     }
 
     public static void acceptDebuggerSequenceInfo(DebuggerSequenceInfo info) {
-        Minecraft.getInstance().player.sendSystemMessage(Component.literal(info.sequence().toString()));
-    }
+        if(Minecraft.getInstance().screen instanceof DebuggerScreen screen) {
+            screen.acceptInfo(info.sequence());
+        }    }
 
     public static void acceptDebuggerByteInfo(DebuggerByteInfo info) {
-        Minecraft.getInstance().player.sendSystemMessage(Component.literal(String.valueOf(info.number())));
-    }
+        if(Minecraft.getInstance().screen instanceof DebuggerScreen screen) {
+            screen.acceptInfo(info.number());
+        }    }
 
     public static void acceptDebuggerTextInfo(DebuggerTextInfo info) {
-        Minecraft.getInstance().player.sendSystemMessage(Component.literal(info.text()));
+        if(Minecraft.getInstance().screen instanceof DebuggerScreen screen) {
+            screen.acceptInfo(info.text());
+        }
     }
 
     public static void acceptDebuggerPosInfo(DebuggerPosInfo info) {
-        Minecraft.getInstance().player.sendSystemMessage(Component.literal(info.pos().toShortString()));
+        if(Minecraft.getInstance().screen instanceof DebuggerScreen screen) {
+            screen.acceptInfo(info.pos());
+        }
     }
 
     protected void onClientSetup(FMLClientSetupEvent event) {
