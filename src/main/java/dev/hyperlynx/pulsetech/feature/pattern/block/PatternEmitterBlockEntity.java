@@ -2,21 +2,29 @@ package dev.hyperlynx.pulsetech.feature.pattern.block;
 
 import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.core.module.EmitterModule;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoSource;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoTypes;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerSequenceInfo;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
-public class PatternEmitterBlockEntity extends PatternBlockEntity {
+public class PatternEmitterBlockEntity extends PatternBlockEntity implements DebuggerInfoSource {
     private EmitterModule emitter = new EmitterModule();
     public PatternEmitterBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.PATTERN_EMITTER.get(), pos, blockState);
@@ -83,5 +91,19 @@ public class PatternEmitterBlockEntity extends PatternBlockEntity {
     @Override
     public boolean isDelayed() {
         return emitter.getDelay() > 0;
+    }
+
+    @Override
+    public DebuggerInfoManifest getDebuggerInfoManifest() {
+        return new DebuggerInfoManifest(List.of(
+                new DebuggerInfoManifest.Entry(
+                        Component.translatable("debugger.pulsetech.output_buffer").getString(),
+                        DebuggerInfoTypes.SEQUENCE.value(),
+                        () -> new DebuggerSequenceInfo(emitter.getBuffer())),
+                new DebuggerInfoManifest.Entry(
+                        Component.translatable("debugger.pulsetech.pattern").getString(),
+                        DebuggerInfoTypes.SEQUENCE.value(),
+                        () -> new DebuggerSequenceInfo(getPattern()))
+        ), getBlockPos());
     }
 }

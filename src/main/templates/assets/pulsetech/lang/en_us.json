@@ -195,5 +195,8 @@
   "gui.pulsetech.minus_sixteen": "-16",
   "gui.pulsetech.invalid_number": "Invalid number",
   "gui.pulsetech.number_too_big": "Value must be at most 127",
-  "gui.pulsetech.number_too_small": "Value must be at least -128"
+  "gui.pulsetech.number_too_small": "Value must be at least -128",
+  "debugger.pulsetech.input_buffer": "Input Buffer",
+  "debugger.pulsetech.output_buffer": "Output Buffer",
+  "debugger.pulsetech.pattern": "Pattern"
 }

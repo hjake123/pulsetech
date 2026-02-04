@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -106,11 +107,15 @@ public class PatternDetectorBlockEntity extends PatternBlockEntity implements Pa
 
     @Override
     public DebuggerInfoManifest getDebuggerInfoManifest() {
-        return new DebuggerInfoManifest(List.of(DebuggerInfoTypes.SEQUENCE.value()), getBlockPos());
-    }
-
-    @Override
-    public List<Supplier<CustomPacketPayload>> getDebugInfoGetters() {
-        return List.of(() -> new DebuggerSequenceInfo(getPattern()));
+        return new DebuggerInfoManifest(List.of(
+                new DebuggerInfoManifest.Entry(
+                        Component.translatable("debugger.pulsetech.input_buffer").getString(),
+                        DebuggerInfoTypes.SEQUENCE.value(),
+                        () -> new DebuggerSequenceInfo(detector.getBuffer())),
+                new DebuggerInfoManifest.Entry(
+                        Component.translatable("debugger.pulsetech.pattern").getString(),
+                        DebuggerInfoTypes.SEQUENCE.value(),
+                        () -> new DebuggerSequenceInfo(detector.getPattern()))
+                ), getBlockPos());
     }
 }

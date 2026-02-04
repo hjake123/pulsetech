@@ -34,9 +34,9 @@ public record DebuggerInfoRequest(BlockPos pos, int id) implements CustomPacketP
         }
         BlockEntity be = context.player().level().getBlockEntity(pos);
         if(be instanceof DebuggerInfoSource source) {
-            var getters = source.getDebugInfoGetters();
-            if(getters.size() >= id) {
-                PacketDistributor.sendToPlayer((ServerPlayer) context.player(), source.getDebugInfoGetters().get(id).get());
+            var manifest = source.getDebuggerInfoManifest();
+            if(manifest.entries().size() > id) {
+                PacketDistributor.sendToPlayer((ServerPlayer) context.player(), source.getDebuggerInfoManifest().entries().get(id).payloadGetter().get());
             }
         }
     }

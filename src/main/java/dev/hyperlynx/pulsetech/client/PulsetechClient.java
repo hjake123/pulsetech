@@ -51,7 +51,9 @@ public class PulsetechClient {
 
     public static void openDebuggerScreen(DebuggerInfoManifest manifest) {
         Minecraft.getInstance().player.sendSystemMessage(Component.literal(manifest.toString()));
-        PacketDistributor.sendToServer(new DebuggerInfoRequest(manifest.pos(), 0));
+        for(int i = 0; i < manifest.entries().size(); i++) {
+            PacketDistributor.sendToServer(new DebuggerInfoRequest(manifest.pos(), i));
+        }
 
     }
 
