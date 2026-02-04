@@ -15,6 +15,8 @@ import dev.hyperlynx.pulsetech.core.PatternHolder;
 import dev.hyperlynx.pulsetech.feature.datacell.DataCellItem;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoRequest;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerSequenceInfo;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
@@ -32,6 +34,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 @Mod(value = Pulsetech.MODID, dist = Dist.CLIENT)
 public class PulsetechClient {
@@ -48,6 +51,12 @@ public class PulsetechClient {
 
     public static void openDebuggerScreen(DebuggerInfoManifest manifest) {
         Minecraft.getInstance().player.sendSystemMessage(Component.literal(manifest.toString()));
+        PacketDistributor.sendToServer(new DebuggerInfoRequest(manifest.pos(), 0));
+
+    }
+
+    public static void acceptDebuggerSequenceInfo(DebuggerSequenceInfo info) {
+        Minecraft.getInstance().player.sendSystemMessage(Component.literal(info.sequence().toString()));
     }
 
     protected void onClientSetup(FMLClientSetupEvent event) {

@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.feature.debugger;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -10,9 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /// A record that holds information about which [DebuggerInfoType]s a particular [DebuggerInfoSource] provides, and which integer ID to use to query each.
-public record DebuggerInfoManifest(List<DebuggerInfoType<?>> types) implements CustomPacketPayload {
+public record DebuggerInfoManifest(List<DebuggerInfoType<?>> types, BlockPos pos) implements CustomPacketPayload {
     public static final StreamCodec<RegistryFriendlyByteBuf, DebuggerInfoManifest> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.registry(DebuggerInfoTypes.REGISTRY_KEY).apply(ByteBufCodecs.list()), DebuggerInfoManifest::types,
+            BlockPos.STREAM_CODEC, DebuggerInfoManifest::pos,
             DebuggerInfoManifest::new
     );
 

@@ -21,7 +21,7 @@ public class DebuggerItem extends Item {
             return InteractionResult.SUCCESS;
         }
 
-        PacketDistributor.sendToPlayer((ServerPlayer) context.getPlayer(), source.debuggerInfoManifest());
+        PacketDistributor.sendToPlayer((ServerPlayer) context.getPlayer(), source.getDebuggerInfoManifest());
         return InteractionResult.SUCCESS;
     }
 }

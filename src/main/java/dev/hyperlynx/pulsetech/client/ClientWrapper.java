@@ -2,6 +2,7 @@ package dev.hyperlynx.pulsetech.client;
 
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerSequenceInfo;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenUpdatePayload;
 import net.minecraft.core.BlockPos;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -38,5 +39,9 @@ public class ClientWrapper {
 
     public static void openDebuggerScreen(DebuggerInfoManifest manifest, IPayloadContext context) {
         PulsetechClient.openDebuggerScreen(manifest);
+    }
+
+    public static void acceptDebuggerSequenceInfo(DebuggerSequenceInfo info, IPayloadContext iPayloadContext) {
+        PulsetechClient.acceptDebuggerSequenceInfo(info);
     }
 }

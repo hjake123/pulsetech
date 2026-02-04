@@ -5,6 +5,7 @@ import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoSource;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoTypes;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerSequenceInfo;
 import dev.hyperlynx.pulsetech.feature.pattern.PatternSensorModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -12,6 +13,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -19,6 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class PatternDetectorBlockEntity extends PatternBlockEntity implements PatternHolder, DebuggerInfoSource {
     private PatternSensorModule detector = new PatternSensorModule();
@@ -102,7 +105,12 @@ public class PatternDetectorBlockEntity extends PatternBlockEntity implements Pa
     }
 
     @Override
-    public DebuggerInfoManifest debuggerInfoManifest() {
-        return new DebuggerInfoManifest(List.of(DebuggerInfoTypes.SEQUENCE.value()));
+    public DebuggerInfoManifest getDebuggerInfoManifest() {
+        return new DebuggerInfoManifest(List.of(DebuggerInfoTypes.SEQUENCE.value()), getBlockPos());
+    }
+
+    @Override
+    public List<Supplier<CustomPacketPayload>> getDebugInfoGetters() {
+        return List.of(() -> new DebuggerSequenceInfo(getPattern()));
     }
 }
