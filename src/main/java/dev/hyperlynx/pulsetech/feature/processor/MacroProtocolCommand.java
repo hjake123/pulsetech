@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.core.program.ProgramInterpreter;
 import dev.hyperlynx.pulsetech.core.protocol.ExecutionContext;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommand;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,5 +40,8 @@ public class MacroProtocolCommand extends ProtocolCommand {
         }
     }
 
-
+    @Override
+    public Component getNameComponent() {
+        return Component.literal(macro);
+    }
 }

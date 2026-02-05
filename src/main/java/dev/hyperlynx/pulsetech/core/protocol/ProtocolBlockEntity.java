@@ -89,7 +89,7 @@ public class ProtocolBlockEntity extends PulseBlockEntity implements DatasheetPr
                     ResourceLocation command_location = ProtocolCommands.REGISTRY.getKey(entry.getKey());
                     Sequence command_sequence = entry.getValue();
                     return new DatasheetEntry(
-                            Component.translatable("protocol.pulsetech.name." + command_location.getPath()),
+                            entry.getKey().getNameComponent(),
                             Component.translatable("protocol.pulsetech.description." + command_location.getPath()),
                             Component.translatable("protocol.pulsetech.parameters." + command_location.getPath()),
                             command_sequence
@@ -121,8 +121,7 @@ public class ProtocolBlockEntity extends PulseBlockEntity implements DatasheetPr
                             StringBuilder builder = new StringBuilder().append(Component.translatable("debugger.pulsetech." + executor.state().getSerializedName().toLowerCase()).getString());
 
                             if(executor.activeCommand().isPresent()) {
-                                ResourceLocation command_location = ProtocolCommands.REGISTRY.getKey(executor.activeCommand().get());
-                                builder.append(" ").append(Component.translatable("protocol.pulsetech.name." + command_location.getPath()).getString());
+                                builder.append(" ").append(executor.activeCommand().get().getNameComponent().getString());
                             }
 
                             if(!executor.activeParams().isEmpty()) {
