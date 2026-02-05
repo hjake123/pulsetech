@@ -3,10 +3,10 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "pulsetech:block/detector_base",
+		"0": "pulsetech:block/base_front_out_other_in",
 		"3": "pulsetech:block/pulse_unit",
 		"5": "block/smooth_stone",
-		"particle": "pulsetech:block/detector_base"
+		"particle": "pulsetech:block/base_front_out_other_in"
 	},
 	"elements": [
 		{

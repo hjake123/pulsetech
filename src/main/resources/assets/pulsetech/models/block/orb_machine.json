@@ -3,11 +3,11 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "pulsetech:block/emitter_base",
+		"0": "pulsetech:block/base_all_in",
 		"3": "pulsetech:block/protocol_module",
 		"4": "pulsetech:block/dish",
 		"5": "block/smooth_stone",
-		"particle": "pulsetech:block/emitter_base"
+		"particle": "pulsetech:block/base_all_in"
 	},
 	"elements": [
 		{

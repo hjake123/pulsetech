@@ -25,7 +25,7 @@ import static dev.hyperlynx.pulsetech.Pulsetech.MODID;
 public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
     public static final DeferredBlock<PatternBlock> PATTERN_DETECTOR = BLOCKS.register("pattern_detector", () ->
-            new PatternDetectorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER), PulseBlock.ALL_SIDES_INPUT));
+            new PatternDetectorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER), PulseBlock.FRONT_OUT_OTHER_IN));
 
     public static final DeferredBlock<PatternBlock> PATTERN_EMITTER = BLOCKS.register("pattern_emitter", () ->
             new PatternEmitterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER), PulseBlock.FRONT_OUT_OTHER_IN));
