@@ -88,4 +88,33 @@ public class Tests {
         ));
     }
 
+    /// Tests for issue 1
+    @GameTest
+    public static void processorNumberIssue(GameTestHelper helper) {
+        helper.setBlock(4, 3, 1, Blocks.REDSTONE_BLOCK);
+        helper.runAfterDelay(10, () -> helper.setBlock(4, 3, 1, Blocks.AIR));
+        helper.runAfterDelay(100, () -> helper.succeedIf(
+                () -> {
+                    BlockEntity number_detector = helper.getBlockEntity(new BlockPos(1, 3, 2));
+                    helper.assertTrue(number_detector instanceof NumberMonitorBlockEntity, "Monitor was not at (-4, 1, 3). The test is malformed!");
+                    assert number_detector instanceof NumberMonitorBlockEntity;
+                    helper.assertTrue(((NumberMonitorBlockEntity) number_detector).getNumber() == 30, "Number was [" + ((NumberMonitorBlockEntity) number_detector).getNumber() + "], should be 30");
+                }
+        ));
+    }
+
+    @GameTest
+    public static void processorNumberIssueRepeater(GameTestHelper helper) {
+        helper.setBlock(4, 3, 1, Blocks.REDSTONE_BLOCK);
+        helper.runAfterDelay(10, () -> helper.setBlock(4, 3, 1, Blocks.AIR));
+        helper.runAfterDelay(100, () -> helper.succeedIf(
+                () -> {
+                    BlockEntity number_detector = helper.getBlockEntity(new BlockPos(1, 3, 2));
+                    helper.assertTrue(number_detector instanceof NumberMonitorBlockEntity, "Monitor was not at (-4, 0, 3). The test is malformed!");
+                    assert number_detector instanceof NumberMonitorBlockEntity;
+                    helper.assertTrue(((NumberMonitorBlockEntity) number_detector).getNumber() == 30, "Number was [" + ((NumberMonitorBlockEntity) number_detector).getNumber() + "], should be 30");
+                }
+        ));
+    }
+
 }
