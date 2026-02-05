@@ -48,7 +48,6 @@ public class Orb extends Entity {
     public static final EntityDataAccessor<BlockPos> NEXT_DESTINATION = SynchedEntityData.defineId(Orb.class, EntityDataSerializers.BLOCK_POS);
     public static final EntityDataAccessor<Boolean> HAS_DESTINATION = SynchedEntityData.defineId(Orb.class, EntityDataSerializers.BOOLEAN);
 
-
     public Orb(EntityType<?> entityType, Level level) {
         super(entityType, level);
         noPhysics = true;
@@ -60,6 +59,20 @@ public class Orb extends Entity {
         builder.define(PROJECTILE, false);
         builder.define(NEXT_DESTINATION, BlockPos.ZERO);
         builder.define(HAS_DESTINATION, false);
+    }
+
+    @Override
+    public boolean isPickable() {
+        return true;
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        if(this.isInvulnerableTo(source)) {
+            return false;
+        }
+        kill();
+        return true;
     }
 
     public @Nullable Entity getGrabbed() {

@@ -41,15 +41,17 @@ public class OrbRenderer extends EntityRenderer<Orb> {
         }
 
         renderOrbModel(orb, stack, source, packedLight, render_offset);
-        if(orb.level().random.nextFloat() < 0.05F) {
-            Minecraft.getInstance().level.addParticle(DustParticleOptions.REDSTONE, render_pos.x(), render_pos.y() + 0.15, render_pos.z(), 0, 0, 0);
-        }
-        if(orb.penDown()) {
-            Minecraft.getInstance().level.addParticle(ParticleTypes.END_ROD, render_pos.x(), render_pos.y() + 0.15, render_pos.z(), 0, 0, 0);
-        }
-        if(orb.isProjectile()) {
-            Minecraft.getInstance().level.addParticle(ParticleTypes.FLAME, render_pos.x(), render_pos.y() + 0.40, render_pos.z(), 0, 0, 0);
-            Minecraft.getInstance().level.addParticle(ParticleTypes.SMOKE, render_pos.x(), render_pos.y() + 0.20, render_pos.z(), 0, 0, 0);
+        if(!Minecraft.getInstance().isPaused()) {
+            if(orb.level().random.nextFloat() < 0.05F) {
+                Minecraft.getInstance().level.addParticle(DustParticleOptions.REDSTONE, render_pos.x(), render_pos.y() + 0.15, render_pos.z(), 0, 0, 0);
+            }
+            if(orb.penDown()) {
+                Minecraft.getInstance().level.addParticle(ParticleTypes.END_ROD, render_pos.x(), render_pos.y() + 0.15, render_pos.z(), 0, 0, 0);
+            }
+            if(orb.isProjectile()) {
+                Minecraft.getInstance().level.addParticle(ParticleTypes.FLAME, render_pos.x(), render_pos.y() + 0.40, render_pos.z(), 0, 0, 0);
+                Minecraft.getInstance().level.addParticle(ParticleTypes.SMOKE, render_pos.x(), render_pos.y() + 0.20, render_pos.z(), 0, 0, 0);
+            }
         }
     }
     private void renderOrbModel(Orb orb, PoseStack stack, MultiBufferSource source, int packedLight, Vec3 render_offset) {

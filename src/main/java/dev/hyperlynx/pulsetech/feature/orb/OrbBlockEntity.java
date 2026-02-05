@@ -80,7 +80,8 @@ public class OrbBlockEntity extends ProtocolBlockEntity implements ScannerLinkab
             Objects.requireNonNull(slevel.getEntity(orb_uuid)).kill();
         }
         Orb orb = ModEntityTypes.ORB.get().create(level);
-        orb.setPos(getBlockPos().above().getCenter());
+        orb.setPos(getBlockPos().getCenter().add(0, 0.4, 0));
+        orb.addDestination(0, 1, 0, true);
         this.orb_uuid = orb.getUUID();
         level.addFreshEntity(orb);
         ParticleScribe.drawParticleBox(level, DustParticleOptions.REDSTONE, orb.getBoundingBox().inflate(0.5F), 10);

@@ -15,6 +15,7 @@ public class ModEntityTypes {
             EntityType.Builder.of(Orb::new, MobCategory.MISC)
                     .sized(0.2F, 0.2F)
                     .fireImmune()
+                    .setUpdateInterval(1)
                     .build("orb")
     );
 }
