@@ -25,50 +25,50 @@ import static dev.hyperlynx.pulsetech.Pulsetech.MODID;
 public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
     public static final DeferredBlock<PatternBlock> PATTERN_DETECTOR = BLOCKS.register("pattern_detector", () ->
-            new PatternDetectorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER)));
+            new PatternDetectorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER), PulseBlock.ALL_SIDES_INPUT));
 
     public static final DeferredBlock<PatternBlock> PATTERN_EMITTER = BLOCKS.register("pattern_emitter", () ->
-            new PatternEmitterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER)));
+            new PatternEmitterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER), PulseBlock.FRONT_OUT_OTHER_IN));
 
     public static final DeferredBlock<PulseBlock> NUMBER_EMITTER = BLOCKS.register("number_emitter", () ->
-            new NumberEmitterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER)));
+            new NumberEmitterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER), PulseBlock.FRONT_OUT_OTHER_IN));
 
     public static final DeferredBlock<PulseBlock> NUMBER_MONITOR = BLOCKS.register("number_monitor", () ->
-            new NumberMonitorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER)));
+            new NumberMonitorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER), PulseBlock.ALL_SIDES_INPUT));
 
     public static final DeferredBlock<ConsoleBlock> CONSOLE = BLOCKS.register("console", () ->
-            new ConsoleBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CHISELED_QUARTZ_BLOCK), ConsoleColor.AMBER));
+            new ConsoleBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CHISELED_QUARTZ_BLOCK), ConsoleColor.AMBER, PulseBlock.MAIN_OUTPUT_ONLY));
 
     public static final DeferredBlock<ConsoleBlock> RED_CONSOLE = BLOCKS.register("red_console", () ->
-            new ConsoleBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CHISELED_QUARTZ_BLOCK), ConsoleColor.REDSTONE));
+            new ConsoleBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CHISELED_QUARTZ_BLOCK), ConsoleColor.REDSTONE, PulseBlock.MAIN_OUTPUT_ONLY));
 
     public static final DeferredBlock<ConsoleBlock> GREEN_CONSOLE = BLOCKS.register("green_console", () ->
-            new ConsoleBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CHISELED_QUARTZ_BLOCK), ConsoleColor.GREEN));
+            new ConsoleBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CHISELED_QUARTZ_BLOCK), ConsoleColor.GREEN, PulseBlock.MAIN_OUTPUT_ONLY));
 
     public static final DeferredBlock<ConsoleBlock> INDIGO_CONSOLE = BLOCKS.register("indigo_console", () ->
-            new ConsoleBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CHISELED_QUARTZ_BLOCK), ConsoleColor.INDIGO));
+            new ConsoleBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CHISELED_QUARTZ_BLOCK), ConsoleColor.INDIGO, PulseBlock.MAIN_OUTPUT_ONLY));
 
     public static final DeferredBlock<ConsoleBlock> WHITE_CONSOLE = BLOCKS.register("white_console", () ->
-            new ConsoleBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CHISELED_QUARTZ_BLOCK), ConsoleColor.WHITE));
+            new ConsoleBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CHISELED_QUARTZ_BLOCK), ConsoleColor.WHITE, PulseBlock.MAIN_OUTPUT_ONLY));
 
     public static final DeferredBlock<ControllerBlock> CONTROLLER = BLOCKS.register("controller", () ->
-            new ControllerBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK)));
+            new ControllerBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK), PulseBlock.FRONT_OUT_BACK_IN));
 
     public static final DeferredBlock<ScannerBlock> SCANNER = BLOCKS.register("scanner", () ->
-            new ScannerBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK)));
+            new ScannerBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK), PulseBlock.FRONT_OUT_BACK_IN));
 
     public static final DeferredBlock<ScopeBlock> SCOPE = BLOCKS.register("scope", () ->
-            new ScopeBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BULB).lightLevel(state -> 0)));
+            new ScopeBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BULB).lightLevel(state -> 0), PulseBlock.MAIN_INPUT_ONLY));
 
     public static final DeferredBlock<ScreenBlock> SCREEN = BLOCKS.register("screen", () ->
-            new ScreenBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_TRAPDOOR)));
+            new ScreenBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_TRAPDOOR), PulseBlock.MAIN_INPUT_ONLY));
 
     public static final DeferredBlock<CannonBlock> CANNON = BLOCKS.register("cannon", () ->
-            new CannonBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
+            new CannonBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), PulseBlock.ALL_SIDES_INPUT));
 
     public static final DeferredBlock<OrbBlock> ORB = BLOCKS.register("orb", () ->
-            new OrbBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BONE_BLOCK)));
+            new OrbBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BONE_BLOCK), PulseBlock.ALL_SIDES_INPUT));
 
     public static final DeferredBlock<ProcessorBlock> PROCESSOR = BLOCKS.register("processor", () ->
-            new ProcessorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COMPARATOR)));
+            new ProcessorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COMPARATOR), PulseBlock.FRONT_OUT_OTHER_IN));
 }

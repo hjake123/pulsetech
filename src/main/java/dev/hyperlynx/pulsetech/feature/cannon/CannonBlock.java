@@ -27,13 +27,13 @@ public class CannonBlock extends PulseBlock {
     protected static final VoxelShape SHAPE_X = Shapes.or(Block.box(12, 2, 6, 14, 3, 10), Block.box(2, 2, 6, 4, 3, 10), Block.box(6, 2, 2, 10, 3, 4), Block.box(6, 2, 12, 10, 3, 14), Block.box(4, 2, 4, 12, 7, 12), Block.box(0, 0, 0, 16, 2, 16), Block.box(2, 8, 9, 14, 16, 14), Block.box(2, 8, 2, 14, 16, 7), Block.box(7, 7, 3, 9, 8, 13));
     protected static final VoxelShape SHAPE_Z = Shapes.or(Block.box(6, 2, 12, 10, 3, 14), Block.box(6, 2, 2, 10, 3, 4), Block.box(2, 2, 6, 4, 3, 10), Block.box(12, 2, 6, 14, 3, 10), Block.box(4, 2, 4, 12, 7, 12), Block.box(0, 0, 0, 16, 2, 16), Block.box(9, 8, 2, 14, 16, 14), Block.box(2, 8, 2, 7, 16, 14), Block.box(3, 7, 7, 13, 8, 9));
 
-    public CannonBlock(Properties properties) {
-        super(properties);
+    public CannonBlock(Properties properties, SideIO io) {
+        super(properties, io);
     }
 
     @Override
     protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return simpleCodec(CannonBlock::new);
+        return pulseCodec(CannonBlock::new);
     }
 
     @Override

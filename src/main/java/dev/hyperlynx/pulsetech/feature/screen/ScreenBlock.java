@@ -33,13 +33,13 @@ public class ScreenBlock extends PulseBlock {
     protected static final VoxelShape SHAPE_WEST = Shapes.or(Block.box(14, 0, 0, 16, 1, 16), Block.box(14, 1, 15, 16, 15, 16), Block.box(14, 1, 0, 16, 15, 1), Block.box(14, 15, 0, 16, 16, 16), Block.box(0, 0, 0, 2, 2, 16), Block.box(2, 0, 0, 14, 2, 2), Block.box(2, 0, 14, 14, 2, 16), Block.box(10, 1, 1, 15, 15, 15), Block.box(10, 2, 15, 14, 6, 16), Block.box(10, 2, 0, 14, 6, 1));
     protected static final VoxelShape SHAPE_NORTH = Shapes.or(Block.box(0, 0, 14, 16, 1, 16), Block.box(15, 1, 14, 16, 15, 16), Block.box(0, 1, 14, 1, 15, 16), Block.box(0, 15, 14, 16, 16, 16), Block.box(0, 0, 0, 16, 2, 2), Block.box(0, 0, 2, 2, 2, 14), Block.box(14, 0, 2, 16, 2, 14), Block.box(1, 1, 10, 15, 15, 15), Block.box(15, 2, 10, 16, 6, 14), Block.box(0, 2, 10, 1, 6, 14));
 
-    public ScreenBlock(Properties properties) {
-        super(properties);
+    public ScreenBlock(Properties properties, SideIO io) {
+        super(properties, io);
     }
 
     @Override
     protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return simpleCodec(ScreenBlock::new);
+        return pulseCodec(ScreenBlock::new);
     }
 
     @Override

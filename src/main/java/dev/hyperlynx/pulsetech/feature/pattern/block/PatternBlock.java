@@ -17,8 +17,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class PatternBlock extends PulseBlock {
-    public PatternBlock(Properties properties) {
-        super(properties);
+    public PatternBlock(Properties properties, SideIO io) {
+        super(properties, io);
     }
 
     @Override

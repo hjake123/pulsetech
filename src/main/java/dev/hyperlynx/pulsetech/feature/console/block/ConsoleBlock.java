@@ -31,8 +31,8 @@ import org.jetbrains.annotations.Nullable;
 public class ConsoleBlock extends PulseBlock implements EntityBlock {
     private final ConsoleColor color;
 
-    public ConsoleBlock(Properties properties, ConsoleColor color) {
-        super(properties);
+    public ConsoleBlock(Properties properties, ConsoleColor color, SideIO io) {
+        super(properties, io);
         this.color = color;
     }
 
@@ -87,7 +87,7 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
         return ModBlockEntityTypes.CONSOLE.get().create(pos, state);
     }
 
-    public static final MapCodec<ConsoleBlock> CODEC = simpleCodec(props -> new ConsoleBlock(props, ConsoleColor.AMBER));
+    public static final MapCodec<ConsoleBlock> CODEC = pulseCodec((props, io) -> new ConsoleBlock(props, ConsoleColor.AMBER, io));
 
     @Override
     protected @NotNull MapCodec<? extends HorizontalDirectionalBlock> codec() {

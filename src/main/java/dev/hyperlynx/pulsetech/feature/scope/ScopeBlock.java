@@ -19,8 +19,8 @@ public class ScopeBlock extends PulseBlock {
     protected static final VoxelShape SHAPE_WEST = Shapes.or(Block.box(0, 2, 0, 16, 10, 16), Block.box(0, 0, 0, 2, 2, 2), Block.box(14, 0, 14, 16, 2, 16), Block.box(14, 0, 0, 16, 2, 2), Block.box(0, 0, 14, 2, 2, 16), Block.box(0, 0, 6, 1, 2, 10), Block.box(1, 1, 7, 9, 2, 9));
     protected static final VoxelShape SHAPE_NORTH = Shapes.or(Block.box(0, 2, 0, 16, 10, 16), Block.box(0, 0, 0, 2, 2, 2), Block.box(14, 0, 14, 16, 2, 16), Block.box(0, 0, 14, 2, 2, 16), Block.box(14, 0, 0, 16, 2, 2), Block.box(6, 0, 0, 10, 2, 1), Block.box(7, 1, 1, 9, 2, 9));
 
-    public ScopeBlock(Properties properties) {
-        super(properties);
+    public ScopeBlock(Properties properties, SideIO io) {
+        super(properties, io);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class ScopeBlock extends PulseBlock {
 
     @Override
     protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return simpleCodec(ScopeBlock::new);
+        return pulseCodec(ScopeBlock::new);
     }
 
     @Override

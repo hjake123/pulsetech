@@ -32,8 +32,8 @@ public class NumberEmitterBlock extends PulseBlock implements EntityBlock {
 
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-    public NumberEmitterBlock(Properties properties) {
-        super(properties);
+    public NumberEmitterBlock(Properties properties, SideIO io) {
+        super(properties, io);
         registerDefaultState(defaultBlockState().setValue(ACTIVE, false));
     }
 
@@ -66,7 +66,7 @@ public class NumberEmitterBlock extends PulseBlock implements EntityBlock {
         return ModBlockEntityTypes.NUMBER_EMITTER.get().create(pos, state);
     }
 
-    public static final MapCodec<PulseBlock> CODEC = simpleCodec(NumberEmitterBlock::new);
+    public static final MapCodec<PulseBlock> CODEC = pulseCodec(NumberEmitterBlock::new);
 
     @Override
     protected MapCodec<? extends HorizontalDirectionalBlock> codec() {

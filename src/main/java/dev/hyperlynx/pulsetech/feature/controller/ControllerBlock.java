@@ -26,8 +26,8 @@ public class ControllerBlock extends PulseBlock implements EntityBlock {
     protected static final VoxelShape SHAPE_X = Shapes.or(Block.box(12, 2, 6, 14, 3, 10), Block.box(2, 2, 6, 4, 3, 10), Block.box(4, 2, 4, 12, 9, 12), Block.box(0, 0, 0, 16, 2, 16), Block.box(1, 2, 1, 3, 3, 3), Block.box(1, 2, 13, 3, 3, 15), Block.box(13, 2, 13, 15, 3, 15), Block.box(13, 2, 1, 15, 3, 3));
     protected static final VoxelShape SHAPE_Z = Shapes.or(Block.box(6, 2, 12, 10, 3, 14), Block.box(6, 2, 2, 10, 3, 4), Block.box(4, 2, 4, 12, 9, 12), Block.box(0, 0, 0, 16, 2, 16), Block.box(1, 2, 1, 3, 3, 3), Block.box(13, 2, 1, 15, 3, 3), Block.box(13, 2, 13, 15, 3, 15), Block.box(1, 2, 13, 3, 3, 15));
 
-    public ControllerBlock(Properties properties) {
-        super(properties);
+    public ControllerBlock(Properties properties, SideIO io) {
+        super(properties, io);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ControllerBlock extends PulseBlock implements EntityBlock {
 
     @Override
     protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return simpleCodec(ControllerBlock::new);
+        return pulseCodec(ControllerBlock::new);
     }
 
     @Override

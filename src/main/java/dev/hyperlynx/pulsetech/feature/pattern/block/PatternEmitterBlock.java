@@ -32,8 +32,8 @@ public class PatternEmitterBlock extends PatternBlock implements EntityBlock {
     protected static final VoxelShape SHAPE_WEST = Shapes.or(Block.box(12, 2, 6, 14, 3, 10), Block.box(4, 2, 4, 12, 6, 12), Block.box(0, 0, 0, 16, 2, 16));
     protected static final VoxelShape SHAPE_NORTH = Shapes.or(Block.box(6, 2, 12, 10, 3, 14), Block.box(4, 2, 4, 12, 6, 12), Block.box(0, 0, 0, 16, 2, 16));
 
-    public PatternEmitterBlock(BlockBehaviour.Properties properties) {
-        super(properties);
+    public PatternEmitterBlock(BlockBehaviour.Properties properties, SideIO io) {
+        super(properties, io);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class PatternEmitterBlock extends PatternBlock implements EntityBlock {
         return ModBlockEntityTypes.PATTERN_EMITTER.get().create(pos, state);
     }
 
-    public static final MapCodec<PatternEmitterBlock> CODEC = BlockBehaviour.simpleCodec(PatternEmitterBlock::new);
+    public static final MapCodec<PatternEmitterBlock> CODEC = pulseCodec(PatternEmitterBlock::new);
 
     @Override
     protected MapCodec<? extends HorizontalDirectionalBlock> codec() {

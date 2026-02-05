@@ -23,8 +23,8 @@ public class NumberMonitorBlock extends PulseBlock implements EntityBlock {
     protected static final VoxelShape SHAPE = Shapes.or(Block.box(12, 2, 6, 14, 3, 10), Block.box(2, 2, 6, 4, 3, 10), Block.box(6, 2, 12, 10, 3, 14), Block.box(6, 2, 2, 10, 3, 4), Block.box(4, 2, 4, 12, 6, 12), Block.box(0, 0, 0, 16, 2, 16));
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-    public NumberMonitorBlock(Properties properties) {
-        super(properties);
+    public NumberMonitorBlock(Properties properties, SideIO io) {
+        super(properties, io);
         registerDefaultState(defaultBlockState().setValue(ACTIVE, false));
     }
 
@@ -57,7 +57,7 @@ public class NumberMonitorBlock extends PulseBlock implements EntityBlock {
         return 0;
     }
 
-    public static final MapCodec<PulseBlock> CODEC = simpleCodec(NumberMonitorBlock::new);
+    public static final MapCodec<PulseBlock> CODEC = pulseCodec(NumberMonitorBlock::new);
 
     @Override
     protected MapCodec<? extends HorizontalDirectionalBlock> codec() {

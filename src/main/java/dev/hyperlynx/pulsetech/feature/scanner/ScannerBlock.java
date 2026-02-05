@@ -53,8 +53,8 @@ public class ScannerBlock extends PulseBlock implements EntityBlock {
         }
     }
 
-    public ScannerBlock(Properties properties) {
-        super(properties);
+    public ScannerBlock(Properties properties, SideIO io) {
+        super(properties, io);
         registerDefaultState(defaultBlockState().setValue(MODE, Mode.ANY));
     }
 
@@ -71,7 +71,7 @@ public class ScannerBlock extends PulseBlock implements EntityBlock {
 
     @Override
     protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return simpleCodec(ScannerBlock::new);
+        return pulseCodec(ScannerBlock::new);
     }
 
 
