@@ -68,7 +68,11 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
         super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
-        if(level.getDirectSignalTo(pos) > 0 && level.getBlockEntity(pos) instanceof PulseBlockEntity entity && !entity.isActive() && !entity.isDelayed() && !entity.wake_triggered) {
+        Direction change_direction = Direction.fromDelta(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ());
+        if(change_direction.equals(state.getValue(FACING).getOpposite())) {
+            return;
+        }
+        if(level.getDirectSignal(pos.relative(change_direction), change_direction) > 0 && level.getBlockEntity(pos) instanceof PulseBlockEntity entity && !entity.isActive() && !entity.isDelayed() && !entity.wake_triggered) {
             entity.wake_triggered = true;
             level.scheduleTick(pos, this, 3, TickPriority.VERY_HIGH);
         }
