@@ -1,7 +1,10 @@
 package dev.hyperlynx.pulsetech.gametest;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.core.protocol.ProtocolExecutorModule;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberMonitorBlockEntity;
+import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
+import dev.hyperlynx.pulsetech.util.Color;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -113,6 +116,35 @@ public class Tests {
                     helper.assertTrue(number_detector instanceof NumberMonitorBlockEntity, "Monitor was not at (-4, 0, 3). The test is malformed!");
                     assert number_detector instanceof NumberMonitorBlockEntity;
                     helper.assertTrue(((NumberMonitorBlockEntity) number_detector).getNumber() == 30, "Number was [" + ((NumberMonitorBlockEntity) number_detector).getNumber() + "], should be 30");
+                }
+        ));
+    }
+
+    /// Tests for issue 32... I think
+    @GameTest(timeoutTicks = 200)
+    public static void screenIssue(GameTestHelper helper) {
+        helper.setBlock(0, 2, 0, Blocks.REDSTONE_BLOCK);
+        helper.runAfterDelay(120, () -> helper.succeedWhen(
+                () -> {
+                    BlockEntity screen = helper.getBlockEntity(new BlockPos(8, 2, 0));
+                    helper.assertTrue(screen instanceof ScreenBlockEntity, "Monitor was not at (8, 2, 0). The test is malformed!");
+                    assert screen instanceof ScreenBlockEntity;
+                    helper.assertTrue(((ScreenBlockEntity) screen).getScreenData().bg_color().equals(Color.white()), "Screen did not get set to white background");
+                    helper.assertTrue(((ScreenBlockEntity) screen).getExecutionState().equals(ProtocolExecutorModule.State.AWAIT_COMMAND), "Screen execution state did not return to Await Command");
+                }
+        ));
+    }
+
+    @GameTest(timeoutTicks = 200)
+    public static void screenIssueWait(GameTestHelper helper) {
+        helper.setBlock(0, 2, 0, Blocks.REDSTONE_BLOCK);
+        helper.runAfterDelay(120, () -> helper.succeedWhen(
+                () -> {
+                    BlockEntity screen = helper.getBlockEntity(new BlockPos(8, 2, 0));
+                    helper.assertTrue(screen instanceof ScreenBlockEntity, "Monitor was not at (8, 2, 0). The test is malformed!");
+                    assert screen instanceof ScreenBlockEntity;
+                    helper.assertTrue(((ScreenBlockEntity) screen).getScreenData().bg_color().equals(Color.white()), "Screen did not get set to white background");
+                    helper.assertTrue(((ScreenBlockEntity) screen).getExecutionState().equals(ProtocolExecutorModule.State.AWAIT_COMMAND), "Screen execution state did not return to Await Command");
                 }
         ));
     }

@@ -157,4 +157,8 @@ public class ProtocolBlockEntity extends PulseBlockEntity implements DatasheetPr
         getBlockPos()
         );
     }
+
+    public ProtocolExecutorModule.State getExecutionState() {
+        return executor.state();
+    }
 }
