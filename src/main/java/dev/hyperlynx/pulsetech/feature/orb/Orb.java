@@ -103,6 +103,7 @@ public class Orb extends Entity {
 
         if(hasNextDestination()) {
             if(position().closerThan(Objects.requireNonNull(nextDestination()).getCenter(), SPEED + 0.01)) {
+                this.moveTo(Objects.requireNonNull(nextDestination()).getCenter());
                 clearNextDestination();
             } else {
                 this.move(MoverType.SELF, getStep());
