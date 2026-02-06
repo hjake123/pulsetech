@@ -98,7 +98,6 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
                 } else if (buffer.length() == protocol.sequenceLength()) {
                     ProtocolCommand command = protocol.getCommand(buffer);
                     if(command != null) {
-                        Pulsetech.LOGGER.debug("Matched command for {} with {} parameters", buffer, command.parameterCount());
                         active_command = command;
                         active_parameters.clear();
                         buffer.clear();

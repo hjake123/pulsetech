@@ -47,7 +47,6 @@ public class NumberSensorModule extends SequenceModule<PulseBlockEntity> {
             number = 0;
             buffer.append(block.input());
             if(buffer.length() == 8) {
-                Pulsetech.LOGGER.debug("Parsing sequence {} for byte", buffer);
                 number = buffer.toByte();
                 ready = true;
                 block.handleInput();

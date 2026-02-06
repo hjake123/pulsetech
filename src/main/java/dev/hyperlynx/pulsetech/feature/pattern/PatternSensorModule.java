@@ -36,9 +36,7 @@ public class PatternSensorModule extends SequenceModule<PatternBlockEntity> impl
             pulser.handleInput();
             return false;
         } else if (buffer.length() == pattern.length()) {
-            Pulsetech.LOGGER.debug("Checking for match with {}", buffer);
             if(buffer.equals(pattern)) {
-                Pulsetech.LOGGER.debug("Matched pattern");
                 pulser.handleInput();
                 // We don't return false right away to
                 // allow one extra pulse to be absorbed to help with timing.
