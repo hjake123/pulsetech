@@ -24,7 +24,7 @@ public abstract class PatternBlock extends PulseBlock {
     @Override
     protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if(level.isClientSide) {
-            return InteractionResult.FAIL;
+            return InteractionResult.CONSUME;
         }
         PacketDistributor.sendToPlayer((ServerPlayer) player, new OpenSequenceChooserPayload(pos));
         return InteractionResult.SUCCESS;

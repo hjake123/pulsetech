@@ -66,6 +66,7 @@ public class InputSequenceWidget extends AbstractWidget implements Renderable {
         }
         add_button.setPosition(x, this.getY());
         remove_button.setPosition(x, this.getY() + 16);
+        remove_button.active = !sequence.isEmpty();
     }
 
     private void bitButtonPress(int index) {

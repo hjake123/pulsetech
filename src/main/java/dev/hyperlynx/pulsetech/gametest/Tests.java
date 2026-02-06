@@ -17,7 +17,7 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 @GameTestHolder(Pulsetech.MODID)
 public class Tests {
 
-    @GameTest
+    @GameTest(setupTicks = 5)
     public static void patternBlockMatch(GameTestHelper helper) {
         helper.setBlock(0, 2, 0, Blocks.REDSTONE_BLOCK);
         helper.runAfterDelay(20, () -> helper.succeedIf(
@@ -29,7 +29,7 @@ public class Tests {
         ));
     }
 
-    @GameTest
+    @GameTest(setupTicks = 5)
     public static void patternBlockDifferent(GameTestHelper helper) {
         helper.setBlock(0, 2, 0, Blocks.REDSTONE_BLOCK);
         helper.runAfterDelay(20, () -> helper.succeedIf(
@@ -41,7 +41,7 @@ public class Tests {
         ));
     }
 
-    @GameTest
+    @GameTest(setupTicks = 5)
     public static void patternBlockMatchRepeater(GameTestHelper helper) {
         helper.setBlock(0, 2, 0, Blocks.REDSTONE_BLOCK);
         helper.runAfterDelay(20, () -> helper.succeedIf(
@@ -53,7 +53,7 @@ public class Tests {
         ));
     }
 
-    @GameTest
+    @GameTest(setupTicks = 5)
     public static void patternBlockDifferentRepeater(GameTestHelper helper) {
         helper.setBlock(0, 2, 0, Blocks.REDSTONE_BLOCK);
         helper.runAfterDelay(20, () -> helper.succeedIf(
@@ -65,7 +65,7 @@ public class Tests {
         ));
     }
 
-    @GameTest
+    @GameTest(setupTicks = 5)
     public static void number(GameTestHelper helper) {
         helper.setBlock(0, 2, 0, Blocks.REDSTONE_BLOCK);
         helper.runAfterDelay(40, () -> helper.succeedIf(
@@ -78,7 +78,7 @@ public class Tests {
         ));
     }
 
-    @GameTest
+    @GameTest(setupTicks = 5)
     public static void numberRepeater(GameTestHelper helper) {
         helper.setBlock(0, 2, 0, Blocks.REDSTONE_BLOCK);
         helper.runAfterDelay(40, () -> helper.succeedIf(
@@ -92,7 +92,7 @@ public class Tests {
     }
 
     /// Tests for issue 1
-    @GameTest
+    @GameTest(setupTicks = 5)
     public static void processorNumberIssue(GameTestHelper helper) {
         helper.setBlock(4, 3, 1, Blocks.REDSTONE_BLOCK);
         helper.runAfterDelay(10, () -> helper.setBlock(4, 3, 1, Blocks.AIR));
@@ -106,7 +106,7 @@ public class Tests {
         ));
     }
 
-    @GameTest
+    @GameTest(setupTicks = 5)
     public static void processorNumberIssueRepeater(GameTestHelper helper) {
         helper.setBlock(4, 3, 1, Blocks.REDSTONE_BLOCK);
         helper.runAfterDelay(10, () -> helper.setBlock(4, 3, 1, Blocks.AIR));
@@ -121,7 +121,7 @@ public class Tests {
     }
 
     /// Tests for issue 32... I think
-    @GameTest(timeoutTicks = 200)
+    @GameTest(setupTicks = 5, timeoutTicks = 200)
     public static void screenIssue(GameTestHelper helper) {
         helper.setBlock(0, 2, 0, Blocks.REDSTONE_BLOCK);
         helper.runAfterDelay(120, () -> helper.succeedWhen(
@@ -135,7 +135,7 @@ public class Tests {
         ));
     }
 
-    @GameTest(timeoutTicks = 200)
+    @GameTest(setupTicks = 5, timeoutTicks = 200)
     public static void screenIssueWait(GameTestHelper helper) {
         helper.setBlock(0, 2, 0, Blocks.REDSTONE_BLOCK);
         helper.runAfterDelay(120, () -> helper.succeedWhen(

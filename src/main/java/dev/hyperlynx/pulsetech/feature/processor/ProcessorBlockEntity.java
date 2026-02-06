@@ -82,13 +82,12 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
             switch (operation_mode) {
                 case OUTPUT -> {
                     emitter.looping = false;
-                    emitter.tick(slevel, this);
                 }
                 case LOOP_OUTPUT -> {
                     emitter.looping = true;
-                    emitter.tick(slevel, this);
                 }
             }
+            emitter.tick(slevel, this);
         }
     }
 

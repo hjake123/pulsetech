@@ -102,7 +102,7 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
             level.scheduleTick(pos, this, 3, TickPriority.VERY_HIGH);
         }
         if(level.getBlockEntity(pos) instanceof PulseBlockEntity entity) {
-            entity.last_detected_input = level.getDirectSignalTo(pos) > 0;
+            entity.last_detected_input = level.getDirectSignal(pos.relative(change_direction), change_direction) > 0;
         }
     }
 

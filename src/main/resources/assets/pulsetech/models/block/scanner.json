@@ -3,12 +3,12 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "pulsetech:block/base_front_out_other_in",
+		"0": "pulsetech:block/base_front_out_back_in",
 		"3": "pulsetech:block/protocol_module",
 		"4": "pulsetech:block/scan_ring",
 		"5": "block/smooth_stone",
 		"6": "block/lightning_rod",
-		"particle": "pulsetech:block/base_front_out_other_in"
+		"particle": "pulsetech:block/base_front_out_back_in"
 	},
 	"elements": [
 		{
