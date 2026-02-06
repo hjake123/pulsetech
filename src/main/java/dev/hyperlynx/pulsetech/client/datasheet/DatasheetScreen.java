@@ -1,7 +1,11 @@
 package dev.hyperlynx.pulsetech.client.datasheet;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
+import dev.hyperlynx.pulsetech.registration.ModBlocks;
+import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
+import dev.hyperlynx.pulsetech.registration.ModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -9,6 +13,11 @@ import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+
+import java.util.List;
+import java.util.Map;
 
 public class DatasheetScreen extends Screen {
     private static final ResourceLocation BACKGROUND = Pulsetech.location("textures/gui/datasheet_background.png");
@@ -38,7 +47,15 @@ public class DatasheetScreen extends Screen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
         graphics.drawString(Minecraft.getInstance().font, title, paper_top_x + 8, paper_top_y + 8, 0, false);
-        graphics.renderItem(datasheet.block().asItem().getDefaultInstance(),paper_top_x + 157,paper_top_y + 8);
+        Block block = datasheet.block();
+        if(block.defaultBlockState().is(ModBlocks.PROCESSOR)) {
+            // Special case for processor rendering
+            ItemStack dummy_data_cell = ModItems.DATA_CELL.toStack();
+            dummy_data_cell.set(ModComponentTypes.MACROS, new Macros(Map.of("dummy", List.of("dummy"))));
+            graphics.renderItem(dummy_data_cell,paper_top_x + 157,paper_top_y + 8);
+        } else {
+            graphics.renderItem(datasheet.block().asItem().getDefaultInstance(),paper_top_x + 157,paper_top_y + 8);
+        }
     }
 
     @Override
