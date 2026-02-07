@@ -107,6 +107,10 @@ public class CannonBlockEntity extends ProtocolBlockEntity implements ScannerLin
         return false;
     }
 
+    public void forceSetOrigin(BlockPos origin) {
+        this.origin = origin;
+    }
+
     @Override
     public DebuggerInfoManifest getDebuggerInfoManifest() {
 

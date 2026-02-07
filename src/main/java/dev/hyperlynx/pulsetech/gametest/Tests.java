@@ -2,8 +2,10 @@ package dev.hyperlynx.pulsetech.gametest;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolExecutorModule;
+import dev.hyperlynx.pulsetech.feature.cannon.CannonBlockEntity;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberMonitorBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
+import dev.hyperlynx.pulsetech.registration.ModBlocks;
 import dev.hyperlynx.pulsetech.util.Color;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
@@ -145,6 +147,20 @@ public class Tests {
                     assert screen instanceof ScreenBlockEntity;
                     helper.assertTrue(((ScreenBlockEntity) screen).getScreenData().bg_color().equals(Color.white()), "Screen did not get set to white background");
                     helper.assertTrue(((ScreenBlockEntity) screen).getExecutionState().equals(ProtocolExecutorModule.State.AWAIT_COMMAND), "Screen execution state did not return to Await Command");
+                }
+        ));
+    }
+
+    @GameTest(setupTicks = 10, timeoutTicks = 21)
+    public static void cannonIssue(GameTestHelper helper) {
+        helper.assertBlockPresent(ModBlocks.CANNON.get(), 0, 2, 4);
+        CannonBlockEntity cannon = helper.getBlockEntity(new BlockPos(0, 2, 4));
+        cannon.forceSetOrigin(helper.absolutePos(new BlockPos(0, 2, 4)));
+        cannon.setTargetOffset(0, 0, 0);
+        helper.setBlock(0, 2, 0, Blocks.REDSTONE_BLOCK);
+        helper.runAfterDelay(20, () -> helper.succeedWhen(
+                () -> {
+                    helper.assertBlockPresent(Blocks.AIR, 0, 2, 4);
                 }
         ));
     }
