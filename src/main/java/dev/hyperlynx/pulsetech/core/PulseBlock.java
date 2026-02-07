@@ -107,7 +107,7 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
             // If this block is a pulse input, we wait an additional tick so that, if this device ends up before the
             // output in the processing order, the output will always run a tick ahead of this input. This allows the
             // output to set its next bit before this block reads a stale signal.
-            // This addresses issue #1.
+            // This addresses issue #1, I hope.
         }
         if(level.getBlockEntity(pos) instanceof PulseBlockEntity entity) {
             entity.last_detected_input = measureInput(level, pos, change_direction);
