@@ -1,12 +1,14 @@
 package dev.hyperlynx.pulsetech.ponder;
 
+import dev.hyperlynx.pulsetech.registration.ModItems;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Blocks;
 
-public class PatternStoryboards {
+public class Storyboards {
     static void patternEmitter(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("pattern_emitter", "Using a Pattern Emitter");
         scene.showBasePlate();
@@ -19,6 +21,7 @@ public class PatternStoryboards {
                 .pointAt(util.vector().blockSurface(pos, Direction.DOWN))
                 .text("");
         scene.idle(100);
+        scene.addKeyframe();
         scene.overlay().showText(60)
                 .independent(20)
                 .pointAt(util.vector().blockSurface(pos, Direction.DOWN))
@@ -34,12 +37,14 @@ public class PatternStoryboards {
                 .pointAt(util.vector().centerOf(pos))
                 .text("");
         scene.idle(80);
+        scene.addKeyframe();
         scene.world().showSection(util.select().fromTo(0, 1, 0, 5, 1, 1).add(util.select().fromTo(0, 1, 3, 5, 1, 5)).add(util.select().position(4, 1, 2)).add(util.select().position(0, 1, 2)), Direction.DOWN);
         scene.overlay().showText(60)
                 .independent(20)
                 .pointAt(util.vector().blockSurface(pos, Direction.DOWN))
                 .text("");
         scene.idle(80);
+        scene.addKeyframe();
         scene.world().toggleRedstonePower(util.select().position(2, 1, 0));
         scene.world().toggleRedstonePower(util.select().position(2, 1, 1));
         scene.idle(10);
@@ -73,6 +78,7 @@ public class PatternStoryboards {
                 .pointAt(util.vector().blockSurface(pos, Direction.DOWN))
                 .text("");
         scene.idle(100);
+        scene.addKeyframe();
         scene.overlay().showText(60)
                 .independent(20)
                 .pointAt(util.vector().blockSurface(pos, Direction.DOWN))
@@ -88,13 +94,14 @@ public class PatternStoryboards {
                 .pointAt(util.vector().centerOf(pos))
                 .text("");
         scene.idle(80);
+        scene.addKeyframe();
         scene.world().showSection(util.select().fromTo(0, 1, 0, 5, 1, 1).add(util.select().fromTo(0, 1, 3, 5, 1, 5)).add(util.select().position(4, 1, 2)).add(util.select().position(0, 1, 2)), Direction.DOWN);
         scene.overlay().showText(60)
                 .independent(20)
                 .pointAt(util.vector().blockSurface(pos, Direction.DOWN))
                 .text("");
         scene.idle(80);
-
+        scene.addKeyframe();
         var signal_line = util.select().fromTo(1, 1, 1, 3, 1, 1);
         scene.world().toggleRedstonePower(signal_line);
         scene.idle(2);
@@ -118,6 +125,7 @@ public class PatternStoryboards {
         scene.overlay().showText(60)
                 .text("Two blocks that work with numbers are...");
         scene.idle(80);
+        scene.addKeyframe();
         scene.world().showSection(util.select().layer(1), Direction.DOWN);
         scene.overlay().showOutlineWithText(util.select().position(2, 1, 1), 40)
                 .text("The Number Emitter")
@@ -127,6 +135,7 @@ public class PatternStoryboards {
                 .text("and the Number Monitor")
                 .pointAt(util.grid().at(2, 1, 3).getBottomCenter());
         scene.idle(60);
+        scene.addKeyframe();
         scene.overlay().showText(80)
                 .text("Right click on the Number Emitter to set the number in its GUI")
                 .pointAt(util.grid().at(2, 1, 1).getBottomCenter());
@@ -136,10 +145,94 @@ public class PatternStoryboards {
         scene.idle(10);
         scene.effects().indicateSuccess(util.grid().at(2, 1, 1));
         scene.idle(20);
+        scene.addKeyframe();
         scene.overlay().showText(80)
                 .text("The Number Monitor will show any number it hears in its tag")
                 .pointAt(util.grid().at(2, 1, 3).getCenter());
         scene.idle(100);
     }
+
+    static void protocolBlocks(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("protocol_blocks_showcase", "Protocol Blocks");
+        scene.showBasePlate();
+        scene.world().showSection(util.select().layer(1), Direction.DOWN);
+        scene.overlay().showText(60)
+                .text("Many blocks operate according to a Protocol");
+        scene.idle(80);
+        scene.overlay().showText(80)
+                .text("A Protocol is a set of pulse patterns which each cause a block to do something different");
+        scene.idle(100);
+        scene.addKeyframe();
+        scene.overlay().showText(60)
+                .text("To view a block's Protocol, right click it with a Datasheet");
+        scene.idle(20);
+        scene.overlay().showControls(util.grid().at(1, 1, 2).getCenter(), Pointing.DOWN, 40)
+                .rightClick().withItem(ModItems.DATASHEET.toStack());
+        scene.idle(80);
+    }
+
+    private static void simpleProtocolBlockStoryboard(SceneBuilder scene, SceneBuildingUtil util, String id, String title) {
+        scene.title(id, title);
+        scene.showBasePlate();
+        scene.world().showSection(util.select().layer(1), Direction.DOWN);
+        scene.overlay().showOutlineWithText(util.select().position(1, 1, 1), 60)
+                .text("");
+        scene.idle(80);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(util.grid().at(1, 1, 1).getBottomCenter());
+        scene.idle(80);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(util.grid().at(1, 1, 1).getBottomCenter());
+        scene.overlay().showControls(util.grid().at(1, 1, 2).getCenter(), Pointing.DOWN, 40)
+                .rightClick().withItem(ModItems.DATASHEET.toStack());
+        scene.idle(80);
+    }
+
+    public static void controller(SceneBuilder scene, SceneBuildingUtil util) {
+        simpleProtocolBlockStoryboard(scene, util, "controller", "Using a Controller");
+    }
+
+    public static void cannon(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("cannon", "");
+        scene.showBasePlate();
+        scene.world().showSection(util.select().layer(1), Direction.DOWN);
+        BlockPos pos = util.grid().at(2, 1, 1);
+        scene.overlay().showOutlineWithText(util.select().position(pos), 60)
+                .text("");
+        scene.idle(80);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getBottomCenter());
+        scene.idle(40);
+        scene.world().setBlock(util.grid().at(2, 1, 3), Blocks.AIR.defaultBlockState(), true);
+        scene.idle(40);
+        scene.world().showSection(util.select().layersFrom(2), Direction.DOWN);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getBottomCenter());
+        scene.idle(40);
+        scene.world().setBlock(util.grid().at(2, 1, 4), Blocks.AIR.defaultBlockState(), true);
+        scene.idle(10);
+        scene.world().setBlock(util.grid().at(2, 2, 4), Blocks.AIR.defaultBlockState(), true);
+        scene.idle(10);
+        scene.world().setBlock(util.grid().at(2, 3, 4), Blocks.AIR.defaultBlockState(), true);
+        scene.idle(10);
+        scene.world().setBlock(util.grid().at(2, 4, 4), Blocks.AIR.defaultBlockState(), true);
+        scene.idle(10);
+        scene.world().setBlock(util.grid().at(2, 5, 4), Blocks.AIR.defaultBlockState(), true);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getBottomCenter());
+        scene.idle(80);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getBottomCenter());
+        scene.overlay().showControls(pos.getCenter(), Pointing.DOWN, 40)
+                .rightClick().withItem(ModItems.DATASHEET.toStack());
+        scene.idle(80);
+    }
+
 
 }

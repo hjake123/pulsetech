@@ -234,5 +234,19 @@
   "pulsetech.ponder.numbers.text_3": "The Number Emitter",
   "pulsetech.ponder.numbers.text_4": "and the Number Monitor",
   "pulsetech.ponder.numbers.text_5": "Right click on the Number Emitter to set the number in its GUI",
-  "pulsetech.ponder.numbers.text_6": "The Number Monitor will show any number it hears in its tag"
+  "pulsetech.ponder.numbers.text_6": "The Number Monitor will show any number it hears in its tag",
+  "pulsetech.ponder.protocol_blocks_showcase.header": "Protocol Blocks",
+  "pulsetech.ponder.protocol_blocks_showcase.text_1": "Many blocks operate according to a Protocol",
+  "pulsetech.ponder.protocol_blocks_showcase.text_2": "A Protocol is a set of pulse patterns which each cause a block to do something different",
+  "pulsetech.ponder.protocol_blocks_showcase.text_3": "To view a block's Protocol, right click it with a Datasheet",
+  "pulsetech.ponder.controller.header": "Using a Controller",
+  "pulsetech.ponder.controller.text_1": "The Controller emits Redstone signals to drive other Redstone components",
+  "pulsetech.ponder.controller.text_2": "It can emit constant signals, repeated pulses and timed pulses",
+  "pulsetech.ponder.controller.text_3": "Check its datasheet for a full summary",
+  "pulsetech.ponder.cannon.header": "Using a Coil Cannon",
+  "pulsetech.ponder.cannon.text_1": "The Coil Cannon can break blocks from a distance",
+  "pulsetech.ponder.cannon.text_2": "It has commands to set a target and to fire",
+  "pulsetech.ponder.cannon.text_3": "It can also be told to change its target by one block each time it fires...",
+  "pulsetech.ponder.cannon.text_4": "...allowing it to break lines of blocks easily",
+  "pulsetech.ponder.cannon.text_5": "Check its datasheet for a full summary"
 }
