@@ -23,9 +23,11 @@ import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerTextInfo;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
+import dev.hyperlynx.pulsetech.ponder.PulsetechPonderPlugin;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModItems;
+import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -85,6 +87,7 @@ public class PulsetechClient {
                     Pulsetech.location("loaded"),
                     (stack, level, player, seed) -> DataCellItem.getLoadedProperty(stack)
             );
+            PonderIndex.addPlugin(new PulsetechPonderPlugin());
         });
     }
 
@@ -95,7 +98,6 @@ public class PulsetechClient {
         event.registerBlockEntityRenderer(ModBlockEntityTypes.NUMBER_MONITOR.get(), NumberBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.SCOPE.get(), ScopeBlockRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntityTypes.SCREEN.get(), ScreenBlockRenderer::new);
-
         event.registerEntityRenderer(ModEntityTypes.ORB.get(), OrbRenderer::new);
     }
 

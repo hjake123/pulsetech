@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
 import dev.hyperlynx.pulsetech.registration.*;
+import net.createmod.ponder.api.registration.PonderPlugin;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;

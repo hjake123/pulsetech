@@ -217,5 +217,10 @@
   "debugger.pulsetech.scan_mode": "Scan Mode",
   "debugger.pulsetech.orb_position": "Orb Position Offset",
   "debugger.pulsetech.orb_next_destination": "Moving to: ",
-  "debugger.pulsetech.orb_stationary": "Stationary"
+  "debugger.pulsetech.orb_stationary": "Stationary",
+  "pulsetech.ponder.pattern_emitter.header": "Using a Pattern Emitter",
+  "pulsetech.ponder.pattern_emitter.text_1": "The pattern emitter sends a specified pulse pattern",
+  "pulsetech.ponder.pattern_emitter.text_2": "Right click to open the GUI and set the pattern",
+  "pulsetech.ponder.pattern_emitter.text_3": "The current pattern is shown as a tag above the emitter",
+  "pulsetech.ponder.pattern_emitter.text_4": "The pattern can be detected by other blocks connected via Redstone"
 }
