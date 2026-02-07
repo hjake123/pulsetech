@@ -32,7 +32,7 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
     private final ConsoleColor color;
 
     public ConsoleBlock(Properties properties, ConsoleColor color, SideIO io) {
-        super(properties, io);
+        super(properties, io, false);
         this.color = color;
     }
 

@@ -101,7 +101,7 @@ public class Tests {
                     BlockEntity number_detector = helper.getBlockEntity(new BlockPos(1, 3, 2));
                     helper.assertTrue(number_detector instanceof NumberMonitorBlockEntity, "Monitor was not at (-4, 1, 3). The test is malformed!");
                     assert number_detector instanceof NumberMonitorBlockEntity;
-                    helper.assertTrue(((NumberMonitorBlockEntity) number_detector).getNumber() == 30, "Number was [" + ((NumberMonitorBlockEntity) number_detector).getNumber() + "], should be 30");
+                    helper.assertTrue(((NumberMonitorBlockEntity) number_detector).getNumber() == 1, "Number was [" + ((NumberMonitorBlockEntity) number_detector).getNumber() + "], should be 1");
                 }
         ));
     }
@@ -115,7 +115,7 @@ public class Tests {
                     BlockEntity number_detector = helper.getBlockEntity(new BlockPos(1, 3, 2));
                     helper.assertTrue(number_detector instanceof NumberMonitorBlockEntity, "Monitor was not at (-4, 0, 3). The test is malformed!");
                     assert number_detector instanceof NumberMonitorBlockEntity;
-                    helper.assertTrue(((NumberMonitorBlockEntity) number_detector).getNumber() == 30, "Number was [" + ((NumberMonitorBlockEntity) number_detector).getNumber() + "], should be 30");
+                    helper.assertTrue(((NumberMonitorBlockEntity) number_detector).getNumber() == 1, "Number was [" + ((NumberMonitorBlockEntity) number_detector).getNumber() + "], should be 1");
                 }
         ));
     }

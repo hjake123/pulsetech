@@ -23,7 +23,7 @@ public class PatternDetectorBlock extends PatternBlock implements EntityBlock {
     protected static final VoxelShape SHAPE_NORTH = Shapes.or(Block.box(2, 2, 6, 4, 3, 10), Block.box(12, 2, 6, 14, 3, 10), Block.box(6, 2, 2, 10, 3, 4), Block.box(4, 2, 4, 12, 6, 12), Block.box(0, 0, 0, 16, 2, 16));
 
     public PatternDetectorBlock(BlockBehaviour.Properties properties, SideIO io) {
-        super(properties, io);
+        super(properties, io, true);
     }
 
     @Override

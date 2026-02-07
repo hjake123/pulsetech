@@ -1,6 +1,5 @@
 package dev.hyperlynx.pulsetech.core;
 
-import dev.hyperlynx.pulsetech.Pulsetech;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;

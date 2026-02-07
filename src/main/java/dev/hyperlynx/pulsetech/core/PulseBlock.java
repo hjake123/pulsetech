@@ -38,9 +38,13 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public final SideIO io;
 
-    public PulseBlock(Properties properties, SideIO io) {
+    /// Defines whether this block should wait an extra tick after waking to remain synchronized with the output signal
+    public final boolean pulse_input;
+
+    public PulseBlock(Properties properties, SideIO io, boolean pulse_input) {
         super(properties.isRedstoneConductor((state, getter, pos) -> false));
         this.io = io;
+        this.pulse_input = pulse_input;
         registerDefaultState(defaultBlockState().setValue(OUTPUT, false).setValue(FACING, Direction.NORTH));
     }
 
@@ -97,13 +101,21 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
         if(!io.isInput(change_direction.getOpposite(), state)) {
             return;
         }
-        if(level.getDirectSignal(pos.relative(change_direction), change_direction) > 0 && level.getBlockEntity(pos) instanceof PulseBlockEntity entity && !entity.isActive() && !entity.isDelayed() && !entity.wake_triggered) {
+        if(measureInput(level, pos, change_direction) && level.getBlockEntity(pos) instanceof PulseBlockEntity entity && !entity.isActive() && !entity.isDelayed() && !entity.wake_triggered) {
             entity.wake_triggered = true;
-            level.scheduleTick(pos, this, 3, TickPriority.VERY_HIGH);
+            level.scheduleTick(pos, this, pulse_input ? 4 : 3, TickPriority.VERY_HIGH);
+            // If this block is a pulse input, we wait an additional tick so that, if this device ends up before the
+            // output in the processing order, the output will always run a tick ahead of this input. This allows the
+            // output to set its next bit before this block reads a stale signal.
+            // This addresses issue #1.
         }
         if(level.getBlockEntity(pos) instanceof PulseBlockEntity entity) {
-            entity.last_detected_input = level.getDirectSignal(pos.relative(change_direction), change_direction) > 0;
+            entity.last_detected_input = measureInput(level, pos, change_direction);
         }
+    }
+
+    private static boolean measureInput(Level level, BlockPos pos, Direction change_direction) {
+        return level.getDirectSignal(pos.relative(change_direction), change_direction) > 0;
     }
 
     @Override

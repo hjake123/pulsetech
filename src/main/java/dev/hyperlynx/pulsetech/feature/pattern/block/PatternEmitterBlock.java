@@ -33,7 +33,7 @@ public class PatternEmitterBlock extends PatternBlock implements EntityBlock {
     protected static final VoxelShape SHAPE_NORTH = Shapes.or(Block.box(6, 2, 12, 10, 3, 14), Block.box(4, 2, 4, 12, 6, 12), Block.box(0, 0, 0, 16, 2, 16));
 
     public PatternEmitterBlock(BlockBehaviour.Properties properties, SideIO io) {
-        super(properties, io);
+        super(properties, io, false);
     }
 
     @Override

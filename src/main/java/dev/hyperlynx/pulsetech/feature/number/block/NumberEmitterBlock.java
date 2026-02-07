@@ -33,7 +33,7 @@ public class NumberEmitterBlock extends PulseBlock implements EntityBlock {
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public NumberEmitterBlock(Properties properties, SideIO io) {
-        super(properties, io);
+        super(properties, io, false);
         registerDefaultState(defaultBlockState().setValue(ACTIVE, false));
     }
 

@@ -24,7 +24,7 @@ public class NumberMonitorBlock extends PulseBlock implements EntityBlock {
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public NumberMonitorBlock(Properties properties, SideIO io) {
-        super(properties, io);
+        super(properties, io, true);
         registerDefaultState(defaultBlockState().setValue(ACTIVE, false));
     }
 

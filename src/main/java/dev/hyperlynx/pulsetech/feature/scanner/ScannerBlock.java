@@ -54,7 +54,7 @@ public class ScannerBlock extends PulseBlock implements EntityBlock {
     }
 
     public ScannerBlock(Properties properties, SideIO io) {
-        super(properties, io);
+        super(properties, io, true);
         registerDefaultState(defaultBlockState().setValue(MODE, Mode.ANY));
     }
 
