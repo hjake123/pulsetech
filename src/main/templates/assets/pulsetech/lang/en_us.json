@@ -248,5 +248,9 @@
   "pulsetech.ponder.cannon.text_2": "It has commands to set a target and to fire",
   "pulsetech.ponder.cannon.text_3": "It can also be told to change its target by one block each time it fires...",
   "pulsetech.ponder.cannon.text_4": "...allowing it to break lines of blocks easily",
-  "pulsetech.ponder.cannon.text_5": "Check its datasheet for a full summary"
+  "pulsetech.ponder.cannon.text_5": "Check its datasheet for a full summary",
+  "pulsetech.ponder.screen.header": "Using a Screen",
+  "pulsetech.ponder.screen.text_1": "The Screen has a visual display on the front that can be reconfigured by pulse codes",
+  "pulsetech.ponder.screen.text_2": "It can be used as a cosmetic piece or to show data",
+  "pulsetech.ponder.screen.text_3": "Check its datasheet for a full summary"
 }

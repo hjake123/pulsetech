@@ -171,27 +171,27 @@ public class Storyboards {
         scene.idle(80);
     }
 
-    private static void simpleProtocolBlockStoryboard(SceneBuilder scene, SceneBuildingUtil util, String id, String title) {
+    private static void simpleProtocolBlockStoryboard(SceneBuilder scene, SceneBuildingUtil util, String id, String title, BlockPos position) {
         scene.title(id, title);
         scene.showBasePlate();
-        scene.world().showSection(util.select().layer(1), Direction.DOWN);
-        scene.overlay().showOutlineWithText(util.select().position(1, 1, 1), 60)
+        scene.world().showSection(util.select().layersFrom(1), Direction.DOWN);
+        scene.overlay().showOutlineWithText(util.select().position(position), 60)
                 .text("");
         scene.idle(80);
         scene.overlay().showText(60)
                 .text("")
-                .pointAt(util.grid().at(1, 1, 1).getBottomCenter());
+                .pointAt(position.getBottomCenter());
         scene.idle(80);
         scene.overlay().showText(60)
                 .text("")
-                .pointAt(util.grid().at(1, 1, 1).getBottomCenter());
-        scene.overlay().showControls(util.grid().at(1, 1, 2).getCenter(), Pointing.DOWN, 40)
+                .pointAt(position.getBottomCenter());
+        scene.overlay().showControls(position.getCenter(), Pointing.DOWN, 40)
                 .rightClick().withItem(ModItems.DATASHEET.toStack());
         scene.idle(80);
     }
 
     public static void controller(SceneBuilder scene, SceneBuildingUtil util) {
-        simpleProtocolBlockStoryboard(scene, util, "controller", "Using a Controller");
+        simpleProtocolBlockStoryboard(scene, util, "controller", "Using a Controller", util.grid().at(1, 1, 1));
     }
 
     public static void cannon(SceneBuilder scene, SceneBuildingUtil util) {
@@ -234,5 +234,7 @@ public class Storyboards {
         scene.idle(80);
     }
 
-
+    public static void screen(SceneBuilder scene, SceneBuildingUtil util) {
+        simpleProtocolBlockStoryboard(scene, util, "screen", "Using a Screen", util.grid().at(2, 2, 3));
+    }
 }
