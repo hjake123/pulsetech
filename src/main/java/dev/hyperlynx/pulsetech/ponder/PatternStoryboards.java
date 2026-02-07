@@ -107,6 +107,39 @@ public class PatternStoryboards {
         scene.world().toggleRedstonePower(util.select().fromTo(2, 1, 3, 2, 1, 4));
         scene.idle(2);
         scene.world().toggleRedstonePower(util.select().position(2, 1, 3));
-
     }
+
+    static void numbers(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("numbers", "Numbers");
+        scene.showBasePlate();
+        scene.overlay().showText(80)
+                .text("In Pulsetech, numbers are represented as 8-bit signed integers");
+        scene.idle(100);
+        scene.overlay().showText(60)
+                .text("Two blocks that work with numbers are...");
+        scene.idle(80);
+        scene.world().showSection(util.select().layer(1), Direction.DOWN);
+        scene.overlay().showOutlineWithText(util.select().position(2, 1, 1), 40)
+                .text("The Number Emitter")
+                .pointAt(util.grid().at(2, 1, 1).getBottomCenter());
+        scene.idle(60);
+        scene.overlay().showOutlineWithText(util.select().position(2, 1, 3), 40)
+                .text("and the Number Monitor")
+                .pointAt(util.grid().at(2, 1, 3).getBottomCenter());
+        scene.idle(60);
+        scene.overlay().showText(80)
+                .text("Right click on the Number Emitter to set the number in its GUI")
+                .pointAt(util.grid().at(2, 1, 1).getBottomCenter());
+        scene.idle(100);
+        scene.overlay().showControls(util.grid().at(2, 1, 1).getCenter(), Pointing.DOWN, 20)
+                .rightClick();
+        scene.idle(10);
+        scene.effects().indicateSuccess(util.grid().at(2, 1, 1));
+        scene.idle(20);
+        scene.overlay().showText(80)
+                .text("The Number Monitor will show any number it hears in its tag")
+                .pointAt(util.grid().at(2, 1, 3).getCenter());
+        scene.idle(100);
+    }
+
 }

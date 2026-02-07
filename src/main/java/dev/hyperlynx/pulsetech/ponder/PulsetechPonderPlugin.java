@@ -17,6 +17,8 @@ public class PulsetechPonderPlugin implements PonderPlugin {
     public void registerScenes(PonderSceneRegistrationHelper<ResourceLocation> helper) {
         helper.addStoryBoard(ModBlocks.PATTERN_EMITTER.getId(), Pulsetech.location("pattern/pattern_emitter"), PatternStoryboards::patternEmitter);
         helper.addStoryBoard(ModBlocks.PATTERN_DETECTOR.getId(), Pulsetech.location("pattern/pattern_detector"), PatternStoryboards::patternDetector);
+        helper.addStoryBoard(ModBlocks.NUMBER_EMITTER.getId(), Pulsetech.location("numbers"), PatternStoryboards::numbers);
+        helper.addStoryBoard(ModBlocks.NUMBER_MONITOR.getId(), Pulsetech.location("numbers"), PatternStoryboards::numbers);
     }
 
 }
