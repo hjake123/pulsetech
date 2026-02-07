@@ -222,5 +222,10 @@
   "pulsetech.ponder.pattern_emitter.text_1": "The pattern emitter sends a specified pulse pattern",
   "pulsetech.ponder.pattern_emitter.text_2": "Right click to open the GUI and set the pattern",
   "pulsetech.ponder.pattern_emitter.text_3": "The current pattern is shown as a tag above the emitter",
-  "pulsetech.ponder.pattern_emitter.text_4": "The pattern can be detected by other blocks connected via Redstone"
+  "pulsetech.ponder.pattern_emitter.text_4": "The pattern can be detected by other blocks connected via Redstone",
+  "pulsetech.ponder.pattern_detector.header": "Using a Pattern Detector",
+  "pulsetech.ponder.pattern_detector.text_1": "The pattern detector listens for a specific pattern and sends a pulse when it hears it",
+  "pulsetech.ponder.pattern_detector.text_2": "Right click to open the GUI and set the pattern",
+  "pulsetech.ponder.pattern_detector.text_3": "The current pattern is shown as a tag above the detector",
+  "pulsetech.ponder.pattern_detector.text_4": "Any block that sends a pulse pattern can be used to activate a detector"
 }
