@@ -44,12 +44,10 @@ public class EmitterModule extends SequenceModule<PulseBlockEntity> {
         buffer.append(true);
         buffer.appendAll(sequence);
         buffer.append(false);
-        buffer.append(false);
     }
 
     public void enqueueWithoutHeader(Sequence sequence) {
         this.buffer.appendAll(sequence);
-        buffer.append(false);
         buffer.append(false);
     }
 
