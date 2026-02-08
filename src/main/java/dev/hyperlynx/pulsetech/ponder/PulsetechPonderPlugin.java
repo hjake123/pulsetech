@@ -28,6 +28,7 @@ public class PulsetechPonderPlugin implements PonderPlugin {
         helper.addStoryBoard(ModBlocks.ORB.getId(), Pulsetech.location("protocol_blocks_showcase"), Storyboards::protocolBlocks);
         helper.addStoryBoard(ModBlocks.ORB.getId(), Pulsetech.location("protocol/orb"), Storyboards::orb);
         helper.addStoryBoard(ModBlocks.SCANNER.getId(), Pulsetech.location("protocol_blocks_showcase"), Storyboards::protocolBlocks);
+        helper.addStoryBoard(ModBlocks.SCANNER.getId(), Pulsetech.location("protocol/scanner"), Storyboards::scanner);
     }
 
 }

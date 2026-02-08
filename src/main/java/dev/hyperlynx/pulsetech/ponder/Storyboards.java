@@ -1,14 +1,18 @@
 package dev.hyperlynx.pulsetech.ponder;
 
+import dev.hyperlynx.pulsetech.client.debugger.PagerWidget;
 import dev.hyperlynx.pulsetech.feature.orb.Orb;
 import dev.hyperlynx.pulsetech.feature.orb.OrbBlockEntity;
 import dev.hyperlynx.pulsetech.registration.ModItems;
 import net.createmod.catnip.math.Pointing;
+import net.createmod.ponder.api.element.ParrotPose;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -314,6 +318,82 @@ public class Storyboards {
                 .text("")
                 .pointAt(orb_projector_pos.getBottomCenter());
         scene.overlay().showControls(orb_projector_pos.getCenter(), Pointing.DOWN, 40)
+                .rightClick().withItem(ModItems.DATASHEET.toStack());
+        scene.idle(80);
+    }
+
+    public static void scanner(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("scanner", "Using a Scanner");
+        scene.showBasePlate();
+        scene.world().showSection(util.select().layersFrom(1), Direction.DOWN);
+        scene.special().createBirb(util.grid().at(2, 1, 3).getBottomCenter(), ParrotPose.FaceCursorPose::new);
+        BlockPos pos = util.grid().at(2, 1, 0);
+        scene.overlay().showOutlineWithText(util.select().position(pos), 80)
+                .text("");
+        scene.idle(100);
+        scene.addKeyframe();
+        scene.overlay().showText(80)
+                .text("")
+                .pointAt(pos.getCenter());
+        scene.idle(80);
+        scene.overlay().showText(40)
+                .text("")
+                .pointAt(pos.getCenter())
+                .placeNearTarget();
+        scene.idle(60);
+        scene.addKeyframe();
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getCenter());
+        var input_cable = util.select().fromTo(3, 1, 0, 4, 1, 0);
+        var output_cable = util.select().fromTo(0, 1, 0, 1, 1, 0);
+        var output_pos = util.grid().at(0, 1, 0);
+        scene.world().toggleRedstonePower(input_cable);
+        scene.idle(4);
+        scene.world().toggleRedstonePower(input_cable);
+        scene.world().toggleRedstonePower(output_cable);
+        scene.idle(10);
+        scene.world().toggleRedstonePower(output_cable);
+        scene.overlay().showText(40)
+                        .pointAt(output_pos.getBottomCenter())
+                        .placeNearTarget()
+                        .text("");
+        scene.idle(60);
+        scene.addKeyframe();
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getCenter());
+        scene.world().toggleRedstonePower(input_cable);
+        scene.idle(4);
+        scene.world().toggleRedstonePower(input_cable);
+        scene.world().toggleRedstonePower(output_cable);
+        scene.idle(10);
+        scene.world().toggleRedstonePower(output_cable);
+        scene.overlay().showText(40)
+                .pointAt(output_pos.getBottomCenter())
+                .placeNearTarget()
+                .text("");
+        scene.idle(60);
+        scene.addKeyframe();
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getCenter());
+        scene.world().toggleRedstonePower(input_cable);
+        scene.idle(4);
+        scene.world().toggleRedstonePower(input_cable);
+        scene.world().toggleRedstonePower(output_cable);
+        scene.idle(10);
+        scene.world().toggleRedstonePower(output_cable);
+        scene.overlay().showText(40)
+                .pointAt(output_pos.getBottomCenter())
+                .placeNearTarget()
+                .text("");
+        scene.idle(60);
+        scene.addKeyframe();
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getBottomCenter());
+        scene.overlay().showControls(pos.getCenter(), Pointing.DOWN, 40)
                 .rightClick().withItem(ModItems.DATASHEET.toStack());
         scene.idle(80);
     }
