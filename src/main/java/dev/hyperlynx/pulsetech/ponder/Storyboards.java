@@ -1,12 +1,20 @@
 package dev.hyperlynx.pulsetech.ponder;
 
+import dev.hyperlynx.pulsetech.feature.orb.Orb;
+import dev.hyperlynx.pulsetech.feature.orb.OrbBlockEntity;
 import dev.hyperlynx.pulsetech.registration.ModItems;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Storyboards {
     static void patternEmitter(SceneBuilder scene, SceneBuildingUtil util) {
@@ -236,5 +244,77 @@ public class Storyboards {
 
     public static void screen(SceneBuilder scene, SceneBuildingUtil util) {
         simpleProtocolBlockStoryboard(scene, util, "screen", "Using a Screen", util.grid().at(2, 2, 3));
+    }
+
+    public static void orb(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("orb", "Using an Orb Projector");
+        scene.showBasePlate();
+        scene.world().showSection(util.select().layersFrom(1), Direction.DOWN);
+        BlockPos orb_projector_pos = util.grid().at(2, 1, 2);
+        scene.idle(20);
+        scene.world().modifyBlockEntity(orb_projector_pos, OrbBlockEntity.class, OrbBlockEntity::spawnOrb);
+        scene.overlay().showOutlineWithText(util.select().position(orb_projector_pos), 80)
+                .text("The Orb Projector summons and manipulates a floating orb");
+        scene.idle(100);
+        scene.addKeyframe();
+        scene.overlay().showText(60)
+                .text("It has commands to move the Orb...")
+                .pointAt(orb_projector_pos.getCenter());
+        scene.effects().indicateRedstone(orb_projector_pos);
+        scene.world().modifyEntities(Orb.class, orb -> orb.addDestination(2, 0, 0, true));
+        scene.world().modifyEntities(Orb.class, orb -> orb.addDestination(0, 2, 0, true));
+        scene.world().modifyEntities(Orb.class, orb -> orb.addDestination(-2, 0, 0, true));
+        scene.world().modifyEntities(Orb.class, orb -> orb.addDestination(0, -3, 0, true));
+        scene.idle(80);
+        scene.addKeyframe();
+        var items = scene.world().createItemEntity(orb_projector_pos.above(2).getCenter(), Vec3.ZERO, Items.COBBLESTONE.getDefaultInstance().copyWithCount(32));
+        scene.idle(20);
+        scene.effects().indicateRedstone(orb_projector_pos);
+        scene.world().modifyEntity(items, Entity::kill);
+        scene.overlay().showText(40)
+                .text("...to grab and move entities...")
+                .pointAt(orb_projector_pos.getCenter());
+        scene.idle(20);
+        scene.overlay().showControls(orb_projector_pos.getCenter(), Pointing.DOWN, 20)
+                        .withItem(Items.COBBLESTONE.getDefaultInstance());
+        scene.idle(40);
+        scene.world().modifyEntities(Orb.class, orb -> orb.addDestination(-2, 0, 2, true));
+        scene.idle(30);
+        scene.addKeyframe();
+        scene.effects().indicateRedstone(orb_projector_pos);
+        scene.world().modifyEntities(Orb.class, Orb::togglePen);
+        scene.world().modifyEntities(ItemEntity.class, Entity::stopRiding);
+        scene.world().modifyEntities(Orb.class, orb -> orb.addDestination(4, 0, 0, true));
+        scene.overlay().showText(40)
+                .text("...to place blocks...")
+                .pointAt(orb_projector_pos.getCenter());
+        scene.world().setBlock(util.grid().at(0, 1, 4), Blocks.COBBLESTONE.defaultBlockState(), true);
+        scene.idle(10);
+        scene.world().setBlock(util.grid().at(1, 1, 4), Blocks.COBBLESTONE.defaultBlockState(), true);
+        scene.idle(10);
+        scene.world().setBlock(util.grid().at(2, 1, 4), Blocks.COBBLESTONE.defaultBlockState(), true);
+        scene.idle(10);
+        scene.world().setBlock(util.grid().at(3, 1, 4), Blocks.COBBLESTONE.defaultBlockState(), true);
+        scene.idle(10);
+        scene.world().setBlock(util.grid().at(4, 1, 4), Blocks.COBBLESTONE.defaultBlockState(), true);
+        scene.idle(20);
+        scene.addKeyframe();
+        scene.effects().indicateRedstone(orb_projector_pos);
+        scene.world().modifyEntities(Orb.class, Orb::togglePen);
+        scene.world().modifyEntities(Orb.class, Orb::toggleGrab);
+        scene.world().modifyEntities(Orb.class, orb -> orb.addDestination(0, 0, -2, true));
+        scene.idle(20);
+        scene.overlay().showText(40)
+                .text("...and to change into a damaging projectile.")
+                .pointAt(orb_projector_pos.getCenter());
+        scene.world().modifyEntities(Orb.class, Orb::toggleProjectile);
+        scene.world().modifyEntities(Orb.class, orb -> orb.addDestination(0, -4, 0, true));
+        scene.idle(60);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(orb_projector_pos.getBottomCenter());
+        scene.overlay().showControls(orb_projector_pos.getCenter(), Pointing.DOWN, 40)
+                .rightClick().withItem(ModItems.DATASHEET.toStack());
+        scene.idle(80);
     }
 }

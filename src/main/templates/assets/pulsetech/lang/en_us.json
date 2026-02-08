@@ -252,5 +252,12 @@
   "pulsetech.ponder.screen.header": "Using a Screen",
   "pulsetech.ponder.screen.text_1": "The Screen has a visual display on the front that can be reconfigured by pulse codes",
   "pulsetech.ponder.screen.text_2": "It can be used as a cosmetic piece or to show data",
-  "pulsetech.ponder.screen.text_3": "Check its datasheet for a full summary"
+  "pulsetech.ponder.screen.text_3": "Check its datasheet for a full summary",
+  "pulsetech.ponder.orb.header": "Using an Orb Projector",
+  "pulsetech.ponder.orb.text_1": "The Orb Projector summons and manipulates a floating orb",
+  "pulsetech.ponder.orb.text_2": "It has commands to move the Orb...",
+  "pulsetech.ponder.orb.text_3": "...to grab and move entities...",
+  "pulsetech.ponder.orb.text_4": "...to place blocks...",
+  "pulsetech.ponder.orb.text_5": "...and to change into a destructive projectile",
+  "pulsetech.ponder.orb.text_6": "Check its datasheet for a full summary"
 }
