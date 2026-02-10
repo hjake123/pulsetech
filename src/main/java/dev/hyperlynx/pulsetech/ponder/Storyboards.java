@@ -1,9 +1,12 @@
 package dev.hyperlynx.pulsetech.ponder;
 
-import dev.hyperlynx.pulsetech.client.debugger.PagerWidget;
+import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.feature.orb.Orb;
 import dev.hyperlynx.pulsetech.feature.orb.OrbBlockEntity;
+import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
+import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
 import dev.hyperlynx.pulsetech.registration.ModItems;
+import dev.hyperlynx.pulsetech.util.Color;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.element.ParrotPose;
 import net.createmod.ponder.api.scene.SceneBuilder;
@@ -11,14 +14,13 @@ import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Map;
 
 public class Storyboards {
     static void patternEmitter(SceneBuilder scene, SceneBuildingUtil util) {
@@ -183,8 +185,9 @@ public class Storyboards {
         scene.idle(80);
     }
 
-    private static void simpleProtocolBlockStoryboard(SceneBuilder scene, SceneBuildingUtil util, String id, String title, BlockPos position) {
-        scene.title(id, title);
+    public static void controller(SceneBuilder scene, SceneBuildingUtil util) {
+        BlockPos position = util.grid().at(1, 1, 1);
+        scene.title("controller", "Using a Controller");
         scene.showBasePlate();
         scene.world().showSection(util.select().layersFrom(1), Direction.DOWN);
         scene.overlay().showOutlineWithText(util.select().position(position), 60)
@@ -200,10 +203,6 @@ public class Storyboards {
         scene.overlay().showControls(position.getCenter(), Pointing.DOWN, 40)
                 .rightClick().withItem(ModItems.DATASHEET.toStack());
         scene.idle(80);
-    }
-
-    public static void controller(SceneBuilder scene, SceneBuildingUtil util) {
-        simpleProtocolBlockStoryboard(scene, util, "controller", "Using a Controller", util.grid().at(1, 1, 1));
     }
 
     public static void cannon(SceneBuilder scene, SceneBuildingUtil util) {
@@ -247,7 +246,29 @@ public class Storyboards {
     }
 
     public static void screen(SceneBuilder scene, SceneBuildingUtil util) {
-        simpleProtocolBlockStoryboard(scene, util, "screen", "Using a Screen", util.grid().at(2, 2, 3));
+        var position = util.grid().at(2, 2, 3);
+        scene.title("screen", "Using a Screen");
+        scene.showBasePlate();
+        scene.world().showSection(util.select().layersFrom(1), Direction.DOWN);
+        scene.overlay().showOutlineWithText(util.select().position(position), 60)
+                .text("");
+        scene.idle(80);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(position.getBottomCenter());
+        scene.idle(80);
+        scene.effects().indicateRedstone(position);
+        scene.world().modifyBlockEntity(position, ScreenBlockEntity.class, screen -> {
+            screen.setBackgroundColor(new Color(0, 200, 40));
+            screen.sendUpdate();
+        });
+        scene.idle(40);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(position.getBottomCenter());
+        scene.overlay().showControls(position.getCenter(), Pointing.DOWN, 40)
+                .rightClick().withItem(ModItems.DATASHEET.toStack());
+        scene.idle(80);
     }
 
     public static void orb(SceneBuilder scene, SceneBuildingUtil util) {
@@ -463,5 +484,75 @@ public class Storyboards {
         scene.idle(60);
         scene.world().modifyEntities(Orb.class, orb -> orb.addDestination(0, -2, 0, true));
         scene.idle(40);
+    }
+
+    private static ItemStack loadedDataCell() {
+        var cell = ModItems.DATA_CELL.toStack();
+        cell.set(ModComponentTypes.MACROS, new Macros(Map.of()));
+        return cell;
+    }
+
+    public static void dataCellConsole(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("console_macros", "Copying Macros with the Data Cell");
+        scene.showBasePlate();
+        scene.world().showSection(util.select().layersFrom(1), Direction.DOWN);
+        scene.overlay().showText(80)
+                .text("The Data Cell can copy saved macros between Consoles");
+        scene.idle(100);
+        scene.addKeyframe();
+        scene.overlay().showControls(util.grid().at(3, 1, 2).getCenter(), Pointing.DOWN, 30)
+                .rightClick().withItem(ModItems.DATA_CELL.toStack());
+        scene.idle(40);
+        scene.overlay().showControls(util.grid().at(1, 1, 2).getCenter(), Pointing.DOWN, 30)
+                .rightClick().withItem(loadedDataCell());
+        scene.idle(40);
+        scene.effects().indicateSuccess(util.grid().at(1, 1, 2));
+    }
+
+    public static void dataCellScreen(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("screen_data", "Copying Screen Data with the Data Cell");
+        scene.showBasePlate();
+        scene.world().showSection(util.select().layersFrom(1), Direction.DOWN);
+        scene.overlay().showText(80)
+                .text("The Data Cell can copy the graphics between Screens");
+        scene.idle(100);
+        scene.addKeyframe();
+        scene.overlay().showControls(util.grid().at(3, 1, 2).getCenter(), Pointing.DOWN, 30)
+                .rightClick().withItem(ModItems.DATA_CELL.toStack());
+        scene.idle(50);
+        scene.overlay().showControls(util.grid().at(1, 1, 2).getCenter(), Pointing.DOWN, 30)
+                .rightClick().withItem(loadedDataCell());
+        scene.idle(20);
+        scene.world().modifyBlockEntity(util.grid().at(1, 1, 2), ScreenBlockEntity.class, screen -> {
+            screen.setBackgroundColor(new Color(85, 255, 254));
+            screen.sendUpdate();
+        });
+        scene.effects().indicateSuccess(util.grid().at(1, 1, 2));
+    }
+
+    public static void dataCellScanner(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("scanner_pos", "Scanner Origin Binding with the Data Cell");
+        scene.showBasePlate();
+        scene.world().showSection(util.select().layersFrom(1), Direction.DOWN);
+        scene.overlay().showText(80)
+                .text("");
+        scene.idle(100);
+        scene.addKeyframe();
+        scene.overlay().showControls(util.grid().at(1, 1, 3).getCenter(), Pointing.DOWN, 30)
+                .rightClick().withItem(ModItems.DATA_CELL.toStack());
+        scene.idle(40);
+        scene.overlay().showControls(util.grid().at(3, 1, 3).getCenter(), Pointing.DOWN, 30)
+                .rightClick().withItem(loadedDataCell());
+        scene.overlay().showControls(util.grid().at(3, 1, 1).getCenter(), Pointing.DOWN, 30)
+                .rightClick().withItem(loadedDataCell());
+        scene.idle(40);
+        scene.addKeyframe();
+        scene.overlay().showText(80)
+                .text("");
+        scene.idle(100);
+        scene.addKeyframe();
+        scene.overlay().showText(80)
+                .text("");
+        scene.idle(100);
     }
 }

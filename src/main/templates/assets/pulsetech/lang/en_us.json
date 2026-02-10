@@ -183,7 +183,8 @@
   "pulsetech.contains_screen_data": "Contains screen data",
   "pulsetech.data_cell_clear_instructions": "Shift + use to clear",
   "pulsetech.screen_swapped": "Swapped screen data with data cell",
-  "tooltip.pulsetech.datasheet": "Right click on a Pulsetech block to view its info",
+  "tooltip.pulsetech.datasheet": "Right click on a Pulsetech block to view its commands",
+  "tooltip.pulsetech.debugger": "Right click on a Pulsetech block to view its internal state",
   "pulsetech.linked_to_scanner": "Linked origin to scanner",
   "pulsetech.failed_link_to_scanner": "Couldn't link to scanner",
   "pulsetech.stored_scanner_pos": "Stored scanner position for linking",
@@ -280,5 +281,13 @@
   "pulsetech.ponder.console.text_6": "Check its datasheet or run the 'help' command to see a summary of the available commands",
   "pulsetech.ponder.console.text_7": "The 'define' command is particularly helpful",
   "pulsetech.ponder.console.text_8": "define down emit 010 num -2",
-  "pulsetech.ponder.console.text_9": "down"
+  "pulsetech.ponder.console.text_9": "down",
+  "pulsetech.ponder.console_macros.header": "Copying Macros with the Data Cell",
+  "pulsetech.ponder.console_macros.text_1": "The Data Cell can copy saved macros between Consoles",
+  "pulsetech.ponder.screen_data.header": "Copying Screen Data with the Data Cell",
+  "pulsetech.ponder.screen_data.text_1": "The Data Cell can copy the graphics between Screens",
+  "pulsetech.ponder.scanner_pos.header": "Assigning a Scanner as an Origin",
+  "pulsetech.ponder.scanner_pos.text_1": "The Data Cell can be used to bind position-based blocks to the Scanner",
+  "pulsetech.ponder.scanner_pos.text_2": "This makes those blocks measure their offsets relative to the Scanner instead of themselves...",
+  "pulsetech.ponder.scanner_pos.text_3": "...which means the Scanner's position instruction can be used to set a target"
 }
