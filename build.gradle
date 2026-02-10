@@ -10,6 +10,9 @@ group = mod_group_id
 
 repositories {
     mavenLocal()
+    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
+    maven { url = "https://maven.createmod.net" }
+    maven { url = "https://maven.ithundxr.dev/snapshots" }
 }
 
 base {
@@ -116,6 +119,16 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+    jarJar(implementation("net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}")) {
+        version {
+            strictly ponder_version_range
+            prefer ponder_version
+        }
+    }
+    runtimeOnly("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
+    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")
+    runtimeOnly("com.tterrag.registrate:Registrate:${registrate_version}")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

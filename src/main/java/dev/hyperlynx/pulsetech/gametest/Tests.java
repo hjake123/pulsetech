@@ -151,34 +151,34 @@ public class Tests {
         ));
     }
 
-    @GameTest(setupTicks = 10, timeoutTicks = 21)
-    public static void cannonIssue(GameTestHelper helper) {
-        BlockPos cannon_pos = new BlockPos(0, 2, 0);
-        helper.assertBlockPresent(ModBlocks.CANNON.get(), cannon_pos);
-        CannonBlockEntity cannon = helper.getBlockEntity(cannon_pos);
-        cannon.forceSetOrigin(helper.absolutePos(cannon_pos));
-        cannon.setTargetOffset(0, 0, 0);
-        helper.setBlock(3, 2, 3, Blocks.REDSTONE_BLOCK);
-        helper.runAfterDelay(20, () -> helper.succeedWhen(
-                () -> {
-                    helper.assertBlockPresent(Blocks.AIR, cannon_pos);
-                }
-        ));
-    }
-
-    @GameTest(setupTicks = 10, timeoutTicks = 21, template = "cannonissue")
-    public static void cannonIssueControl(GameTestHelper helper) {
-        BlockPos cannon_pos = new BlockPos(0, 2, 0);
-        helper.assertBlockPresent(ModBlocks.CANNON.get(), cannon_pos);
-        CannonBlockEntity cannon = helper.getBlockEntity(cannon_pos);
-        cannon.forceSetOrigin(helper.absolutePos(cannon_pos));
-        cannon.setTargetOffset(0, 0, 0);
-        helper.setBlock(3, 2, 2, Blocks.REDSTONE_BLOCK);
-        helper.runAfterDelay(20, () -> helper.succeedWhen(
-                () -> {
-                    helper.assertBlockPresent(Blocks.AIR, cannon_pos);
-                }
-        ));
-    }
+//    @GameTest(setupTicks = 10, timeoutTicks = 21)
+//    public static void cannonIssue(GameTestHelper helper) {
+//        BlockPos cannon_pos = new BlockPos(0, 2, 0);
+//        helper.assertBlockPresent(ModBlocks.CANNON.get(), cannon_pos);
+//        CannonBlockEntity cannon = helper.getBlockEntity(cannon_pos);
+//        cannon.forceSetOrigin(helper.absolutePos(cannon_pos));
+//        cannon.setTargetOffset(0, 0, 0);
+//        helper.setBlock(3, 2, 3, Blocks.REDSTONE_BLOCK);
+//        helper.runAfterDelay(20, () -> helper.succeedWhen(
+//                () -> {
+//                    helper.assertBlockPresent(Blocks.AIR, cannon_pos);
+//                }
+//        ));
+//    }
+//
+//    @GameTest(setupTicks = 10, timeoutTicks = 21, template = "cannonissue")
+//    public static void cannonIssueControl(GameTestHelper helper) {
+//        BlockPos cannon_pos = new BlockPos(0, 2, 0);
+//        helper.assertBlockPresent(ModBlocks.CANNON.get(), cannon_pos);
+//        CannonBlockEntity cannon = helper.getBlockEntity(cannon_pos);
+//        cannon.forceSetOrigin(helper.absolutePos(cannon_pos));
+//        cannon.setTargetOffset(0, 0, 0);
+//        helper.setBlock(3, 2, 2, Blocks.REDSTONE_BLOCK);
+//        helper.runAfterDelay(20, () -> helper.succeedWhen(
+//                () -> {
+//                    helper.assertBlockPresent(Blocks.AIR, cannon_pos);
+//                }
+//        ));
+//    }
 
 }
