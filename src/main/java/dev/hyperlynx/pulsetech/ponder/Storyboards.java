@@ -397,4 +397,71 @@ public class Storyboards {
                 .rightClick().withItem(ModItems.DATASHEET.toStack());
         scene.idle(80);
     }
+
+    public static void console(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("console", "Using a Console");
+        scene.showBasePlate();
+        BlockPos pos = util.grid().at(2, 1, 2);
+        scene.world().showSection(util.select().position(pos), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay().showOutlineWithText(util.select().position(pos), 80)
+                .text("");
+        scene.idle(100);
+
+        scene.addKeyframe();
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getCenter());
+        scene.idle(80);
+        scene.world().showSection(util.select().fromTo(4, 1, 0, 4, 1, 4), Direction.DOWN);
+        scene.world().showSection(util.select().fromTo(2, 1, 3, 2, 1, 4), Direction.DOWN);
+        scene.world().showSection(util.select().position(3, 1, 4), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay().showText(40)
+                .text("")
+                .pointAt(pos.getCenter())
+                .placeNearTarget();
+        scene.idle(60);
+        scene.world().toggleRedstonePower(util.select().position(4, 1, 2));
+        scene.idle(20);
+
+        scene.addKeyframe();
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getCenter());
+        scene.idle(80);
+        scene.world().showSection(util.select().fromTo(0, 1, 4, 1, 1, 4), Direction.DOWN);
+        scene.idle(20);
+        scene.world().modifyBlockEntity(util.grid().at(0, 1, 4), OrbBlockEntity.class, OrbBlockEntity::spawnOrb);
+        scene.idle(10);
+        scene.overlay().showText(40)
+                .text("")
+                .pointAt(pos.getCenter())
+                .placeNearTarget();
+        scene.idle(60);
+        scene.world().modifyEntities(Orb.class, orb -> orb.addDestination(0, 2, 0, true));
+
+        scene.addKeyframe();
+        scene.overlay().showText(80)
+                .text("")
+                .pointAt(pos.getCenter());
+        scene.idle(100);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getCenter());
+        scene.idle(80);
+        scene.addKeyframe();
+        scene.overlay().showText(50)
+                .text("")
+                .pointAt(pos.getCenter())
+                .placeNearTarget();
+        scene.idle(70);
+        scene.overlay().showText(40)
+                .text("")
+                .pointAt(pos.getCenter())
+                .placeNearTarget();
+        scene.idle(60);
+        scene.world().modifyEntities(Orb.class, orb -> orb.addDestination(0, -2, 0, true));
+        scene.idle(40);
+    }
 }

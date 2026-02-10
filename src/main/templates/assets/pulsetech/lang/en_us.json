@@ -270,5 +270,15 @@
   "pulsetech.ponder.orb.text_3": "...to grab and move entities...",
   "pulsetech.ponder.orb.text_4": "...to place blocks...",
   "pulsetech.ponder.orb.text_5": "...and to change into a destructive projectile",
-  "pulsetech.ponder.orb.text_6": "Check its datasheet for a full summary"
+  "pulsetech.ponder.orb.text_6": "Check its datasheet for a full summary",
+  "pulsetech.ponder.console.header": "Using a Console",
+  "pulsetech.ponder.console.text_1": "The Console accepts commands in its GUI and uses them to emit signals from the port on its back",
+  "pulsetech.ponder.console.text_2": "It's perfect for activating Pattern Detectors...",
+  "pulsetech.ponder.console.text_3": "emit 001",
+  "pulsetech.ponder.console.text_4": "...and for sending instructions to Protocol Blocks",
+  "pulsetech.ponder.console.text_5": "emit 010 num 2",
+  "pulsetech.ponder.console.text_6": "Check its datasheet or run the 'help' command to see a summary of the available commands",
+  "pulsetech.ponder.console.text_7": "The 'define' command is particularly helpful",
+  "pulsetech.ponder.console.text_8": "define down emit 010 num -2",
+  "pulsetech.ponder.console.text_9": "down"
 }
