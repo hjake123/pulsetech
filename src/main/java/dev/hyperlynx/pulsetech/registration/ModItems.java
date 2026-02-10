@@ -23,10 +23,10 @@ public class ModItems {
     public static final DeferredItem<BlockItem> NUMBER_EMITTER = ITEMS.registerSimpleBlockItem("number_emitter", ModBlocks.NUMBER_EMITTER);
     public static final DeferredItem<BlockItem> CONTROLLER = ITEMS.registerSimpleBlockItem("controller", ModBlocks.CONTROLLER);
     public static final DeferredItem<BlockItem> SCANNER = ITEMS.registerSimpleBlockItem("scanner", ModBlocks.SCANNER);
-    public static final DeferredItem<BlockItem> SCOPE = ITEMS.registerSimpleBlockItem("scope", ModBlocks.SCOPE);
     public static final DeferredItem<BlockItem> SCREEN = ITEMS.registerSimpleBlockItem("screen", ModBlocks.SCREEN);
     public static final DeferredItem<BlockItem> CANNON = ITEMS.registerSimpleBlockItem("cannon", ModBlocks.CANNON);
     public static final DeferredItem<BlockItem> ORB = ITEMS.registerSimpleBlockItem("orb", ModBlocks.ORB);
+    public static final DeferredItem<BlockItem> SCOPE = ITEMS.registerSimpleBlockItem("scope", ModBlocks.SCOPE);
 
     public static final DeferredItem<DatasheetItem> DATASHEET = ITEMS.registerItem("datasheet",  (props) ->
             new DatasheetItem(props.stacksTo(1)));
