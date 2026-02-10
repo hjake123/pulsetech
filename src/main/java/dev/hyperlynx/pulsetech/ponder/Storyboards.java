@@ -4,6 +4,7 @@ import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.feature.orb.Orb;
 import dev.hyperlynx.pulsetech.feature.orb.OrbBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
+import dev.hyperlynx.pulsetech.registration.ModBlocks;
 import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
 import dev.hyperlynx.pulsetech.registration.ModItems;
 import dev.hyperlynx.pulsetech.util.Color;
@@ -20,6 +21,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
+import java.lang.reflect.Modifier;
 import java.util.Map;
 
 public class Storyboards {
@@ -554,5 +556,60 @@ public class Storyboards {
         scene.overlay().showText(80)
                 .text("");
         scene.idle(100);
+    }
+
+    public static void processor(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("processor", "Using a Processor");
+        scene.showBasePlate();
+        var pos = util.grid().at(2, 1, 2);
+        scene.world().showSection(util.select().position(pos), Direction.DOWN);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getBottomCenter());
+        scene.idle(80);
+        scene.overlay().showControls(pos.getCenter(), Pointing.DOWN, 40)
+                .rightClick().withItem(loadedDataCell());
+        scene.idle(20);
+        scene.world().setBlock(pos, ModBlocks.PROCESSOR.get().defaultBlockState(), false);
+        scene.idle(40);
+        scene.addKeyframe();
+        scene.overlay().showText(80)
+                .text("")
+                .pointAt(pos.getBottomCenter());
+        scene.idle(100);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getBottomCenter());
+        scene.idle(80);
+        scene.overlay().showControls(pos.getCenter(), Pointing.DOWN, 40)
+                .rightClick().withItem(ModItems.DATASHEET.toStack());
+        scene.idle(60);
+        scene.addKeyframe();
+        scene.world().showSection(util.select().fromTo(0, 1, 0, 5, 1, 1).add(util.select().fromTo(0, 1, 3, 5, 1, 5)).add(util.select().position(4, 1, 2)).add(util.select().position(0, 1, 2)), Direction.DOWN);
+        scene.overlay().showText(80)
+                .text("")
+                .pointAt(pos.getBottomCenter());
+        scene.idle(100);
+        scene.addKeyframe();
+        scene.world().toggleRedstonePower(util.select().position(0, 1, 0));
+        scene.idle(10);
+        scene.world().toggleRedstonePower(util.select().position(0, 1, 0));
+        scene.effects().indicateRedstone(pos);
+        scene.idle(10);
+        scene.world().modifyBlockEntity(util.grid().at(0, 1, 3), ScreenBlockEntity.class, screen -> {
+            screen.setBackgroundColor(new Color(50, 200, 10));
+            screen.sendUpdate();
+        });
+        scene.idle(20);
+        scene.addKeyframe();
+        scene.world().toggleRedstonePower(util.select().position(4, 1, 0));
+        scene.idle(10);
+        scene.world().toggleRedstonePower(util.select().position(4, 1, 0));
+        scene.effects().indicateRedstone(pos);
+        scene.idle(10);
+        scene.world().modifyBlockEntity(util.grid().at(0, 1, 3), ScreenBlockEntity.class, screen -> {
+            screen.setBackgroundColor(new Color(0, 80, 200));
+            screen.sendUpdate();
+        });
     }
 }

@@ -289,5 +289,10 @@
   "pulsetech.ponder.scanner_pos.header": "Assigning a Scanner as an Origin",
   "pulsetech.ponder.scanner_pos.text_1": "The Data Cell can be used to bind position-based blocks to the Scanner",
   "pulsetech.ponder.scanner_pos.text_2": "This makes those blocks measure their offsets relative to the Scanner instead of themselves...",
-  "pulsetech.ponder.scanner_pos.text_3": "...which means the Scanner's position instruction can be used to set a target"
+  "pulsetech.ponder.scanner_pos.text_3": "...which means the Scanner's position instruction can be used to set a target",
+  "pulsetech.ponder.processor.header": "Using a Processor",
+  "pulsetech.ponder.processor.text_1": "Click on a Pattern Emitter with a Data Cell containing macros from a Console to form a Processor",
+  "pulsetech.ponder.processor.text_2": "The Processor has an auto-generated Protocol to run any of the stored macros",
+  "pulsetech.ponder.processor.text_3": "Use a Datasheet to see what pattern each Macro was assigned",
+  "pulsetech.ponder.processor.text_4": "The Processor allows you to change trigger complex commands for other blocks using simple patterns"
 }
