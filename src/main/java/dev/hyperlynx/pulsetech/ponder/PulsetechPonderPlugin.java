@@ -5,7 +5,11 @@ import dev.hyperlynx.pulsetech.registration.ModBlocks;
 import dev.hyperlynx.pulsetech.registration.ModItems;
 import net.createmod.ponder.api.registration.PonderPlugin;
 import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
+import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
+import net.createmod.ponder.api.registration.TagBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
 public class PulsetechPonderPlugin implements PonderPlugin {
@@ -58,4 +62,23 @@ public class PulsetechPonderPlugin implements PonderPlugin {
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/scanner_pos"), Storyboards::dataCellScanner);
     }
 
+    @Override
+    public void registerTags(PonderTagRegistrationHelper<ResourceLocation> helper) {
+        ResourceLocation feature_tag = Pulsetech.location("features");
+        TagBuilder builder = helper.registerTag(feature_tag);
+        builder.item(ModItems.CONSOLE, true, false);
+        helper.addTagToComponent(ModItems.CONSOLE.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.PATTERN_DETECTOR.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.PATTERN_EMITTER.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.NUMBER_MONITOR.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.NUMBER_EMITTER.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.CONTROLLER.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.CANNON.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.ORB.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.SCANNER.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.SCREEN.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.DATA_CELL.getId(), feature_tag);
+        builder.addToIndex();
+        builder.register();
+    }
 }
