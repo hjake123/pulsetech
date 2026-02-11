@@ -19,6 +19,8 @@
   "item.pulsetech.datasheet": "Datasheet",
   "item.pulsetech.data_cell": "Data Cell",
   "item.pulsetech.debugger": "Debugger",
+  "item.pulsetech.pulse_module": "Pulse Module",
+  "item.pulsetech.protocol_module": "Protocol Module",
   "message.pulsetech.set_protocol": "Protocol has been updated",
   "message.pulsetech.no_protocol": "Please set a Protocol first",
   "pulsetech.needs_protocol": "Needs protocol",

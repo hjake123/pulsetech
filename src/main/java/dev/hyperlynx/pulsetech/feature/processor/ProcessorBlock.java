@@ -25,6 +25,8 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -86,5 +88,16 @@ public class ProcessorBlock extends PulseBlock implements EntityBlock {
             level.setBlock(pos, ModBlocks.PATTERN_EMITTER.get().defaultBlockState().setValue(FACING, state.getValue(FACING)), Block.UPDATE_ALL);
         }
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
+        var drops = new ArrayList<>(super.getDrops(state, params));
+        if(params.getParameter(LootContextParams.BLOCK_ENTITY) instanceof ProcessorBlockEntity processor) {
+            ItemStack data_cell = ModItems.DATA_CELL.toStack();
+            data_cell.set(ModComponentTypes.MACROS, processor.getMacros());
+            drops.add(data_cell);
+        }
+        return drops;
     }
 }
