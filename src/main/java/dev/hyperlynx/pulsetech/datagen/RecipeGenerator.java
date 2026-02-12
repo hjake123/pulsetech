@@ -6,6 +6,9 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.conditions.IConditionBuilder;
+import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
+import net.neoforged.neoforge.common.conditions.NotCondition;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -18,8 +21,8 @@ public class RecipeGenerator extends RecipeProvider {
     protected void buildRecipes(RecipeOutput output) {
         ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModItems.PULSE_MODULE)
                 .pattern(" g ")
-                .pattern("cqc")
-                .pattern(" r ")
+                .pattern("rcr")
+                .pattern(" q ")
                 .define('r', Items.REDSTONE)
                 .define('g', Items.GLOWSTONE_DUST)
                 .define('c', Items.COPPER_INGOT)
@@ -163,6 +166,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .unlockedBy("has_cell", has(ModItems.DATA_CELL))
                 .save(output);
 
+        // This recipe is only present if Reactive is not loaded, since there's a replacement recipe via Reactive
         SimpleCookingRecipeBuilder.blasting(
                 Ingredient.of(Items.REDSTONE_BLOCK),
                 RecipeCategory.REDSTONE,
@@ -170,8 +174,9 @@ public class RecipeGenerator extends RecipeProvider {
                 0.5f,
                 100
         ).unlockedBy("has_module", has(ModItems.PULSE_MODULE))
-                .save(output, "data_cell_blasting");
+                .save(output.withConditions(new NotCondition(new ModLoadedCondition("reactive"))), "data_cell_blasting");
 
+        // This recipe is only present if Reactive is not loaded, since there's a replacement recipe via Reactive
         SimpleCookingRecipeBuilder.smelting(
                         Ingredient.of(Items.REDSTONE_BLOCK),
                         RecipeCategory.REDSTONE,
@@ -179,7 +184,7 @@ public class RecipeGenerator extends RecipeProvider {
                         0.5f,
                         200
                 ).unlockedBy("has_module", has(ModItems.PULSE_MODULE))
-                .save(output, "data_cell_smelting");
+                .save(output.withConditions(new NotCondition(new ModLoadedCondition("reactive"))), "data_cell_smelting");
 
         ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModItems.CONSOLE)
                 .pattern("cdc")

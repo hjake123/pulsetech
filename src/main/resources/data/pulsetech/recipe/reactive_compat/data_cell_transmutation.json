@@ -1,0 +1,13 @@
+{
+  "type": "reactive:transmutation",
+  "reactant": {
+    "item": "minecraft:redstone_block"
+  },
+  "product": {
+    "id": "pulsetech:data_cell"
+  },
+  "reagents": ["reactive:mind"],
+  "min": 1000,
+  "cost": 200,
+  "needs_electricity": false
+}

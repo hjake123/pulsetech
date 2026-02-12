@@ -1,0 +1,13 @@
+{
+  "type": "reactive:transmutation",
+  "reactant": {
+    "item": "minecraft:copper_ingot"
+  },
+  "product": {
+    "id": "pulsetech:pulse_module"
+  },
+  "reagents": ["reactive:mind", "reactive:blaze"],
+  "min": 1000,
+  "cost": 200,
+  "needs_electricity": false
+}
