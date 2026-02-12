@@ -46,5 +46,10 @@ public class PulsetechDataGen {
                 event.includeServer(),
                 new BlockTagGenerator(output, lookup, event.getExistingFileHelper())
         );
+
+        event.getGenerator().addProvider(
+                event.includeClient(),
+                new SoundsJsonGenerator(output, event.getExistingFileHelper())
+        );
     }
 }

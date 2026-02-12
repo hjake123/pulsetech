@@ -9,6 +9,7 @@ import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerPosInfo;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerLinkable;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModBlocks;
+import dev.hyperlynx.pulsetech.registration.ModSounds;
 import dev.hyperlynx.pulsetech.util.ParticleScribe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,6 +21,8 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -56,10 +59,12 @@ public class CannonBlockEntity extends ProtocolBlockEntity implements ScannerLin
             return;
         }
         ParticleScribe.drawParticleLine(level, ParticleTypes.ELECTRIC_SPARK, getBlockPos(), target, 30, 0.5F);
+        level.playSound(null, getBlockPos(), ModSounds.CANNON_ZAP.value(), SoundSource.BLOCKS, 0.5F, level.getRandom().nextFloat() * 0.1F + 0.95F);
         BlockState state_to_break = level.getBlockState(target);
-        boolean can_break = state_to_break.getBlock().getExplosionResistance() < Config.CANNON_MAX_BLAST_RESIST.get();
+        boolean can_break = state_to_break.getBlock().getExplosionResistance() < Config.CANNON_MAX_BLAST_RESIST.get() && !state_to_break.isAir();
         boolean can_harvest = !state_to_break.requiresCorrectToolForDrops() || !state_to_break.is(BlockTags.NEEDS_DIAMOND_TOOL);
         if(can_break) {
+            level.playSound(null, target, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 0.1F, 0.1F);
             level.destroyBlock(target, can_harvest, null);
             level.removeBlock(target, false);
         }
