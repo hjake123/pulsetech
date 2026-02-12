@@ -5,7 +5,9 @@ import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.core.protocol.ExecutionContext;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommand;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
+import dev.hyperlynx.pulsetech.registration.ModSounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -49,6 +51,11 @@ public class OrbBlock extends PulseBlock {
                 }
             });
 
+    private static void playCommandSound(ExecutionContext context, Orb orb) {
+        context.block().getLevel().playSound(null, context.block().getBlockPos(), ModSounds.ORB_COMMAND.value(), SoundSource.BLOCKS);
+        orb.triggerConfirmSound(10);
+    }
+
     public static final DeferredHolder<ProtocolCommand, ProtocolCommand> MOVE_RELATIVE_X = ProtocolCommands.COMMANDS.register("orb/move_relative_x", () ->
             new ProtocolCommand(1) {
                 @Override
@@ -59,6 +66,7 @@ public class OrbBlock extends PulseBlock {
                             return;
                         }
                         orb.addDestination(context.params().getFirst(),0,0, true);
+                        playCommandSound(context, orb);
                     }
                 }
             });
@@ -73,6 +81,7 @@ public class OrbBlock extends PulseBlock {
                             return;
                         }
                         orb.addDestination(0, context.params().getFirst(), 0, true);
+                        playCommandSound(context, orb);
                     }
                 }
             });
@@ -87,6 +96,7 @@ public class OrbBlock extends PulseBlock {
                             return;
                         }
                         orb.addDestination(0, 0, context.params().getFirst(), true);
+                        playCommandSound(context, orb);
                     }
                 }
             });
@@ -102,6 +112,7 @@ public class OrbBlock extends PulseBlock {
                         }
                         BlockPos pos = orb_machine.getOrigin();
                         orb.addDestination(pos.getX() + context.params().getFirst(), pos.getY() + context.params().get(1), pos.getZ() + context.params().get(2), false);
+                        playCommandSound(context, orb);
                     }
                 }
             });
@@ -116,6 +127,7 @@ public class OrbBlock extends PulseBlock {
                             return;
                         }
                         orb.toggleGrab();
+                        playCommandSound(context, orb);
                     }
                 }
             });
@@ -130,6 +142,7 @@ public class OrbBlock extends PulseBlock {
                             return;
                         }
                         orb.togglePen();
+                        playCommandSound(context, orb);
                     }
                 }
             });
@@ -144,6 +157,7 @@ public class OrbBlock extends PulseBlock {
                             return;
                         }
                         orb.toggleProjectile();
+                        playCommandSound(context, orb);
                     }
                 }
             });

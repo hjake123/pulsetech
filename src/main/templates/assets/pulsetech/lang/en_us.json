@@ -314,5 +314,8 @@
   "pulsetech.configuration.scannerRange.tooltip": "The range of detection for the Scanner has a radius of this many blocks. [Default: 16]",
   "pulsetech.configuration.orbCannotGrab": "Orb Cannot Grab",
   "pulsetech.configuration.orbCannotGrab.tooltip": "A list of entities the Orb can never pick up. [Default: \"minecraft:ender_dragon\", \"minecraft:wither\", \"minecraft:warden\"]",
-  "caption.pulsetech.cannon_zap": "Coil Cannon discharges"
+  "caption.pulsetech.cannon_zap": "Coil Cannon discharges",
+  "caption.pulsetech.orb_spawn": "Orb spawns",
+  "caption.pulsetech.orb_command": "Orb Projector commands",
+  "caption.pulsetech.orb_confirm": "Orb confirms"
 }

@@ -18,5 +18,20 @@ public class SoundsJsonGenerator extends SoundDefinitionsProvider {
                 .with(sound("pulsetech:cannon_zap"))
                 .subtitle("caption.pulsetech.cannon_zap")
         );
+
+        add(ModSounds.ORB_SPAWN, SoundDefinition.definition()
+                .with(sound("pulsetech:orb_spawn"))
+                .subtitle("caption.pulsetech.orb_command")
+        );
+
+        add(ModSounds.ORB_COMMAND, SoundDefinition.definition()
+                .with(sound("pulsetech:orb_command"))
+                .subtitle("caption.pulsetech.orb_command")
+        );
+
+        add(ModSounds.ORB_CONFIRM, SoundDefinition.definition()
+                .with(sound("pulsetech:orb_command").pitch(1.5F))
+                .subtitle("caption.pulsetech.orb_confirm")
+        );
     }
 }

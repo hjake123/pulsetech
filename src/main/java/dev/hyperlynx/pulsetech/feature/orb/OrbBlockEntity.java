@@ -10,6 +10,7 @@ import dev.hyperlynx.pulsetech.feature.scanner.ScannerLinkable;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModBlocks;
 import dev.hyperlynx.pulsetech.registration.ModEntityTypes;
+import dev.hyperlynx.pulsetech.registration.ModSounds;
 import dev.hyperlynx.pulsetech.util.ParticleScribe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -18,6 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -86,6 +88,7 @@ public class OrbBlockEntity extends ProtocolBlockEntity implements ScannerLinkab
         this.orb_uuid = orb.getUUID();
         level.addFreshEntity(orb);
         ParticleScribe.drawParticleBox(level, DustParticleOptions.REDSTONE, orb.getBoundingBox().inflate(0.5F), 10);
+        level.playSound(null, getBlockPos(), ModSounds.ORB_SPAWN.value(), SoundSource.BLOCKS);
     }
 
     public BlockPos getOrigin() {

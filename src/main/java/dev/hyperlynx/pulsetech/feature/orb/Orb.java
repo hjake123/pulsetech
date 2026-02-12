@@ -3,6 +3,7 @@ package dev.hyperlynx.pulsetech.feature.orb;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.Config;
+import dev.hyperlynx.pulsetech.registration.ModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -10,6 +11,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -39,6 +41,7 @@ public class Orb extends Entity {
 
     Queue<Destination> destinations = new ArrayDeque<>();
     private int drop_item_timer = 0; // Used to space out the dropped items in pen mode.
+    private int confirm_sound_timer = -1; // Used to play the command confirmed sound.
 
     public static final EntityDataAccessor<Boolean> PEN_DOWN = SynchedEntityData.defineId(Orb.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> PROJECTILE = SynchedEntityData.defineId(Orb.class, EntityDataSerializers.BOOLEAN);
@@ -58,6 +61,10 @@ public class Orb extends Entity {
         builder.define(NEXT_DESTINATION, BlockPos.ZERO);
         builder.define(RANGE_CENTER, BlockPos.ZERO);
         builder.define(HAS_DESTINATION, false);
+    }
+
+    public void triggerConfirmSound(int delay) {
+        confirm_sound_timer = delay;
     }
 
     public void setRangeCenter(BlockPos center) {
@@ -106,6 +113,14 @@ public class Orb extends Entity {
             if(!destinations.isEmpty()) {
                 setNextDestination(destinations.poll().getPosition(blockPosition()));
             }
+        }
+
+        if(confirm_sound_timer == 0) {
+            level().playSound(null, blockPosition(), ModSounds.ORB_CONFIRM.value(), SoundSource.NEUTRAL);
+            confirm_sound_timer = -1;
+        }
+        if(confirm_sound_timer > 0) {
+            confirm_sound_timer--;
         }
 
         if(hasNextDestination()) {

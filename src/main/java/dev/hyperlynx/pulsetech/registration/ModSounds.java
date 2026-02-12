@@ -17,4 +17,17 @@ public class ModSounds {
             "cannon_zap",
             () -> SoundEvent.createVariableRangeEvent(Pulsetech.location("cannon_zap"))
     );
+    public static final DeferredHolder<SoundEvent, SoundEvent> ORB_SPAWN = SOUND_EVENTS.register(
+            "orb_spawn",
+            () -> SoundEvent.createVariableRangeEvent(Pulsetech.location("orb_spawn"))
+    );
+    public static final DeferredHolder<SoundEvent, SoundEvent> ORB_COMMAND = SOUND_EVENTS.register(
+            "orb_command",
+            () -> SoundEvent.createVariableRangeEvent(Pulsetech.location("orb_command"))
+    );
+    public static final DeferredHolder<SoundEvent, SoundEvent> ORB_CONFIRM = SOUND_EVENTS.register(
+            "orb_confirm",
+            () -> SoundEvent.createVariableRangeEvent(Pulsetech.location("orb_confirm"))
+    );
+
 }
