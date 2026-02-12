@@ -32,5 +32,8 @@ public class ModSounds {
             "scanner_found",
             () -> SoundEvent.createVariableRangeEvent(Pulsetech.location("scanner_found"))
     );
-
+    public static final DeferredHolder<SoundEvent, SoundEvent> BEEP = SOUND_EVENTS.register(
+            "beep",
+            () -> SoundEvent.createVariableRangeEvent(Pulsetech.location("beep"))
+    );
 }

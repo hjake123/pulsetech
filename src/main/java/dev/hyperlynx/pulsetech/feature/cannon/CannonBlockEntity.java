@@ -59,7 +59,7 @@ public class CannonBlockEntity extends ProtocolBlockEntity implements ScannerLin
             return;
         }
         ParticleScribe.drawParticleLine(level, ParticleTypes.ELECTRIC_SPARK, getBlockPos(), target, 30, 0.5F);
-        level.playSound(null, getBlockPos(), ModSounds.CANNON_ZAP.value(), SoundSource.BLOCKS, 0.5F, level.getRandom().nextFloat() * 0.1F + 0.95F);
+        level.playSound(null, getBlockPos(), ModSounds.CANNON_ZAP.value(), SoundSource.BLOCKS, 0.3F, level.getRandom().nextFloat() * 0.1F + 0.95F);
         BlockState state_to_break = level.getBlockState(target);
         boolean can_break = state_to_break.getBlock().getExplosionResistance() < Config.CANNON_MAX_BLAST_RESIST.get() && !state_to_break.isAir();
         boolean can_harvest = !state_to_break.requiresCorrectToolForDrops() || !state_to_break.is(BlockTags.NEEDS_DIAMOND_TOOL);

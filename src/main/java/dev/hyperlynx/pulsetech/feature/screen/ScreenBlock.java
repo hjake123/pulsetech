@@ -7,9 +7,11 @@ import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommand;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
 import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
 import dev.hyperlynx.pulsetech.registration.ModItems;
+import dev.hyperlynx.pulsetech.registration.ModSounds;
 import dev.hyperlynx.pulsetech.util.Color;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -74,9 +76,11 @@ public class ScreenBlock extends PulseBlock {
                     stack.set(ModComponentTypes.SCREEN_DATA, screen.getScreenData());
                     player.displayClientMessage(Component.translatable("pulsetech.screen_swapped"), true);
                 }
+                level.playSound(null, pos, ModSounds.BEEP.value(), SoundSource.PLAYERS, 1.0F, 1.1F + level.random.nextFloat() * 0.05F);
                 screen.setScreenData(to_be_applied_to_screen);
                 screen.sendUpdate();
             } else if(screen.isNotBlank()) {
+                level.playSound(null, pos, ModSounds.BEEP.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
                 stack.set(ModComponentTypes.SCREEN_DATA, data);
             }
             return ItemInteractionResult.SUCCESS;

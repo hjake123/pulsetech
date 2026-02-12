@@ -4,8 +4,10 @@ import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerLinkable;
 import dev.hyperlynx.pulsetech.registration.ModBlocks;
 import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
+import dev.hyperlynx.pulsetech.registration.ModSounds;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -37,6 +39,7 @@ public class DataCellItem extends Item {
             stack.remove(ModComponentTypes.MACROS);
             stack.remove(ModComponentTypes.SCREEN_DATA);
             stack.remove(ModComponentTypes.SCANNER_LINK_POSITION);
+            player.playSound(ModSounds.BEEP.get(), 1.0F, 0.5F);
             return InteractionResultHolder.success(stack);
         }
         return super.use(level, player, usedHand);
@@ -47,13 +50,16 @@ public class DataCellItem extends Item {
         ItemStack stack = context.getItemInHand();
         if(context.getLevel().getBlockState(context.getClickedPos()).is(ModBlocks.SCANNER)) {
             stack.set(ModComponentTypes.SCANNER_LINK_POSITION, context.getClickedPos());
+            context.getLevel().playSound(null, context.getClickedPos(), ModSounds.BEEP.value(), SoundSource.PLAYERS, 1.0F, 1.1F + context.getLevel().random.nextFloat() * 0.05F);
             context.getPlayer().displayClientMessage(Component.translatable("pulsetech.stored_scanner_pos"), true);
         } else if(stack.has(ModComponentTypes.SCANNER_LINK_POSITION) && context.getLevel().getBlockEntity(context.getClickedPos()) instanceof ScannerLinkable linkable) {
             boolean success = linkable.setLinkedOrigin(stack.get(ModComponentTypes.SCANNER_LINK_POSITION));
             if(context.getPlayer() != null) {
                 if(success) {
+                    context.getLevel().playSound(null, context.getClickedPos(), ModSounds.BEEP.value(), SoundSource.PLAYERS, 1.0F, 1.0F + context.getLevel().random.nextFloat() * 0.05F);
                     context.getPlayer().displayClientMessage(Component.translatable("pulsetech.linked_to_scanner"), true);
                 } else {
+                    context.getLevel().playSound(null, context.getClickedPos(), ModSounds.BEEP.value(), SoundSource.PLAYERS, 1.0F, 0.9F + context.getLevel().random.nextFloat() * 0.05F);
                     context.getPlayer().displayClientMessage(Component.translatable("pulsetech.failed_link_to_scanner"), true);
                 }
             }

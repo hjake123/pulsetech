@@ -8,10 +8,12 @@ import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
 import dev.hyperlynx.pulsetech.registration.ModItems;
+import dev.hyperlynx.pulsetech.registration.ModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -62,6 +64,7 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
                 // There are stored macros that need to be synced to the console, and merged into the data on the item
                 Macros stored_macros = stack.get(ModComponentTypes.MACROS);
                 if (console_macros.equals(stored_macros)) {
+                    level.playSound(null, pos, ModSounds.BEEP.value(), SoundSource.PLAYERS, 1.0F, 0.9F + level.random.nextFloat() * 0.05F);
                     player.displayClientMessage(Component.translatable("pulsetech.macros_up_to_date"), true);
                     return ItemInteractionResult.SUCCESS;
                 }
@@ -76,6 +79,7 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
                 }
                 stack.set(ModComponentTypes.MACROS, console_macros);
             }
+            level.playSound(null, pos, ModSounds.BEEP.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
             player.displayClientMessage(Component.translatable("pulsetech.synced_macros"), true);
             return ItemInteractionResult.SUCCESS;
         }
