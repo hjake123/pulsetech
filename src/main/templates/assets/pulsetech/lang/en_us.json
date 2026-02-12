@@ -298,5 +298,20 @@
   "pulsetech.ponder.processor.text_3": "Use a Datasheet to see what pattern each Macro was assigned",
   "pulsetech.ponder.processor.text_4": "The Processor allows you to change trigger complex commands for other blocks using simple patterns",
   "pulsetech.ponder.tag.features": "Pulsetech Items",
-  "pulsetech.ponder.tag.features.description": "Items that work with Redstone pulses"
+  "pulsetech.ponder.tag.features.description": "Items that work with Redstone pulses",
+  "pulsetech.configuration.title": "Pulsetech Config",
+  "pulsetech.configuration.section.pulsetech.common.toml.title": "Pulsetech Config (Common)",
+  "pulsetech.configuration.section.pulsetech.common.toml": "Pulsetech Config (Common)",
+  "pulsetech.configuration.orbSpeed": "Orb Speed",
+  "pulsetech.configuration.orbSpeed.tooltip": "How far the Orb moves each movement tick in blocks. [Default: 0.12]",
+  "pulsetech.configuration.cannonMaxRange": "Cannon Max Range",
+  "pulsetech.configuration.cannonMaxRange.tooltip": "Maximum range of the Coil Cannon in blocks. [Default: 25]",
+  "pulsetech.configuration.orbProjectorMaxRange": "Orb Projector Max Range",
+  "pulsetech.configuration.orbProjectorMaxRange.tooltip": "Maximum range of the Orb Projector in blocks. [Default: 32]",
+  "pulsetech.configuration.cannonMaxBlastResist": "Cannon Max Blast Resist",
+  "pulsetech.configuration.cannonMaxBlastResist.tooltip": "The Coil Cannon can break blocks with below this blast resistance. [Default: 50]",
+  "pulsetech.configuration.scannerRange": "Scanner Range",
+  "pulsetech.configuration.scannerRange.tooltip": "The range of detection for the Scanner has a radius of this many blocks. [Default: 16]",
+  "pulsetech.configuration.orbCannotGrab": "Orb Cannot Grab",
+  "pulsetech.configuration.orbCannotGrab.tooltip": "A list of entities the Orb can never pick up. [Default: \"minecraft:ender_dragon\", \"minecraft:wither\", \"minecraft:warden\"]"
 }

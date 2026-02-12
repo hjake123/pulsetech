@@ -2,25 +2,23 @@ package dev.hyperlynx.pulsetech.feature.orb;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.hyperlynx.pulsetech.Config;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,7 +34,6 @@ import java.util.Objects;
 import java.util.Queue;
 
 public class Orb extends Entity {
-    private static final float SPEED = 0.12F;
     private static final float HITBOX_SIZE = 1.5F;
     private static final int DROP_ITEM_DELAY = 6;
 
@@ -47,6 +44,7 @@ public class Orb extends Entity {
     public static final EntityDataAccessor<Boolean> PROJECTILE = SynchedEntityData.defineId(Orb.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<BlockPos> NEXT_DESTINATION = SynchedEntityData.defineId(Orb.class, EntityDataSerializers.BLOCK_POS);
     public static final EntityDataAccessor<Boolean> HAS_DESTINATION = SynchedEntityData.defineId(Orb.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<BlockPos> RANGE_CENTER = SynchedEntityData.defineId(Orb.class, EntityDataSerializers.BLOCK_POS);
 
     public Orb(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -58,7 +56,16 @@ public class Orb extends Entity {
         builder.define(PEN_DOWN, false);
         builder.define(PROJECTILE, false);
         builder.define(NEXT_DESTINATION, BlockPos.ZERO);
+        builder.define(RANGE_CENTER, BlockPos.ZERO);
         builder.define(HAS_DESTINATION, false);
+    }
+
+    public void setRangeCenter(BlockPos center) {
+        entityData.set(RANGE_CENTER, center);
+    }
+
+    public BlockPos getRangeCenter() {
+        return entityData.get(RANGE_CENTER);
     }
 
     @Override
@@ -89,7 +96,7 @@ public class Orb extends Entity {
     public Vec3 getStep() {
         Vec3 destination_pos = nextDestination().getCenter();
         Vec3 displacement = destination_pos.subtract(this.position());
-        return displacement.normalize().multiply(SPEED, SPEED, SPEED);
+        return displacement.normalize().multiply(Config.ORB_SPEED.get(), Config.ORB_SPEED.get(), Config.ORB_SPEED.get());
     }
 
     @Override
@@ -102,12 +109,12 @@ public class Orb extends Entity {
         }
 
         if(hasNextDestination()) {
-            if(position().closerThan(Objects.requireNonNull(nextDestination()).getCenter(), SPEED + 0.01)) {
+            if(position().closerThan(Objects.requireNonNull(nextDestination()).getCenter(), Config.ORB_SPEED.get() + 0.01)) {
                 this.moveTo(Objects.requireNonNull(nextDestination()).getCenter());
                 clearNextDestination();
             } else {
                 this.move(MoverType.SELF, getStep());
-                if(penDown()) {
+                if(isPenDown()) {
                     // Run pen down effects
                     if(getGrabbed() instanceof ItemEntity item_entity) {
                         ItemStack stack = item_entity.getItem();
@@ -167,6 +174,13 @@ public class Orb extends Entity {
         if(tag.contains("NextDestination")) {
             setNextDestination(NbtUtils.readBlockPos(tag, "NextDestination").orElse(null));
         }
+        if(tag.contains("Projectile")) {
+            toggleProjectile();
+        }
+        if(tag.contains("PenDown")) {
+            togglePen();
+        }
+        setRangeCenter(NbtUtils.readBlockPos(tag, "RangeCenter").orElse(BlockPos.ZERO));
     }
 
     @Override
@@ -177,6 +191,13 @@ public class Orb extends Entity {
         if(hasNextDestination()) {
             tag.put("NextDestination", NbtUtils.writeBlockPos(Objects.requireNonNull(nextDestination())));
         }
+        if(isProjectile()) {
+            tag.putBoolean("Projectile", true);
+        }
+        if(isPenDown()) {
+            tag.putBoolean("PenDown", true);
+        }
+        tag.put("RangeCenter", NbtUtils.writeBlockPos(getRangeCenter()));
     }
 
     public void addDestination(int x, int y, int z, boolean relative) {
@@ -194,7 +215,12 @@ public class Orb extends Entity {
             if(in_range.isEmpty()) {
                 return;
             }
-            in_range.getFirst().startRiding(this);
+            for(Entity entity : in_range) {
+                if (!Config.ORB_CANNOT_GRAB.get().contains(entity.getEncodeId())) {
+                    entity.startRiding(this);
+                    break;
+                }
+            }
         }
     }
 
@@ -202,7 +228,7 @@ public class Orb extends Entity {
         entityData.set(PEN_DOWN, !entityData.get(PEN_DOWN));
     }
 
-    public boolean penDown() {
+    public boolean isPenDown() {
         return entityData.get(PEN_DOWN);
     }
 
@@ -226,7 +252,13 @@ public class Orb extends Entity {
     }
 
     public void setNextDestination(BlockPos pos) {
-        entityData.set(NEXT_DESTINATION, pos);
+        BlockPos destination = pos;
+        if(pos.distSqr(getRangeCenter()) > Config.ORB_MAX_RANGE.get() * Config.ORB_MAX_RANGE.get()) {
+            var displacement_from_center = pos.getCenter().subtract(getRangeCenter().getCenter());
+            var bounded_displacement_from_center = displacement_from_center.normalize().scale(32);
+            destination = BlockPos.containing(bounded_displacement_from_center.add(getRangeCenter().getCenter()));
+        }
+        entityData.set(NEXT_DESTINATION, destination);
         entityData.set(HAS_DESTINATION, true);
     }
 

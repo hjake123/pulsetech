@@ -2,23 +2,16 @@ package dev.hyperlynx.pulsetech.client.orb;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.feature.orb.Orb;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ShulkerBulletModel;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.projectile.ShulkerBullet;
 import net.minecraft.world.phys.Vec3;
 
 public class OrbRenderer extends EntityRenderer<Orb> {
@@ -45,7 +38,7 @@ public class OrbRenderer extends EntityRenderer<Orb> {
             if(orb.level().random.nextFloat() < 0.05F) {
                 Minecraft.getInstance().level.addParticle(DustParticleOptions.REDSTONE, render_pos.x(), render_pos.y() + 0.15, render_pos.z(), 0, 0, 0);
             }
-            if(orb.penDown()) {
+            if(orb.isPenDown()) {
                 Minecraft.getInstance().level.addParticle(ParticleTypes.END_ROD, render_pos.x(), render_pos.y() + 0.15, render_pos.z(), 0, 0, 0);
             }
             if(orb.isProjectile()) {

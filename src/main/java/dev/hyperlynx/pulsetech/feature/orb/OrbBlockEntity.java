@@ -80,6 +80,7 @@ public class OrbBlockEntity extends ProtocolBlockEntity implements ScannerLinkab
             Objects.requireNonNull(slevel.getEntity(orb_uuid)).kill();
         }
         Orb orb = ModEntityTypes.ORB.get().create(level);
+        orb.setRangeCenter(getOrigin());
         orb.setPos(getBlockPos().getCenter().add(0, 0.4, 0));
         orb.addDestination(0, 1, 0, true);
         this.orb_uuid = orb.getUUID();
@@ -104,7 +105,7 @@ public class OrbBlockEntity extends ProtocolBlockEntity implements ScannerLinkab
             if(orb.grabbing()) {
                 orb_status_builder.append("\n").append(Component.translatable("debugger.pulsetech.orb_grabbing").getString()).append(orb.getGrabbed().getName().getString());
             }
-            if(orb.penDown()) {
+            if(orb.isPenDown()) {
                 orb_status_builder.append("\n").append(Component.translatable("debugger.pulsetech.orb_pen_down").getString());
             }
             if(orb.isProjectile()) {

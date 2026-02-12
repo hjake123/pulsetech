@@ -21,7 +21,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
-import java.lang.reflect.Modifier;
 import java.util.Map;
 
 public class Storyboards {

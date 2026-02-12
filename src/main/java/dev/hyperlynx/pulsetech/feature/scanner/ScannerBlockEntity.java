@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.feature.scanner;
 
+import dev.hyperlynx.pulsetech.Config;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
@@ -21,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScannerBlockEntity extends ProtocolBlockEntity {
-    public static final int RANGE = 16;
-
     public ScannerBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.SCANNER.get(), pos, blockState);
     }
@@ -38,7 +37,7 @@ public class ScannerBlockEntity extends ProtocolBlockEntity {
     }
 
     private List<Entity> scan() {
-        AABB scan_area = new AABB(getBlockPos()).inflate(RANGE);
+        AABB scan_area = new AABB(getBlockPos()).inflate(Config.SCANNER_RANGE.get());
         assert level != null;
         switch(getBlockState().getValue(ScannerBlock.MODE)) {
             case ScannerBlock.Mode.ANY -> {

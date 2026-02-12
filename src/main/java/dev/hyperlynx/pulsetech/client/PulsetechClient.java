@@ -39,6 +39,8 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 @Mod(value = Pulsetech.MODID, dist = Dist.CLIENT)
 public class PulsetechClient {
@@ -51,6 +53,7 @@ public class PulsetechClient {
         bus.addListener(this::onClientSetup);
         bus.addListener(this::registerEntityRenderers);
         bus.addListener(this::registerLayerDefinitions);
+        container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 
     public static void openDebuggerScreen(DebuggerInfoManifest manifest) {

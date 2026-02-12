@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.feature.cannon;
 
 import com.mojang.datafixers.util.Pair;
+import dev.hyperlynx.pulsetech.Config;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
@@ -8,7 +9,6 @@ import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerPosInfo;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerLinkable;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModBlocks;
-import dev.hyperlynx.pulsetech.util.Color;
 import dev.hyperlynx.pulsetech.util.ParticleScribe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,10 +21,8 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
+import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,27 +38,33 @@ public class CannonBlockEntity extends ProtocolBlockEntity implements ScannerLin
         super(ModBlockEntityTypes.CANNON.get(), pos, blockState);
     }
 
-    public void setTargetOffset(int x, int y, int z) {
-        this.target = origin.offset(x, y, z);
-        ParticleScribe.drawParticleFrame(level, DustParticleOptions.REDSTONE, target, 2, 0.0F);
+    private void updateTargetIfInRange(BlockPos new_target) {
+        if(new_target.distSqr(origin) <= Config.CANNON_MAX_RANGE.get() * Config.CANNON_MAX_RANGE.get()) {
+            target = new_target;
+            ParticleScribe.drawParticleFrame(level, DustParticleOptions.REDSTONE, target, 2, 0.0F);
+        } else {
+            ParticleScribe.drawParticleBox(level, ParticleTypes.SMOKE, AABB.ofSize(getBlockPos().getCenter(), 1, 1, 1), 3);
+        }
     }
 
-    private static final int MAX_EXPLOSION_RESIST = 50;
+    public void setTargetOffset(int x, int y, int z) {
+        updateTargetIfInRange(origin.offset(x, y, z));
+    }
+
     public void fire() {
         if(!level.isLoaded(target)) {
             return;
         }
         ParticleScribe.drawParticleLine(level, ParticleTypes.ELECTRIC_SPARK, getBlockPos(), target, 30, 0.5F);
         BlockState state_to_break = level.getBlockState(target);
-        boolean can_break = state_to_break.getBlock().getExplosionResistance() < MAX_EXPLOSION_RESIST;
+        boolean can_break = state_to_break.getBlock().getExplosionResistance() < Config.CANNON_MAX_BLAST_RESIST.get();
         boolean can_harvest = !state_to_break.requiresCorrectToolForDrops() || !state_to_break.is(BlockTags.NEEDS_DIAMOND_TOOL);
         if(can_break) {
             level.destroyBlock(target, can_harvest, null);
             level.removeBlock(target, false);
         }
         for(Direction n : nudge_directions) {
-            target = target.relative(n, nudge_amount);
-            ParticleScribe.drawParticleFrame(level, DustParticleOptions.REDSTONE, target, 2, 0.0F);
+            updateTargetIfInRange(target.relative(n, nudge_amount));
         }
     }
 
@@ -79,7 +83,7 @@ public class CannonBlockEntity extends ProtocolBlockEntity implements ScannerLin
         super.loadAdditional(tag, registries);
         target = NbtUtils.readBlockPos(tag, "Target").orElseGet(this::getBlockPos);
         origin = NbtUtils.readBlockPos(tag, "Origin").orElseGet(this::getBlockPos);
-        if(tag.contains("NudgeDir")) {
+        if(tag.contains("NudgeDirs")) {
             nudge_directions.clear();
             nudge_directions.addAll(Direction.CODEC.listOf().decode(NbtOps.INSTANCE, Objects.requireNonNull(tag.get("NudgeDirs"))).resultOrPartial().orElse(Pair.of(List.of(Direction.NORTH), new CompoundTag())).getFirst());
 
@@ -105,10 +109,6 @@ public class CannonBlockEntity extends ProtocolBlockEntity implements ScannerLin
             return true;
         }
         return false;
-    }
-
-    public void forceSetOrigin(BlockPos origin) {
-        this.origin = origin;
     }
 
     @Override
