@@ -317,5 +317,7 @@
   "caption.pulsetech.cannon_zap": "Coil Cannon discharges",
   "caption.pulsetech.orb_spawn": "Orb spawns",
   "caption.pulsetech.orb_command": "Orb Projector commands",
-  "caption.pulsetech.orb_confirm": "Orb confirms"
+  "caption.pulsetech.orb_confirm": "Orb confirms",
+  "caption.pulsetech.scanner_found": "Scanner detects",
+  "caption.pulsetech.scanner_miss": "Scanner seeks"
 }

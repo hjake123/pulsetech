@@ -7,8 +7,10 @@ import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerTextInfo;
 import dev.hyperlynx.pulsetech.feature.orb.Orb;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
+import dev.hyperlynx.pulsetech.registration.ModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Animal;
@@ -39,6 +41,7 @@ public class ScannerBlockEntity extends ProtocolBlockEntity {
     private List<Entity> scan() {
         AABB scan_area = new AABB(getBlockPos()).inflate(Config.SCANNER_RANGE.get());
         assert level != null;
+        level.playSound(null, getBlockPos(), ModSounds.SCANNER_FOUND.value(), SoundSource.BLOCKS);
         switch(getBlockState().getValue(ScannerBlock.MODE)) {
             case ScannerBlock.Mode.ANY -> {
                 return level.getEntities((Entity) null, scan_area, entity -> true);

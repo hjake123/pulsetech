@@ -33,5 +33,10 @@ public class SoundsJsonGenerator extends SoundDefinitionsProvider {
                 .with(sound("pulsetech:orb_command").pitch(1.5F))
                 .subtitle("caption.pulsetech.orb_confirm")
         );
+
+        add(ModSounds.SCANNER_FOUND, SoundDefinition.definition()
+                .with(sound("pulsetech:scanner").volume(1.1F).pitch(0.9F))
+                .subtitle("caption.pulsetech.scanner_found")
+        );
     }
 }
