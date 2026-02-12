@@ -37,7 +37,9 @@ public class DebuggerScreen extends Screen {
     @Override
     protected void init() {
         super.init();
+        pages.clear();
         int i = 0;
+        current_page = 0;
         bg_top_x = getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 90;
         bg_top_y = getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - 70;
         int widget_x = bg_top_x + 8;

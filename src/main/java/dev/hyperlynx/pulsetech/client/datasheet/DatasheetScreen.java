@@ -25,6 +25,7 @@ public class DatasheetScreen extends Screen {
     private int paper_top_x;
     private int paper_top_y;
     private Component title;
+    private DatasheetLinesList list;
 
     public DatasheetScreen(Datasheet sheet) {
         super(Component.empty());
@@ -38,7 +39,7 @@ public class DatasheetScreen extends Screen {
         paper_top_y = getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - 120;
         title = Component.translatable(datasheet.block().getDescriptionId()).withStyle(ChatFormatting.BLACK);
 
-        DatasheetLinesList list = new DatasheetLinesList(Minecraft.getInstance(), 170, 207, paper_top_y + 30, Minecraft.getInstance().font.lineHeight + 2, datasheet);
+        list = new DatasheetLinesList(Minecraft.getInstance(), 170, 207, paper_top_y + 30, Minecraft.getInstance().font.lineHeight + 2, datasheet);
         list.setPosition(paper_top_x + 4, paper_top_y + 31);
         addRenderableWidget(list);
     }
@@ -62,5 +63,13 @@ public class DatasheetScreen extends Screen {
     public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.renderBackground(graphics, mouseX, mouseY, partialTick);
         graphics.blit(BACKGROUND, paper_top_x, paper_top_y, 0, 0,180, 240, 180, 240);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if(list.mouseDragged(mouseX, mouseY, button, dragX, dragY)) {
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 }
