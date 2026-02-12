@@ -82,7 +82,7 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
 
     @Override
     protected int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        if(io.isOutput(direction.getOpposite(), state)) {
+        if(!io.isOutput(direction, state)) {
             return 0;
         }
         return state.getValue(OUTPUT) ? 15 : 0;
@@ -115,7 +115,7 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
     }
 
     private static boolean measureInput(Level level, BlockPos pos, Direction change_direction) {
-        return level.getDirectSignal(pos.relative(change_direction), change_direction) > 0;
+        return level.getSignal(pos.relative(change_direction), change_direction) > 0;
     }
 
     @Override
