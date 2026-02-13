@@ -20,6 +20,7 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
     @Nullable private ProtocolCommand active_command = null;
     private final List<Byte> active_parameters;
     public final NumberSensorModule parameter_sensor;
+    private boolean post_parameter_cooldown = false; // We need to wait a tick or two after parameters to not reawaken too soon.
 
     public enum State implements StringRepresentable {
         AWAIT_COMMAND,
@@ -108,6 +109,11 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
                 }
             }
             case AWAIT_PARAMETER -> {
+                if(post_parameter_cooldown) {
+                    //
+                    post_parameter_cooldown = false;
+                    return false;
+                }
                 assert active_command != null;
                 parameter_sensor.run(pulser);
                 if(parameter_sensor.checkNewNumberReady()) {
@@ -121,7 +127,12 @@ public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> 
                             state= State.RUN;
                             return true;
                         }
-                        return false;
+                        // After receiving a non-final parameter, we need to wait a few ticks
+                        // to ensure the trailing 1 of this parameter doesn't propagate and wake us up this same tick
+                        // (See issue #23)
+                        post_parameter_cooldown = true;
+                        delay(2);
+                        return true;
                     }
                 }
             }

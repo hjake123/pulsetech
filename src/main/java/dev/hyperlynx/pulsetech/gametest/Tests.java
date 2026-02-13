@@ -163,4 +163,32 @@ public class Tests {
         ));
     }
 
+    @GameTest(setupTicks = 5, timeoutTicks = 200)
+    public static void junctionParams(GameTestHelper helper) {
+        helper.setBlock(6, 3, 0, Blocks.REDSTONE_BLOCK);
+        helper.succeedWhen(
+                () -> {
+                    BlockEntity cannon = helper.getBlockEntity(new BlockPos(0, 3, 0));
+                    helper.assertTrue(cannon instanceof CannonBlockEntity, "Monitor was not at (0, 3, 0). The test is malformed!");
+                    assert cannon instanceof CannonBlockEntity;
+                    helper.assertTrue(((CannonBlockEntity) cannon).getExecutionState().equals(ProtocolExecutorModule.State.AWAIT_COMMAND), "Cannon execution state did not return to Await Command");
+                    helper.assertTrue(((CannonBlockEntity) cannon).getTargetOffset().equals(new BlockPos(-5, 0, 0)), "Cannon never got the correct offset (was " + ((CannonBlockEntity) cannon).getTargetOffset() + ")");
+                }
+        );
+    }
+
+    @GameTest(setupTicks = 5, timeoutTicks = 200)
+    public static void junctionParamsControl(GameTestHelper helper) {
+        helper.setBlock(6, 3, 0, Blocks.REDSTONE_BLOCK);
+        helper.succeedWhen(
+                () -> {
+                    BlockEntity cannon = helper.getBlockEntity(new BlockPos(0, 3, 0));
+                    helper.assertTrue(cannon instanceof CannonBlockEntity, "Monitor was not at (0, 3, 0). The test is malformed!");
+                    assert cannon instanceof CannonBlockEntity;
+                    helper.assertTrue(((CannonBlockEntity) cannon).getExecutionState().equals(ProtocolExecutorModule.State.AWAIT_COMMAND), "Cannon execution state did not return to Await Command");
+                    helper.assertTrue(((CannonBlockEntity) cannon).getTargetOffset().equals(new BlockPos(-5, 0, 0)), "Cannon never got the correct offset (was " + ((CannonBlockEntity) cannon).getTargetOffset() + ")");
+                }
+        );
+    }
+
 }

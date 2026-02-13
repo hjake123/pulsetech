@@ -45,9 +45,6 @@ public abstract class SequenceModule<T extends PulseBlockEntity> {
 
     public void tick(ServerLevel level, T pulser) {
         assert level != null;
-        if(level.isClientSide) {
-            return;
-        }
         if(delay_timer > 0) {
             delay_timer--;
             return;
