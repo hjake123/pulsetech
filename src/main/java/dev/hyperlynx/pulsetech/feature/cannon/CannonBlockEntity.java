@@ -135,4 +135,8 @@ public class CannonBlockEntity extends ProtocolBlockEntity implements ScannerLin
                 () -> new DebuggerPosInfo(target.subtract(origin))
         ));
     }
+
+    public void forceSetOrigin(BlockPos blockPos) {
+        this.origin = blockPos;
+    }
 }

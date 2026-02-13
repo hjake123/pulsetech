@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.core;
 
+import dev.hyperlynx.pulsetech.Pulsetech;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -7,7 +8,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class PulseBlockEntity extends BlockEntity {
-    boolean last_detected_input = false;
     boolean wake_triggered = false;
 
     public PulseBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
@@ -21,7 +21,7 @@ public abstract class PulseBlockEntity extends BlockEntity {
     }
 
     public boolean input() {
-        return last_detected_input;
+        return PulseBlock.measureAllInputs(level, getBlockPos());
     }
 
     public abstract boolean isActive();

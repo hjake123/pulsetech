@@ -151,34 +151,16 @@ public class Tests {
         ));
     }
 
-//    @GameTest(setupTicks = 10, timeoutTicks = 21)
-//    public static void cannonIssue(GameTestHelper helper) {
-//        BlockPos cannon_pos = new BlockPos(0, 2, 0);
-//        helper.assertBlockPresent(ModBlocks.CANNON.get(), cannon_pos);
-//        CannonBlockEntity cannon = helper.getBlockEntity(cannon_pos);
-//        cannon.forceSetOrigin(helper.absolutePos(cannon_pos));
-//        cannon.setTargetOffset(0, 0, 0);
-//        helper.setBlock(3, 2, 3, Blocks.REDSTONE_BLOCK);
-//        helper.runAfterDelay(20, () -> helper.succeedWhen(
-//                () -> {
-//                    helper.assertBlockPresent(Blocks.AIR, cannon_pos);
-//                }
-//        ));
-//    }
-//
-//    @GameTest(setupTicks = 10, timeoutTicks = 21, template = "cannonissue")
-//    public static void cannonIssueControl(GameTestHelper helper) {
-//        BlockPos cannon_pos = new BlockPos(0, 2, 0);
-//        helper.assertBlockPresent(ModBlocks.CANNON.get(), cannon_pos);
-//        CannonBlockEntity cannon = helper.getBlockEntity(cannon_pos);
-//        cannon.forceSetOrigin(helper.absolutePos(cannon_pos));
-//        cannon.setTargetOffset(0, 0, 0);
-//        helper.setBlock(3, 2, 2, Blocks.REDSTONE_BLOCK);
-//        helper.runAfterDelay(20, () -> helper.succeedWhen(
-//                () -> {
-//                    helper.assertBlockPresent(Blocks.AIR, cannon_pos);
-//                }
-//        ));
-//    }
+    @GameTest(setupTicks = 5, timeoutTicks = 40)
+    public static void indirectSignal(GameTestHelper helper) {
+        helper.setBlock(1, 2, 3, Blocks.REDSTONE_BLOCK);
+        helper.runAfterDelay(20, () -> helper.succeedIf(
+                () -> {
+                    BlockState bulb = helper.getBlockState(new BlockPos(4, 2, 1));
+                    helper.assertTrue(bulb.is(Blocks.WAXED_COPPER_BULB), "Bulb was not at (3, 2, 0). The test is malformed!");
+                    helper.assertTrue(bulb.getValue(CopperBulbBlock.LIT), "Did not correctly detect the pattern");
+                }
+        ));
+    }
 
 }

@@ -98,7 +98,7 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
         super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
         Direction change_direction = Direction.fromDelta(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ());
         assert change_direction != null;
-        if(!io.isInput(change_direction.getOpposite(), state)) {
+        if(!io.isInput(change_direction.getOpposite(), state) || neighborPos.equals(pos)) {
             return;
         }
         if(measureInput(level, pos, change_direction) && level.getBlockEntity(pos) instanceof PulseBlockEntity entity && !entity.isActive() && !entity.isDelayed() && !entity.wake_triggered) {
@@ -109,13 +109,14 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
             // output to set its next bit before this block reads a stale signal.
             // This addresses issue #1, I hope.
         }
-        if(level.getBlockEntity(pos) instanceof PulseBlockEntity entity) {
-            entity.last_detected_input = measureInput(level, pos, change_direction);
-        }
     }
 
-    private static boolean measureInput(Level level, BlockPos pos, Direction change_direction) {
+    static boolean measureInput(Level level, BlockPos pos, Direction change_direction) {
         return level.getSignal(pos.relative(change_direction), change_direction) > 0;
+    }
+
+    public static boolean measureAllInputs(Level level, BlockPos pos) {
+        return measureInput(level, pos, Direction.NORTH) || measureInput(level, pos, Direction.SOUTH) || measureInput(level, pos, Direction.WEST) || measureInput(level, pos, Direction.EAST);
     }
 
     @Override
