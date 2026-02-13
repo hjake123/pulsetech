@@ -136,6 +136,12 @@ dependencies {
             prefer ponder_version
         }
     }
+    jarJar(implementation("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")) {
+        version {
+            strictly flywheel_version_range
+            prefer flywheel_version
+        }
+    }
     runtimeOnly("mezz.jei:jei-${mc_version}-neoforge:${jei_version}")
 //    runtimeOnly("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
 //    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")
@@ -156,6 +162,9 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
                              mod_version            : mod_version,
                              mod_authors            : mod_authors,
                              mod_description        : mod_description,
+                             mod_credits            : mod_credits,
+                             issue_url              : issue_url,
+                             mod_url                : mod_url,
                              icon_file              : icon_file]
     inputs.properties replaceProperties
     expand replaceProperties
