@@ -219,7 +219,6 @@ modrinth {
         changelog_builder.append(line).append('\n');
     }
     changelog = changelog_builder.toString()
-    debugMode = true
 }
 
 curseforge {
@@ -235,6 +234,5 @@ curseforge {
     }
     options {
         forgeGradleIntegration = false
-        debug = true
     }
 }
