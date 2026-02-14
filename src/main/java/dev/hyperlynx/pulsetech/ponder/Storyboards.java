@@ -455,6 +455,7 @@ public class Storyboards {
         scene.idle(80);
         scene.world().showSection(util.select().fromTo(0, 1, 4, 1, 1, 4), Direction.DOWN);
         scene.idle(20);
+        scene.world().modifyBlockEntity(util.grid().at(0, 1, 4), OrbBlockEntity.class, entity -> entity.forceSetOrigin(util.grid().at(0, 1, 4)));
         scene.world().modifyBlockEntity(util.grid().at(0, 1, 4), OrbBlockEntity.class, OrbBlockEntity::spawnOrb);
         scene.idle(10);
         scene.overlay().showText(40)
