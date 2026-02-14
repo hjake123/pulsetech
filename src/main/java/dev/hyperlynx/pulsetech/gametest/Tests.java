@@ -8,6 +8,7 @@ import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
 import dev.hyperlynx.pulsetech.registration.ModBlocks;
 import dev.hyperlynx.pulsetech.util.Color;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.block.Blocks;
@@ -169,7 +170,7 @@ public class Tests {
         helper.succeedWhen(
                 () -> {
                     BlockEntity cannon = helper.getBlockEntity(new BlockPos(0, 3, 0));
-                    helper.assertTrue(cannon instanceof CannonBlockEntity, "Monitor was not at (0, 3, 0). The test is malformed!");
+                    helper.assertTrue(cannon instanceof CannonBlockEntity, "Subject was not at (0, 3, 0). The test is malformed!");
                     assert cannon instanceof CannonBlockEntity;
                     helper.assertTrue(((CannonBlockEntity) cannon).getExecutionState().equals(ProtocolExecutorModule.State.AWAIT_COMMAND), "Cannon execution state did not return to Await Command");
                     helper.assertTrue(((CannonBlockEntity) cannon).getTargetOffset().equals(new BlockPos(-5, 0, 0)), "Cannon never got the correct offset (was " + ((CannonBlockEntity) cannon).getTargetOffset() + ")");
@@ -183,12 +184,26 @@ public class Tests {
         helper.succeedWhen(
                 () -> {
                     BlockEntity cannon = helper.getBlockEntity(new BlockPos(0, 3, 0));
-                    helper.assertTrue(cannon instanceof CannonBlockEntity, "Monitor was not at (0, 3, 0). The test is malformed!");
+                    helper.assertTrue(cannon instanceof CannonBlockEntity, "Subject was not at (0, 3, 0). The test is malformed!");
                     assert cannon instanceof CannonBlockEntity;
                     helper.assertTrue(((CannonBlockEntity) cannon).getExecutionState().equals(ProtocolExecutorModule.State.AWAIT_COMMAND), "Cannon execution state did not return to Await Command");
                     helper.assertTrue(((CannonBlockEntity) cannon).getTargetOffset().equals(new BlockPos(-5, 0, 0)), "Cannon never got the correct offset (was " + ((CannonBlockEntity) cannon).getTargetOffset() + ")");
                 }
         );
+    }
+
+    @GameTest(setupTicks = 5)
+    public static void controllerIsolateSides(GameTestHelper helper) {
+        BlockPos wire_pos = new BlockPos(4, 3, 2);
+        helper.pulseRedstone(new BlockPos(0, 3, 2), 5);
+        helper.runAfterDelay(40, () -> {
+            helper.assertRedstoneSignal(wire_pos, Direction.NORTH, i -> i > 0, () -> "Controller did not turn on when commanded");
+            helper.pulseRedstone(new BlockPos(0, 3, 0), 5);
+        });
+        helper.runAfterDelay(80, () -> {
+            helper.assertRedstoneSignal(wire_pos, Direction.NORTH, i -> i == 0, () -> "Controller did not turn off when commanded");
+        });
+        helper.runAfterDelay(82, helper::succeed);
     }
 
 }

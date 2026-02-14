@@ -116,7 +116,11 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
     }
 
     public static boolean measureAllInputs(Level level, BlockPos pos) {
-        return measureInput(level, pos, Direction.NORTH) || measureInput(level, pos, Direction.SOUTH) || measureInput(level, pos, Direction.WEST) || measureInput(level, pos, Direction.EAST);
+        Block block = level.getBlockState(pos).getBlock();
+        if(block instanceof PulseBlock pulse_block) {
+            return pulse_block.getIOLayout().measureInputSignal(level, pos, level.getBlockState(pos));
+        }
+        throw new AssertionError("Can't use PulseBlock methods on non PulseBlocks!");
     }
 
     @Override
@@ -190,7 +194,6 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
 
         boolean isInput(Direction side, BlockState state) {
             return sideMatches(side, state, SideFunction.INPUT);
-
         }
 
         boolean isDisabled(Direction side, BlockState state) {
@@ -208,6 +211,17 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
             } else {
                 return function.equals(backFunction);
             }
+        }
+
+        private boolean signalFromSide(Level level, BlockPos pos, BlockState state, Direction direction) {
+            if(PulseBlock.measureInput(level, pos, direction.getOpposite())) {
+                return isInput(direction, state);
+            }
+            return false;
+        }
+
+        public boolean measureInputSignal(Level level, BlockPos pos, BlockState state) {
+            return signalFromSide(level, pos, state, Direction.NORTH) || signalFromSide(level, pos, state, Direction.SOUTH) || signalFromSide(level, pos, state, Direction.WEST) || signalFromSide(level, pos, state, Direction.EAST);
         }
     }
 
