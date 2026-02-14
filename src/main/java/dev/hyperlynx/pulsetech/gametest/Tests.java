@@ -197,11 +197,11 @@ public class Tests {
         BlockPos wire_pos = new BlockPos(4, 3, 2);
         helper.pulseRedstone(new BlockPos(0, 3, 2), 5);
         helper.runAfterDelay(40, () -> {
-            helper.assertRedstoneSignal(wire_pos, Direction.NORTH, i -> i > 0, () -> "Controller did not turn on when commanded");
+            helper.assertTrue(helper.getLevel().getDirectSignalTo(helper.absolutePos(wire_pos)) > 0, "Controller did not turn on when commanded");
             helper.pulseRedstone(new BlockPos(0, 3, 0), 5);
         });
         helper.runAfterDelay(80, () -> {
-            helper.assertRedstoneSignal(wire_pos, Direction.NORTH, i -> i == 0, () -> "Controller did not turn off when commanded");
+            helper.assertTrue(helper.getLevel().getDirectSignalTo(helper.absolutePos(wire_pos)) == 0, "Controller did not turn off when commanded");
         });
         helper.runAfterDelay(82, helper::succeed);
     }
