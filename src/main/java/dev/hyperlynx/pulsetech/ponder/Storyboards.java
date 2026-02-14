@@ -278,6 +278,7 @@ public class Storyboards {
         scene.world().showSection(util.select().layersFrom(1), Direction.DOWN);
         BlockPos orb_projector_pos = util.grid().at(2, 1, 2);
         scene.idle(20);
+        scene.world().modifyBlockEntity(orb_projector_pos, OrbBlockEntity.class, entity -> entity.forceSetOrigin(orb_projector_pos));
         scene.world().modifyBlockEntity(orb_projector_pos, OrbBlockEntity.class, OrbBlockEntity::spawnOrb);
         scene.overlay().showOutlineWithText(util.select().position(orb_projector_pos), 80)
                 .text("The Orb Projector summons and manipulates a floating orb");

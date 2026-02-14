@@ -139,6 +139,7 @@ public class Orb extends Entity {
                                 BlockState state = block_item.getBlock().getStateForPlacement(new BlockPlaceContext(level(), null, InteractionHand.MAIN_HAND, stack, BlockHitResult.miss(position(), getDirection(), pos)));
                                 if(state != null) {
                                     level().setBlock(pos, state, Block.UPDATE_ALL);
+                                    level().playSound(null, pos, state.getSoundType(level(), pos, null).getPlaceSound(), SoundSource.BLOCKS);
                                     stack.shrink(1);
                                 }
                             }

@@ -135,4 +135,8 @@ public class OrbBlockEntity extends ProtocolBlockEntity implements ScannerLinkab
                     () -> new DebuggerPosInfo(orb.blockPosition().subtract(origin))
         ));
     }
+
+    public void forceSetOrigin(BlockPos orbProjectorPos) {
+        origin = orbProjectorPos;
+    }
 }
