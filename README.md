@@ -13,7 +13,7 @@ This mod is built using Gradle -- the exact properties can be found in `gradle/g
 
 Alternatively, `./gradlew.bat init` should be sufficient to set up the build environment.
 
-Once set up, use the `build` gradle task to compile everything. You should then use `runData` to create the generated data files (e.g. reaction advancements). Once that is done, use the `jar` gradle task to create the mod file in `build/libs`.
+Once set up, use the `build` gradle task to compile everything. You should then use `runData` to create the generated data files. Once that is done, use the `jar` gradle task to create the mod file in `build/libs`.
 
 The `runClient` task is also quite useful for testing the mod. `runServer` also works, but you need to log in using an account, so you cannot log into the debug server using the debug client.
 
