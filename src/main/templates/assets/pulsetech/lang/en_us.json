@@ -191,7 +191,7 @@
   "pulsetech.failed_link_to_scanner": "Couldn't link to scanner",
   "pulsetech.stored_scanner_pos": "Stored scanner position for linking",
   "pulsetech.contains_scanner_link_pos": "Linked to a scanner",
-  "pulsetech.about": "Pulsetech ${mod_version} for Minecraft ${minecraft_version}",
+  "pulsetech.about": "Pulsetech ${mod_version}",
   "gui.pulsetech.apply": "Apply",
   "gui.pulsetech.plus_one": "+1",
   "gui.pulsetech.minus_one": "-1",
