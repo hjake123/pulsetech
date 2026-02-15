@@ -1,1 +1,2 @@
-Initial release
+- Fix a crash when nesting define commands inside a Processor
+- Added an optional 'return' keyword to facilitate easier define nesting

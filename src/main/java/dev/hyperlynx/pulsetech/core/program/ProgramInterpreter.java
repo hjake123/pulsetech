@@ -69,6 +69,9 @@ public class ProgramInterpreter {
             }),
             entry("color", (player, executor) -> {
                 executor.setCommandMode(CommandMode.COLOR);
+            }),
+            entry("return", (player, executor) -> {
+                executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.return_outside_define").getString());
             })
     );
 
@@ -158,15 +161,30 @@ public class ProgramInterpreter {
         String noun = ""; // Used for define operations
         List<String> definition = new ArrayList<>(); // Used for define operations
         Iterator<String> token_iterator = processLoopCommands(executor, tokens, player).iterator();
+        int nested_define_depth = 1; // Used for return processing to make sure we don't end definition until the right time
         while (token_iterator.hasNext()) {
             String token = token_iterator.next();
             switch(executor.getCommandMode()) {
                 case PARSE -> error = processToken(executor, player, token, depth, token_iterator);
                 case DEFINE -> {
-                    if(noun.isEmpty()) {
-                        noun = token;
+                    if(token.equalsIgnoreCase("return")) {
+                        // Handling for the 'return' keyword to punch out early
+                        nested_define_depth--;
+                        if(nested_define_depth < 1) {
+                            runDefine(executor, player, noun, definition);
+                            executor.setCommandMode(CommandMode.PARSE);
+                        } else {
+                            definition.add(token);
+                        }
                     } else {
-                        definition.add(token);
+                        if(noun.isEmpty()) {
+                            noun = token;
+                        } else {
+                            definition.add(token);
+                            if(token.equalsIgnoreCase("define")) {
+                                nested_define_depth++;
+                            }
+                        }
                     }
                 }
                 case FORGET -> {
@@ -241,21 +259,26 @@ public class ProgramInterpreter {
             executor.sendLineIfConsole(player,  Component.translatable("console.pulsetech.num_usage").getString());
         }
         if(executor.getCommandMode().equals(CommandMode.DEFINE)) {
-            if(BUILT_IN_COMMANDS.containsKey(noun)) {
-                executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.macro_name_taken_1").append("\"" + noun + "\"").append(Component.translatable("console.pulsetech.macro_name_taken_2")).getString());
-            } else if(noun.isEmpty() || definition.isEmpty()) {
-                executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.define_help").getString() + noun);
-            }
-            else {
-                if (executor.getMacros().containsKey(noun)) {
-                    executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.redefined").getString() + noun);
-                } else {
-                    executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.defined").getString() + noun);
-                }
-                executor.getMacros().put(noun, new ArrayList<>(definition));
-            }
+            runDefine(executor, player, noun, definition);
         }
     }
+
+    private static void runDefine(ProgramExecutor executor, @Nullable ServerPlayer player, String noun, List<String> definition) {
+        if(BUILT_IN_COMMANDS.containsKey(noun)) {
+            executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.macro_name_taken_1").append("\"" + noun + "\"").append(Component.translatable("console.pulsetech.macro_name_taken_2")).getString());
+        } else if(noun.isEmpty() || definition.isEmpty()) {
+            executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.define_help").getString() + noun);
+        }
+        else {
+            if (executor.getMacros().containsKey(noun)) {
+                executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.redefined").getString() + noun);
+            } else {
+                executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.defined").getString() + noun);
+            }
+            executor.getMacros().put(noun, new ArrayList<>(definition));
+        }
+    }
+
 
     private static boolean processToken(ProgramExecutor executor, @Nullable ServerPlayer player, String token, int depth, Iterator<String> tokens) {
         if(BUILT_IN_COMMANDS.containsKey(token.toLowerCase())) {
