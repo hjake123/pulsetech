@@ -33,7 +33,7 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
     private static final Codec<Map<String, List<String>>> MACRO_CODEC = Codec.unboundedMap(Codec.STRING, Codec.STRING.listOf());
 
     // Saved in data tags
-    private Macros macros = new Macros(new HashMap<>());
+    private Map<String, List<String>> macros = new HashMap<>();
     private ProgramEmitterModule emitter = new ProgramEmitterModule();
     private CommandMode command_mode = CommandMode.PARSE;
     private OperationMode operation_mode = OperationMode.OUTPUT;
@@ -47,17 +47,17 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
 
     public void setMacros(Macros macros) {
         computed_protocol = null;
-        this.macros = macros;
+        this.macros = new HashMap<>(macros.macros());
     }
 
     @Override
     public @Nullable Protocol fetchProtocol() {
         if(computed_protocol == null) {
             // Compute a protocol from the given macros.
-            int needed_bits = Math.toIntExact(Math.round(Math.ceil(Math.sqrt(macros.macros().size()))));
+            int needed_bits = Math.toIntExact(Math.round(Math.ceil(Math.sqrt(macros.size()))));
             var builder = ProtocolBuilder.builder(needed_bits);
-            for(String key : macros.macros().keySet()) {
-                int parameter_count = Math.toIntExact(macros.macros().get(key).stream().filter(token -> token.equals("?")).count());
+            for(String key : macros.keySet()) {
+                int parameter_count = Math.toIntExact(macros.get(key).stream().filter(token -> token.equals("?")).count());
                 builder.add(() -> new MacroProtocolCommand(parameter_count, key));
             }
             computed_protocol = builder.build();
@@ -66,7 +66,7 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
     }
 
     @Override
-    public Macros getMacros() {
+    public Map<String, List<String>> getMacros() {
         return macros;
     }
 
@@ -114,7 +114,7 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
                         Sequence command_sequence = entry.getValue();
                         return new DatasheetEntry(
                                 Component.literal(mcommand.macro()),
-                                Component.literal(macros.macros().get(mcommand.macro()).stream().reduce((a, b) -> a + " " + b).orElse("??MISSING??")),
+                                Component.literal(macros.get(mcommand.macro()).stream().reduce((a, b) -> a + " " + b).orElse("??MISSING??")),
                                 Component.empty(),
                                 command_sequence
                         );
@@ -155,8 +155,8 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
         if(encode_result.hasResultOrPartial()) {
             tag.put("ProgramEmitter", encode_result.getPartialOrThrow());
         }
-        if(!macros.macros().isEmpty()) {
-            MACRO_CODEC.encodeStart(NbtOps.INSTANCE, macros.macros()).ifSuccess(encoded -> tag.put("macros", encoded));
+        if(!macros.isEmpty()) {
+            MACRO_CODEC.encodeStart(NbtOps.INSTANCE, macros).ifSuccess(encoded -> tag.put("macros", encoded));
         }
         tag.putString("OperationMode", operation_mode.name());
     }
@@ -169,7 +169,7 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
             emitter = decode_result.getPartialOrThrow().getFirst();
         }
         if(tag.contains("macros")) {
-            MACRO_CODEC.decode(NbtOps.INSTANCE, tag.get("macros")).ifSuccess(pair -> macros = new Macros(new HashMap<>(pair.getFirst())));
+            MACRO_CODEC.decode(NbtOps.INSTANCE, tag.get("macros")).ifSuccess(pair -> macros = new HashMap<>(pair.getFirst()));
         }
         if(tag.contains("OperationMode")) {
             operation_mode = OperationMode.valueOf(tag.getString("OperationMode"));

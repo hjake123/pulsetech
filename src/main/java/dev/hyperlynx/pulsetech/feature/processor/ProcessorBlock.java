@@ -2,6 +2,7 @@ package dev.hyperlynx.pulsetech.feature.processor;
 
 import com.mojang.serialization.MapCodec;
 import dev.hyperlynx.pulsetech.core.PulseBlock;
+import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.core.program.ProgramInterpreter;
 import dev.hyperlynx.pulsetech.core.protocol.ExecutionContext;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommand;
@@ -83,7 +84,7 @@ public class ProcessorBlock extends PulseBlock implements EntityBlock {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if(level.getBlockEntity(pos) instanceof ProcessorBlockEntity processor) {
             ItemStack data_cell = ModItems.DATA_CELL.toStack();
-            data_cell.set(ModComponentTypes.MACROS, processor.getMacros());
+            data_cell.set(ModComponentTypes.MACROS, new Macros(processor.getMacros()));
             player.addItem(data_cell);
             level.setBlock(pos, ModBlocks.PATTERN_EMITTER.get().defaultBlockState().setValue(FACING, state.getValue(FACING)), Block.UPDATE_ALL);
         }
@@ -95,7 +96,7 @@ public class ProcessorBlock extends PulseBlock implements EntityBlock {
         var drops = new ArrayList<>(super.getDrops(state, params));
         if(params.getParameter(LootContextParams.BLOCK_ENTITY) instanceof ProcessorBlockEntity processor) {
             ItemStack data_cell = ModItems.DATA_CELL.toStack();
-            data_cell.set(ModComponentTypes.MACROS, processor.getMacros());
+            data_cell.set(ModComponentTypes.MACROS, new Macros(processor.getMacros()));
             drops.add(data_cell);
         }
         return drops;

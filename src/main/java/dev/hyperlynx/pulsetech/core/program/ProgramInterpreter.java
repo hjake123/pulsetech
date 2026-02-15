@@ -27,9 +27,9 @@ public class ProgramInterpreter {
                 StringBuilder help_builder = new StringBuilder();
                 addBuiltInInfo(help_builder);
                 help_builder.append("\n");
-                for(String key : executor.getMacros().macros().keySet()) {
+                for(String key : executor.getMacros().keySet()) {
                     help_builder.append(key).append(": ");
-                    for(String token : executor.getMacros().macros().get(key)) {
+                    for(String token : executor.getMacros().get(key)) {
                         help_builder.append(token).append(" ");
                     }
                     help_builder.append("\n");
@@ -170,7 +170,7 @@ public class ProgramInterpreter {
                     }
                 }
                 case FORGET -> {
-                    if(executor.getMacros().macros().remove(token) != null) {
+                    if(executor.getMacros().remove(token) != null) {
                         executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.forgot").getString() + token);
                     }
                 }
@@ -247,12 +247,12 @@ public class ProgramInterpreter {
                 executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.define_help").getString() + noun);
             }
             else {
-                if (executor.getMacros().macros().containsKey(noun)) {
+                if (executor.getMacros().containsKey(noun)) {
                     executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.redefined").getString() + noun);
                 } else {
                     executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.defined").getString() + noun);
                 }
-                executor.getMacros().macros().put(noun, new ArrayList<>(definition));
+                executor.getMacros().put(noun, new ArrayList<>(definition));
             }
         }
     }
@@ -260,9 +260,9 @@ public class ProgramInterpreter {
     private static boolean processToken(ProgramExecutor executor, @Nullable ServerPlayer player, String token, int depth, Iterator<String> tokens) {
         if(BUILT_IN_COMMANDS.containsKey(token.toLowerCase())) {
             BUILT_IN_COMMANDS.get(token.toLowerCase()).accept(player, executor);
-        } else if(executor.getMacros().macros().containsKey(token)) {
+        } else if(executor.getMacros().containsKey(token)) {
             // Check for '?' in the macro definition. If they're present, this is a macro with parameters, and we'll need to sub those in.
-            List<String> definition = new ArrayList<>(executor.getMacros().macros().get(token));
+            List<String> definition = new ArrayList<>(executor.getMacros().get(token));
             while(definition.stream().anyMatch(subtoken -> subtoken.equals("?"))) {
                 int unresolved_parameter_index = definition.indexOf("?");
                 if(!tokens.hasNext()) {

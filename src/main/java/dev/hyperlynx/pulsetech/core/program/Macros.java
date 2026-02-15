@@ -7,6 +7,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,5 +34,9 @@ public record Macros(Map<String, List<String>> macros) {
             merged_macros.put(key, other.macros.get(key));
         }
         return new Macros(merged_macros);
+    }
+
+    public void add(String noun, ArrayList<String> definition) {
+        macros().put(noun, new ArrayList<>(definition));
     }
 }

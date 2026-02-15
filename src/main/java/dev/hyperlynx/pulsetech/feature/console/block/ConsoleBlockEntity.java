@@ -38,8 +38,8 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         super(ModBlockEntityTypes.CONSOLE.get(), pos, blockState);
     }
 
-    public Macros getMacros() {
-        return new Macros(macros);
+    public Map<String, List<String>> getMacros() {
+        return macros;
     }
 
     @Override
