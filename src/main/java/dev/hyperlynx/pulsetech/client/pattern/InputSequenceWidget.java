@@ -30,9 +30,16 @@ public class InputSequenceWidget extends AbstractWidget implements Renderable {
         tick();
     }
 
+    private static final int MAX_LINE_LENGTH = 8;
+    private static final int MAX_SEQUENCE_LENGTH = 24;
+
     public void tick() {
         if(Objects.equals(last_sequence, sequence) && !sequence.isEmpty()) {
             return;
+        }
+        int y = this.getY();
+        if(sequence.length() > MAX_LINE_LENGTH) {
+            y -= ((sequence.length() - 1) / MAX_LINE_LENGTH) * 16;
         }
         add_button = new SpriteIconButton.Builder(Component.empty(), b -> bitAppendButtonPress(), true)
                 .sprite(Pulsetech.location("bit_button_add"), 20, 16)
@@ -43,7 +50,7 @@ public class InputSequenceWidget extends AbstractWidget implements Renderable {
                 .size(20, 16)
                 .build();
         last_sequence = new Sequence(sequence);
-        int x = this.getX() - (sequence.length() * 12) - 6;
+        int x = this.getX() - (Math.min(sequence.length(), 8) * 12) - 6;
         bit_buttons.clear();
         for(int i = 0; i < sequence.length(); i++) {
             SpriteIconButton button;
@@ -60,13 +67,19 @@ public class InputSequenceWidget extends AbstractWidget implements Renderable {
                         .size(20, 32)
                         .build();
             }
-            button.setPosition(x, this.getY());
-            x += 24;
+            button.setPosition(x, y);
             bit_buttons.add(button);
+            if ((i + 1) % 8 == 0 && i != sequence.length() - 1) {
+                y += 36;
+                x = this.getX() - 102;
+            } else {
+                x += 24;
+            }
         }
-        add_button.setPosition(x, this.getY());
-        remove_button.setPosition(x, this.getY() + 16);
+        add_button.setPosition(x, y);
+        remove_button.setPosition(x, y + 16);
         remove_button.active = !sequence.isEmpty();
+        add_button.active = sequence.length() < MAX_SEQUENCE_LENGTH;
     }
 
     private void bitButtonPress(int index) {
