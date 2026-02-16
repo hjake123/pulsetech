@@ -26,6 +26,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public class PatternEmitterBlock extends PatternBlock implements EntityBlock {
     protected static final VoxelShape SHAPE_EAST = Shapes.or(Block.box(2, 2, 6, 4, 3, 10), Block.box(4, 2, 4, 12, 6, 12), Block.box(0, 0, 0, 16, 2, 16));
     protected static final VoxelShape SHAPE_SOUTH = Shapes.or(Block.box(6, 2, 2, 10, 3, 4), Block.box(4, 2, 4, 12, 6, 12), Block.box(0, 0, 0, 16, 2, 16));
@@ -51,7 +53,7 @@ public class PatternEmitterBlock extends PatternBlock implements EntityBlock {
         if(stack.has(ModComponentTypes.MACROS.get())) {
             level.setBlock(pos, ModBlocks.PROCESSOR.get().defaultBlockState().setValue(FACING, state.getValue(FACING)), Block.UPDATE_ALL_IMMEDIATE);
             if(level.getBlockEntity(pos) instanceof ProcessorBlockEntity processor) {
-                processor.setMacros(stack.get(ModComponentTypes.MACROS));
+                processor.setMacros(Objects.requireNonNull(stack.get(ModComponentTypes.MACROS)));
             }
             stack.shrink(1);
             return ItemInteractionResult.SUCCESS;

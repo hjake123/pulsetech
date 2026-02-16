@@ -84,7 +84,7 @@ public class ProcessorBlock extends PulseBlock implements EntityBlock {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if(level.getBlockEntity(pos) instanceof ProcessorBlockEntity processor) {
             ItemStack data_cell = ModItems.DATA_CELL.toStack();
-            data_cell.set(ModComponentTypes.MACROS, new Macros(processor.getMacros()));
+            data_cell.set(ModComponentTypes.MACROS, new Macros(processor.getMacros(), processor.getHiddenMacros()));
             player.addItem(data_cell);
             level.setBlock(pos, ModBlocks.PATTERN_EMITTER.get().defaultBlockState().setValue(FACING, state.getValue(FACING)), Block.UPDATE_ALL);
         }
@@ -96,7 +96,7 @@ public class ProcessorBlock extends PulseBlock implements EntityBlock {
         var drops = new ArrayList<>(super.getDrops(state, params));
         if(params.getParameter(LootContextParams.BLOCK_ENTITY) instanceof ProcessorBlockEntity processor) {
             ItemStack data_cell = ModItems.DATA_CELL.toStack();
-            data_cell.set(ModComponentTypes.MACROS, new Macros(processor.getMacros()));
+            data_cell.set(ModComponentTypes.MACROS, new Macros(processor.getMacros(), processor.getHiddenMacros()));
             drops.add(data_cell);
         }
         return drops;

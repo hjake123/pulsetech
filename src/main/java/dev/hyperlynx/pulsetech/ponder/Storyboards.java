@@ -21,7 +21,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class Storyboards {
     static void patternEmitter(SceneBuilder scene, SceneBuildingUtil util) {
@@ -491,7 +493,7 @@ public class Storyboards {
 
     private static ItemStack loadedDataCell() {
         var cell = ModItems.DATA_CELL.toStack();
-        cell.set(ModComponentTypes.MACROS, new Macros(Map.of()));
+        cell.set(ModComponentTypes.MACROS, new Macros(Map.of(), new HashSet<>()));
         return cell;
     }
 

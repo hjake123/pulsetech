@@ -1,4 +1,5 @@
+- Added the 'hide' keyword, which makes certain macros invisible to the Program Emitter
+- Fixed a crash when running alongside Alternate Current
 - Fixed a hang when using macros that self-recurse excessively
 - Added a config value to adjust the number of times macros can unwrap in a single evaluation 
 - Allowed all signal emitting blocks to strongly power blocks they are directly facing, similarly to Repeaters
-- 

@@ -16,8 +16,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class DatasheetScreen extends Screen {
     private static final ResourceLocation BACKGROUND = Pulsetech.location("textures/gui/datasheet_background.png");
@@ -52,7 +54,7 @@ public class DatasheetScreen extends Screen {
         if(block.defaultBlockState().is(ModBlocks.PROCESSOR)) {
             // Special case for processor rendering
             ItemStack dummy_data_cell = ModItems.DATA_CELL.toStack();
-            dummy_data_cell.set(ModComponentTypes.MACROS, new Macros(Map.of("dummy", List.of("dummy"))));
+            dummy_data_cell.set(ModComponentTypes.MACROS, new Macros(Map.of("dummy", List.of("dummy")), new HashSet<>()));
             graphics.renderItem(dummy_data_cell,paper_top_x + 157,paper_top_y + 8);
         } else {
             graphics.renderItem(datasheet.block().asItem().getDefaultInstance(),paper_top_x + 157,paper_top_y + 8);

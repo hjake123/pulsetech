@@ -8,6 +8,7 @@ public enum CommandMode {
     FORGET,
     NUM,
     COLOR,
+    HIDE,
     EMIT
 }
 

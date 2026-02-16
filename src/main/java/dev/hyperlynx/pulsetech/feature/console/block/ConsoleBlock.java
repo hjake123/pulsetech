@@ -59,7 +59,7 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
             return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
         }
         if (level.getBlockEntity(pos) instanceof ConsoleBlockEntity console && stack.is(ModItems.DATA_CELL)) {
-            Macros console_macros = new Macros(console.getMacros());
+            Macros console_macros = new Macros(console.getMacros(), console.getHiddenMacros());
             if (stack.has(ModComponentTypes.MACROS)) {
                 // There are stored macros that need to be synced to the console, and merged into the data on the item
                 Macros stored_macros = stack.get(ModComponentTypes.MACROS);
@@ -71,6 +71,7 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
                 Macros merged = console_macros.mergeWith(stored_macros);
                 stack.set(ModComponentTypes.MACROS, merged);
                 console.addMacros(merged.macros());
+                console.getHiddenMacros().addAll(merged.hidden_macros());
             } else {
                 // There are no stored macros, just set them on the item
                 if(console_macros.macros().isEmpty()) {

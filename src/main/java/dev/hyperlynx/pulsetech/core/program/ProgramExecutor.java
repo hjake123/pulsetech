@@ -6,12 +6,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 /// Interface that abstracts Consoles and Processors to allow both (and any future other blocks) to run Programs.
 public interface ProgramExecutor {
     Map<String, List<String>> getMacros();
+    HashSet<String> getHiddenMacros();
     BlockPos getBlockPos();
     boolean isConsole();
     void setCommandMode(CommandMode commandMode);
@@ -27,5 +29,18 @@ public interface ProgramExecutor {
         if(isConsole() && player != null) {
             PacketDistributor.sendToPlayer(player, new ConsoleLinePayload(getBlockPos(), line));
         }
+    }
+
+    default void toggleMacroHidden(String macro) {
+        if(getHiddenMacros().contains(macro)) {
+            getHiddenMacros().remove(macro);
+        } else {
+            getHiddenMacros().add(macro);
+        }
+        setChanged();
+    }
+
+    default boolean isHidden(String key) {
+        return getHiddenMacros().contains(key);
     }
 }

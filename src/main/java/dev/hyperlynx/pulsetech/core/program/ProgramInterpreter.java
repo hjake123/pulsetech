@@ -28,7 +28,11 @@ public class ProgramInterpreter {
                 addBuiltInInfo(help_builder);
                 help_builder.append("\n");
                 for(String key : executor.getMacros().keySet()) {
-                    help_builder.append(key).append(": ");
+                    String name = key;
+                    if(executor.isHidden(key)) {
+                        name = "(" + name + ")";
+                    }
+                    help_builder.append(name).append(": ");
                     for(String token : executor.getMacros().get(key)) {
                         help_builder.append(token).append(" ");
                     }
@@ -72,6 +76,9 @@ public class ProgramInterpreter {
             }),
             entry("return", (player, executor) -> {
                 executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.return_outside_define").getString());
+            }),
+            entry("hide", (player, executor) -> {
+                executor.setCommandMode(CommandMode.HIDE);
             })
     );
 
@@ -161,6 +168,7 @@ public class ProgramInterpreter {
         List<String> definition = new ArrayList<>(); // Used for define operations
         Iterator<String> token_iterator = processLoopCommands(executor, tokens, player).iterator();
         int nested_define_depth = 1; // Used for return processing to make sure we don't end definition until the right time
+        boolean define_hide = false; // Used by the define-hide statement.
         while (token_iterator.hasNext()) {
             String token = token_iterator.next();
             switch(executor.getCommandMode()) {
@@ -170,7 +178,7 @@ public class ProgramInterpreter {
                         // Handling for the 'return' keyword to punch out early
                         nested_define_depth--;
                         if(nested_define_depth < 1) {
-                            runDefine(executor, player, noun, definition);
+                            runDefine(executor, player, noun, definition, define_hide);
                             executor.setCommandMode(CommandMode.PARSE);
                         } else {
                             definition.add(token);
@@ -243,6 +251,18 @@ public class ProgramInterpreter {
                     }
                     executor.setCommandMode(CommandMode.PARSE);
                 }
+                case HIDE -> {
+                    if(token.equalsIgnoreCase("define")) {
+                        // This is a hide-define statement
+                        define_hide = true;
+                        executor.setCommandMode(CommandMode.DEFINE);
+                    } else if(executor.getMacros().containsKey(token)) {
+                        // This is a hide statement
+                        executor.toggleMacroHidden(token);
+                    } else {
+                        executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.hide_help").getString());
+                    }
+                }
             }
         }
         if(!executor.getEmitter().getBuffer().isEmpty() && !error) {
@@ -258,11 +278,11 @@ public class ProgramInterpreter {
             executor.sendLineIfConsole(player,  Component.translatable("console.pulsetech.num_usage").getString());
         }
         if(executor.getCommandMode().equals(CommandMode.DEFINE)) {
-            runDefine(executor, player, noun, definition);
+            runDefine(executor, player, noun, definition, define_hide);
         }
     }
 
-    private static void runDefine(ProgramExecutor executor, @Nullable ServerPlayer player, String noun, List<String> definition) {
+    private static void runDefine(ProgramExecutor executor, @Nullable ServerPlayer player, String noun, List<String> definition, boolean hidden) {
         if(BUILT_IN_COMMANDS.containsKey(noun)) {
             executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.macro_name_taken_1").append("\"" + noun + "\"").append(Component.translatable("console.pulsetech.macro_name_taken_2")).getString());
         } else if(noun.isEmpty() || definition.isEmpty()) {
@@ -275,6 +295,9 @@ public class ProgramInterpreter {
                 executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.defined").getString() + noun);
             }
             executor.getMacros().put(noun, new ArrayList<>(definition));
+            if(hidden) {
+                executor.toggleMacroHidden(noun);
+            }
         }
     }
 

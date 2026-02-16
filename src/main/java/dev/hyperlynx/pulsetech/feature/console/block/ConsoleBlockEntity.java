@@ -34,6 +34,8 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
     private Map<String, List<String>> macros = new HashMap<>(); // Defined macros for this console. TODO better persistence?
     private static final Codec<Map<String, List<String>>> MACRO_CODEC = Codec.unboundedMap(Codec.STRING, Codec.STRING.listOf());
     private int unwrap_count = 0;
+    private HashSet<String> hidden_macros = new HashSet<>();
+    private static final Codec<HashSet<String>> HIDDEN_MACRO_CODEC = Codec.list(Codec.STRING).xmap(HashSet::new, ArrayList::new);
 
     public ConsoleBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.CONSOLE.get(), pos, blockState);
@@ -77,6 +79,9 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
             MACRO_CODEC.encodeStart(NbtOps.INSTANCE, macros).ifSuccess(encoded -> tag.put("macros", encoded));
         }
         tag.putInt("UnwrapCount", unwrap_count);
+        if(!hidden_macros.isEmpty()) {
+            HIDDEN_MACRO_CODEC.encodeStart(NbtOps.INSTANCE, hidden_macros).ifSuccess(encoded -> tag.put("hidden_macros", encoded));
+        }
     }
 
     @Override
@@ -91,6 +96,9 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         }
         if(tag.contains("macros")) {
             MACRO_CODEC.decode(NbtOps.INSTANCE, tag.get("macros")).ifSuccess(pair -> macros = new HashMap<>(pair.getFirst()));
+        }
+        if(tag.contains("hidden_macros")) {
+            HIDDEN_MACRO_CODEC.decode(NbtOps.INSTANCE, tag.get("hidden_macros")).ifSuccess(pair -> hidden_macros = new HashSet<>(pair.getFirst()));
         }
         if(tag.contains("UnwrapCount")) {
             unwrap_count = tag.getInt("UnwrapCount");
@@ -134,6 +142,11 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
     @Override
     public void resetUnwrapCount() {
         unwrap_count = 0;
+    }
+
+    @Override
+    public boolean isHidden(String key) {
+        return hidden_macros.contains(key);
     }
 
     @Override
@@ -201,5 +214,9 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
                         DebuggerInfoTypes.SEQUENCE.value(),
                         () -> new DebuggerSequenceInfo(emitter.getBuffer()))
         ), getBlockPos());
+    }
+
+    public HashSet<String> getHiddenMacros() {
+        return hidden_macros;
     }
 }
