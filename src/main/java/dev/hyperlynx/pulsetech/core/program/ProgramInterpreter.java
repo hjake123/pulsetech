@@ -1,6 +1,6 @@
 package dev.hyperlynx.pulsetech.core.program;
 
-import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.Config;
 import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.util.Color;
@@ -149,10 +149,9 @@ public class ProgramInterpreter {
         return modifiable_tokens;
     }
 
-    private static final int MAX_STACK_DEPTH = 16;
     public static void processTokenList(ProgramExecutor executor, List<String> tokens, @Nullable ServerPlayer player, int depth) {
         // If this function was recursively called by a macro too many times, don't execute.
-        if(depth > MAX_STACK_DEPTH) {
+        if(depth > Config.MAX_MACRO_UNWRAP_DEPTH.get()) {
             executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.stack_overflow").getString());
             return;
         }

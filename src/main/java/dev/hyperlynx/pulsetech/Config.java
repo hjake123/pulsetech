@@ -25,8 +25,10 @@ public class Config {
     public static final ModConfigSpec.ConfigValue<List<String>> ORB_CANNOT_GRAB;
     public static final ModConfigSpec.DoubleValue ORB_SPEED;
     public static final ModConfigSpec.IntValue SCANNER_RANGE;
+    public static final ModConfigSpec.IntValue MAX_MACRO_UNWRAP_DEPTH;
 
     static {
+        MAX_MACRO_UNWRAP_DEPTH = BUILDER.comment("Maximum number of times the Console or Processor can unwrap nested macros before halting. Higher values mean deeper 'call stacks' and more complex programs are possible, but may cause larger lag spikes when the macro is evaluated").defineInRange("maxMacroUnwrapDepth", 256, 4, 8192);
         CANNON_MAX_RANGE = BUILDER.comment("Maximum range of the Coil Cannon in blocks. [Default: 25]").defineInRange("cannonMaxRange", 25, 1, 64);
         CANNON_MAX_BLAST_RESIST = BUILDER.comment("The Coil Cannon can break blocks with below this blast resistance. [Default: 50]").defineInRange("cannonMaxBlastResist", 50, 1, Integer.MAX_VALUE);
         ORB_MAX_RANGE = BUILDER.comment("Maximum range of the Orb Projector in blocks. [Default: 32]").defineInRange("orbProjectorMaxRange", 32, 1, 64);
