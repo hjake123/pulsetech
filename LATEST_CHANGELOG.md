@@ -1,3 +1,4 @@
 - Fixed a hang when using macros that self-recurse excessively
-- Allowed all signal emitting block to pass Redstone power into blocks they are directly facing, similarly to Repeaters
+- Added a config value to adjust the number of times macros can unwrap in a single evaluation 
+- Allowed all signal emitting blocks to strongly power blocks they are directly facing, similarly to Repeaters
 - 

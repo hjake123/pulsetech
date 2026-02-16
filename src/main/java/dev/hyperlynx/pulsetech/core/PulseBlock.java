@@ -104,7 +104,12 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
         super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
         Direction change_direction = Direction.fromDelta(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ());
-        assert change_direction != null;
+        if(change_direction == null) {
+            // Should never happen normally, but does seem to happen when Alternate Current is installed.
+            // Ignoring these "diagonal updates" seems to be enough to fix AC compatibility!
+            // (See issue #50)
+            return;
+        }
         if(!io.isInput(change_direction.getOpposite(), state) || neighborPos.equals(pos)) {
             return;
         }
