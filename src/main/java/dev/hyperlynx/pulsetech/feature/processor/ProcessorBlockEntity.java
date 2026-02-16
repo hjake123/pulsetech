@@ -37,6 +37,7 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
     private ProgramEmitterModule emitter = new ProgramEmitterModule();
     private CommandMode command_mode = CommandMode.PARSE;
     private OperationMode operation_mode = OperationMode.OUTPUT;
+    private int unwrap_count = 0;
 
     // Recomputed when needed
     private Protocol computed_protocol;
@@ -107,6 +108,22 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
     }
 
     @Override
+    public int getUnwrapCount() {
+        return unwrap_count;
+    }
+
+    @Override
+    public void incrementUnwrapCount() {
+        unwrap_count++;
+    }
+
+    @Override
+    public void resetUnwrapCount() {
+        unwrap_count = 0;
+    }
+
+
+    @Override
     public Datasheet getDatasheet() {
         return new Datasheet(getBlockState().getBlock(),
                 fetchProtocol().getCommands().entrySet().stream().map(entry -> {
@@ -159,6 +176,7 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
             MACRO_CODEC.encodeStart(NbtOps.INSTANCE, macros).ifSuccess(encoded -> tag.put("macros", encoded));
         }
         tag.putString("OperationMode", operation_mode.name());
+        tag.putInt("UnwrapCount", unwrap_count);
     }
 
     @Override
@@ -173,6 +191,9 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
         }
         if(tag.contains("OperationMode")) {
             operation_mode = OperationMode.valueOf(tag.getString("OperationMode"));
+        }
+        if(tag.contains("UnwrapCount")) {
+            unwrap_count = tag.getInt("UnwrapCount");
         }
     }
 

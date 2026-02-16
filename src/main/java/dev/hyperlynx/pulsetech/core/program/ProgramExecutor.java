@@ -19,6 +19,9 @@ public interface ProgramExecutor {
     CommandMode getCommandMode();
     ProgramEmitterModule getEmitter();
     void setActive(boolean b);
+    int getUnwrapCount();
+    void incrementUnwrapCount();
+    void resetUnwrapCount();
 
     default void sendLineIfConsole(@Nullable ServerPlayer player, String line) {
         if(isConsole() && player != null) {

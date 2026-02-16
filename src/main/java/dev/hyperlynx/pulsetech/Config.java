@@ -1,17 +1,9 @@
 package dev.hyperlynx.pulsetech;
 
 import com.google.common.collect.Lists;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 // An example config class. This is not required, but it's a good idea to have one to keep your config organized.
 // Demonstrates how to use Neo's config APIs
@@ -25,10 +17,10 @@ public class Config {
     public static final ModConfigSpec.ConfigValue<List<String>> ORB_CANNOT_GRAB;
     public static final ModConfigSpec.DoubleValue ORB_SPEED;
     public static final ModConfigSpec.IntValue SCANNER_RANGE;
-    public static final ModConfigSpec.IntValue MAX_MACRO_UNWRAP_DEPTH;
+    public static final ModConfigSpec.IntValue MAX_MACRO_UNWRAP_COUNT;
 
     static {
-        MAX_MACRO_UNWRAP_DEPTH = BUILDER.comment("Maximum number of times the Console or Processor can unwrap nested macros before halting. Higher values mean deeper 'call stacks' and more complex programs are possible, but may cause larger lag spikes when the macro is evaluated").defineInRange("maxMacroUnwrapDepth", 256, 4, 8192);
+        MAX_MACRO_UNWRAP_COUNT = BUILDER.comment("Maximum number of times the Console or Processor can unwrap macros in a single evaluation. Higher values mean more complex programs are possible, but may cause lag spikes when the macro is evaluated. [Default: 256]").defineInRange("maxMacroUnwrapCount", 256, 4, 512);
         CANNON_MAX_RANGE = BUILDER.comment("Maximum range of the Coil Cannon in blocks. [Default: 25]").defineInRange("cannonMaxRange", 25, 1, 64);
         CANNON_MAX_BLAST_RESIST = BUILDER.comment("The Coil Cannon can break blocks with below this blast resistance. [Default: 50]").defineInRange("cannonMaxBlastResist", 50, 1, Integer.MAX_VALUE);
         ORB_MAX_RANGE = BUILDER.comment("Maximum range of the Orb Projector in blocks. [Default: 32]").defineInRange("orbProjectorMaxRange", 32, 1, 64);

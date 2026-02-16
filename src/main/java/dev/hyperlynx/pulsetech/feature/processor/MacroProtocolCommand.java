@@ -36,7 +36,7 @@ public class MacroProtocolCommand extends ProtocolCommand {
             for(int i = 0; i < parameterCount(); i++) {
                 command_sequence.add(context.params().get(i).toString());
             }
-            ProgramInterpreter.processTokenList(processor, command_sequence, null, 0);
+            ProgramInterpreter.startProcessTokenList(processor, command_sequence, null);
         }
     }
 

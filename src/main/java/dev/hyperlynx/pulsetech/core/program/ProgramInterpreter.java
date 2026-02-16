@@ -149,12 +149,12 @@ public class ProgramInterpreter {
         return modifiable_tokens;
     }
 
-    public static void processTokenList(ProgramExecutor executor, List<String> tokens, @Nullable ServerPlayer player, int depth) {
-        // If this function was recursively called by a macro too many times, don't execute.
-        if(depth > Config.MAX_MACRO_UNWRAP_DEPTH.get()) {
-            executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.stack_overflow").getString());
-            return;
-        }
+    public static void startProcessTokenList(ProgramExecutor executor, List<String> tokens, @Nullable ServerPlayer player) {
+        executor.resetUnwrapCount();
+        processTokenList(executor, tokens, player);
+    }
+
+    public static void processTokenList(ProgramExecutor executor, List<String> tokens, @Nullable ServerPlayer player) {
         executor.setCommandMode(CommandMode.PARSE);
         boolean error = false; // Tracks invalid tokens during parsing
         String noun = ""; // Used for define operations
@@ -164,7 +164,7 @@ public class ProgramInterpreter {
         while (token_iterator.hasNext()) {
             String token = token_iterator.next();
             switch(executor.getCommandMode()) {
-                case PARSE -> error = processToken(executor, player, token, depth, token_iterator);
+                case PARSE -> error = processToken(executor, player, token, token_iterator);
                 case DEFINE -> {
                     if(token.equalsIgnoreCase("return")) {
                         // Handling for the 'return' keyword to punch out early
@@ -279,7 +279,7 @@ public class ProgramInterpreter {
     }
 
 
-    private static boolean processToken(ProgramExecutor executor, @Nullable ServerPlayer player, String token, int depth, Iterator<String> tokens) {
+    private static boolean processToken(ProgramExecutor executor, @Nullable ServerPlayer player, String token, Iterator<String> tokens) {
         if(BUILT_IN_COMMANDS.containsKey(token.toLowerCase())) {
             BUILT_IN_COMMANDS.get(token.toLowerCase()).accept(player, executor);
         } else if(executor.getMacros().containsKey(token)) {
@@ -297,7 +297,18 @@ public class ProgramInterpreter {
             }
 
             // recursively process macros up to a set depth.
-            processTokenList(executor, definition, player, depth + 1);
+            executor.incrementUnwrapCount();
+            if(executor.getUnwrapCount() <= Config.MAX_MACRO_UNWRAP_COUNT.get()) {
+                try {
+                    processTokenList(executor, definition, player);
+                } catch (StackOverflowError error) {
+                    // The max of the config value should be low enough that this doesn't happen,
+                    // but I don't want a stack overflow happening in production so we check for it anyway.
+                    executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.stack_overflow").getString());
+                }
+            } else if(executor.getUnwrapCount() == Config.MAX_MACRO_UNWRAP_COUNT.get() + 1) {
+                executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.stack_overflow").getString());
+            }
             return false;
         } else {
             executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.invalid_token").getString() + token);

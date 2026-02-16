@@ -33,6 +33,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
 
     private Map<String, List<String>> macros = new HashMap<>(); // Defined macros for this console. TODO better persistence?
     private static final Codec<Map<String, List<String>>> MACRO_CODEC = Codec.unboundedMap(Codec.STRING, Codec.STRING.listOf());
+    private int unwrap_count = 0;
 
     public ConsoleBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.CONSOLE.get(), pos, blockState);
@@ -52,7 +53,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
     }
 
     public void processLine(String line, ServerPlayer player) {
-        ProgramInterpreter.processTokenList(this, Arrays.stream(line.split(" ")).toList(), player, 0);
+        ProgramInterpreter.startProcessTokenList(this, Arrays.stream(line.split(" ")).toList(), player);
     }
 
     private void limitPriorLineLength() {
@@ -75,6 +76,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         if(!macros.isEmpty()) {
             MACRO_CODEC.encodeStart(NbtOps.INSTANCE, macros).ifSuccess(encoded -> tag.put("macros", encoded));
         }
+        tag.putInt("UnwrapCount", unwrap_count);
     }
 
     @Override
@@ -89,6 +91,9 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         }
         if(tag.contains("macros")) {
             MACRO_CODEC.decode(NbtOps.INSTANCE, tag.get("macros")).ifSuccess(pair -> macros = new HashMap<>(pair.getFirst()));
+        }
+        if(tag.contains("UnwrapCount")) {
+            unwrap_count = tag.getInt("UnwrapCount");
         }
     }
 
@@ -114,6 +119,21 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
     @Override
     public void setActive(boolean active) {
         // NO-OP
+    }
+
+    @Override
+    public int getUnwrapCount() {
+        return unwrap_count;
+    }
+
+    @Override
+    public void incrementUnwrapCount() {
+        unwrap_count++;
+    }
+
+    @Override
+    public void resetUnwrapCount() {
+        unwrap_count = 0;
     }
 
     @Override
