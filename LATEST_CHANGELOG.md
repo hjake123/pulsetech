@@ -1,2 +1,3 @@
-- Fix a crash when nesting define commands inside a Processor
-- Added an optional 'return' keyword to facilitate easier define nesting
+- Fixed a hang when using macros that self-recurse excessively
+- Allowed all signal emitting block to pass Redstone power into blocks they are directly facing, similarly to Repeaters
+- 

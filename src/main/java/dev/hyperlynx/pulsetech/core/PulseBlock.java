@@ -27,9 +27,11 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.ticks.TickPriority;
+import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumSet;
 import java.util.function.BiFunction;
 
 /// See {@link PulseBlockEntity}
@@ -81,6 +83,11 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
     }
 
     @Override
+    protected int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+        return getSignal(state, level, pos, direction);
+    }
+
+    @Override
     protected int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
         if(!io.isOutput(direction, state)) {
             return 0;
@@ -119,6 +126,15 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
         Block block = level.getBlockState(pos).getBlock();
         if(block instanceof PulseBlock pulse_block) {
             return pulse_block.getIOLayout().measureInputSignal(level, pos, level.getBlockState(pos));
+        }
+        throw new AssertionError("Can't use PulseBlock methods on non PulseBlocks!");
+    }
+
+    public static void updateOutputNeighbors(Level level, BlockPos pos, BlockState state) {
+        Block block = state.getBlock();
+        if(block instanceof PulseBlock pulse_block) {
+            pulse_block.getIOLayout().updateOutputNeighbors(level, pos, state);
+            return;
         }
         throw new AssertionError("Can't use PulseBlock methods on non PulseBlocks!");
     }
@@ -222,6 +238,41 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
 
         public boolean measureInputSignal(Level level, BlockPos pos, BlockState state) {
             return signalFromSide(level, pos, state, Direction.NORTH) || signalFromSide(level, pos, state, Direction.SOUTH) || signalFromSide(level, pos, state, Direction.WEST) || signalFromSide(level, pos, state, Direction.EAST);
+        }
+
+        public void updateOutputNeighbors(Level level, BlockPos pos, BlockState state) {
+            if(isOutput(Direction.NORTH, state)) {
+                Direction direction = Direction.NORTH;
+                BlockPos blockpos = pos.relative(direction.getOpposite());
+                if (!EventHooks.onNeighborNotify(level, pos, level.getBlockState(pos), EnumSet.of(direction.getOpposite()), false).isCanceled()) {
+                    level.neighborChanged(blockpos, state.getBlock(), pos);
+                    level.updateNeighborsAtExceptFromFacing(blockpos, state.getBlock(), direction);
+                }
+            }
+            if(isOutput(Direction.EAST, state)) {
+                Direction direction = Direction.EAST;
+                BlockPos blockpos = pos.relative(direction.getOpposite());
+                if (!EventHooks.onNeighborNotify(level, pos, level.getBlockState(pos), EnumSet.of(direction.getOpposite()), false).isCanceled()) {
+                    level.neighborChanged(blockpos, state.getBlock(), pos);
+                    level.updateNeighborsAtExceptFromFacing(blockpos, state.getBlock(), direction);
+                }
+            }
+            if(isOutput(Direction.SOUTH, state)) {
+                Direction direction = Direction.SOUTH;
+                BlockPos blockpos = pos.relative(direction.getOpposite());
+                if (!EventHooks.onNeighborNotify(level, pos, level.getBlockState(pos), EnumSet.of(direction.getOpposite()), false).isCanceled()) {
+                    level.neighborChanged(blockpos, state.getBlock(), pos);
+                    level.updateNeighborsAtExceptFromFacing(blockpos, state.getBlock(), direction);
+                }
+            }
+            if(isOutput(Direction.WEST, state)) {
+                Direction direction = Direction.WEST;
+                BlockPos blockpos = pos.relative(direction.getOpposite());
+                if (!EventHooks.onNeighborNotify(level, pos, level.getBlockState(pos), EnumSet.of(direction.getOpposite()), false).isCanceled()) {
+                    level.neighborChanged(blockpos, state.getBlock(), pos);
+                    level.updateNeighborsAtExceptFromFacing(blockpos, state.getBlock(), direction);
+                }
+            }
         }
     }
 
