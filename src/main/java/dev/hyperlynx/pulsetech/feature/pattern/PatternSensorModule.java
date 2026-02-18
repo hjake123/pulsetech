@@ -33,14 +33,12 @@ public class PatternSensorModule extends SequenceModule<PatternBlockEntity> impl
         buffer.append(pulser.input());
         if(buffer.length() > pattern.length()) {
             buffer.clear();
-            pulser.handleInput();
+            pulser.output(false);
             return false;
         } else if (buffer.length() == pattern.length()) {
-            if(buffer.equals(pattern)) {
-                pulser.handleInput();
-                // We don't return false right away to
-                // allow one extra pulse to be absorbed to help with timing.
-            }
+            pulser.handleInput();
+            // We don't return false right away to
+            // allow one extra pulse to be absorbed to help with timing.
         }
         return true;
     }
