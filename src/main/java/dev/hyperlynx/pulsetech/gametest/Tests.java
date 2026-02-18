@@ -45,6 +45,18 @@ public class Tests {
     }
 
     @GameTest(setupTicks = 5)
+    public static void patternBlockZero(GameTestHelper helper) {
+        helper.setBlock(0, 2, 0, Blocks.REDSTONE_BLOCK);
+        helper.runAfterDelay(20, () -> helper.succeedIf(
+                () -> {
+                    BlockState bulb = helper.getBlockState(new BlockPos(7, 2, 0));
+                    helper.assertTrue(bulb.is(Blocks.WAXED_COPPER_BULB), "Bulb was not at (7, 2, 0). The test is malformed!");
+                    helper.assertFalse(bulb.getValue(CopperBulbBlock.LIT), "Detected all zeros when it was not");
+                }
+        ));
+    }
+
+    @GameTest(setupTicks = 5)
     public static void patternBlockMatchRepeater(GameTestHelper helper) {
         helper.setBlock(0, 2, 0, Blocks.REDSTONE_BLOCK);
         helper.runAfterDelay(20, () -> helper.succeedIf(
