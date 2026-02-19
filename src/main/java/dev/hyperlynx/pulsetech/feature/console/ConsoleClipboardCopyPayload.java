@@ -9,7 +9,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.StringRepresentable;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +38,7 @@ public record ConsoleClipboardCopyPayload(BlockPos pos, String contents) impleme
         if(!context.player().level().isLoaded(pos)) {
             return;
         }
-        PacketDistributor.sendToPlayer((ServerPlayer) context.player(), new ConsoleClipboardCopyPayload(pos, console.getEncodedMacroData((ServerPlayer) context.player())));
+        PacketDistributor.sendToPlayer((ServerPlayer) context.player(), new ConsoleClipboardCopyPayload(pos, console.getClipboardData((ServerPlayer) context.player())));
     }
 
     public void clientHandler(IPayloadContext context) {

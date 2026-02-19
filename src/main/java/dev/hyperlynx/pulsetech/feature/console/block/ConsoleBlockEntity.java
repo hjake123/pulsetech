@@ -1,7 +1,5 @@
 package dev.hyperlynx.pulsetech.feature.console.block;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.Codec;
@@ -237,7 +235,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         return saved_command_box_text;
     }
 
-    public void ingestMacroData(String data, ServerPlayer player) {
+    public void ingestClipboardData(String data, ServerPlayer player) {
         try {
             var json = JsonParser.parseString(data);
             var decode_result = Macros.CODEC.decode(JsonOps.COMPRESSED, json);
@@ -256,12 +254,15 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         }
     }
 
-    public String getEncodedMacroData(ServerPlayer player) {
+    public String getClipboardData(ServerPlayer player) {
         var encode_result = Macros.CODEC.encodeStart(JsonOps.COMPRESSED, new Macros(macros, hidden_macros));
         encode_result.ifError(error -> {
             Pulsetech.LOGGER.error("Failed to serialize macro data. This is a bug!");
             sendLineIfConsole(player, Component.translatable("console.pulsetech.bug").getString());
         });
+        sendLineIfConsole(player, Component.translatable("console.pulsetech.copied_macros_1")
+                .append(String.valueOf(macros.size()))
+                .append(Component.translatable("console.pulsetech.copied_macros_2")).getString());
         return encode_result.getOrThrow().toString();
     }
 }

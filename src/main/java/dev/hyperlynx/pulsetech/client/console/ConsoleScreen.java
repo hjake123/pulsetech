@@ -1,19 +1,21 @@
 package dev.hyperlynx.pulsetech.client.console;
 
 import com.mojang.serialization.Codec;
+import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.feature.console.*;
 import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlock;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
@@ -24,8 +26,6 @@ import java.util.List;
 public class ConsoleScreen extends Screen {
     private BetterFittingMultiLineTextWidget prior_lines;
     private EditBox command_box;
-    private Button copy_macro_button;
-    private Button paste_macro_button;
 
     private final BlockPos pos;
     private final String prior_lines_str;
@@ -34,6 +34,7 @@ public class ConsoleScreen extends Screen {
 
     private final List<String> past_commands = new ArrayList<>();
     private final String initial_command_box_text;
+    private int force_focus_timer = 0;
 
     public ConsoleScreen(BlockPos pos, String lines, String command_box_text) {
         super(Component.translatable("block.pulsetech.console"));
@@ -60,22 +61,55 @@ public class ConsoleScreen extends Screen {
         command_box.setMaxLength(104);
         command_box.setValue(initial_command_box_text);
         addRenderableWidget(command_box);
-        prior_lines = new BetterFittingMultiLineTextWidget(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (console_width / 2),this.getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - (console_height / 2) - 10, console_width, console_height, Component.literal(prior_lines_str), font);
+        int prior_line_y = this.getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - (console_height / 2) - 10;
+        prior_lines = new BetterFittingMultiLineTextWidget(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (console_width / 2), prior_line_y, console_width, console_height, Component.literal(prior_lines_str), font);
         prior_lines.scrollToBottom();
         addRenderableWidget(prior_lines);
         setInitialFocus(command_box);
         setupTextColors();
 
-        copy_macro_button = Button.builder(Component.literal("copy"), button -> {
-            PacketDistributor.sendToServer(new ConsoleClipboardCopyPayload(pos, ""));
-        }).pos(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) + (console_width / 2), getRectangle().getCenterInAxis(ScreenAxis.VERTICAL)).build();
+        ImageButton copy_macro_button = new ImageButton(
+                12,
+                14,
+                new WidgetSprites(Pulsetech.location("copy_button"),getFocusedSprite("copy_button_focused_")),
+                button -> {
+                        PacketDistributor.sendToServer(new ConsoleClipboardCopyPayload(pos, ""));
+                        force_focus_timer = 10;
+                },
+                Component.empty()
+        );
+        copy_macro_button.setPosition(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (console_width / 2) - 26, prior_line_y + console_height - 14);
+        copy_macro_button.setTooltip(Tooltip.create(Component.translatable("gui.pulsetech.copy_description")));
         addRenderableWidget(copy_macro_button);
 
-        paste_macro_button = Button.builder(Component.literal("paste"), button -> {
-            PacketDistributor.sendToServer(new ConsoleClipboardPastePayload(pos, Minecraft.getInstance().keyboardHandler.getClipboard()));
-        }).pos(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) + (console_width / 2), getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + 20).build();
-        addRenderableWidget(paste_macro_button);
+        ImageButton paste_macro_button = new ImageButton(
+                12,
+                14,
+                new WidgetSprites(Pulsetech.location("paste_button"), getFocusedSprite("paste_button_focused_")),
+                button -> {
+                    PacketDistributor.sendToServer(new ConsoleClipboardPastePayload(pos, Minecraft.getInstance().keyboardHandler.getClipboard()));
+                    force_focus_timer = 10;
+                },
+                Component.empty()
+        );
+        paste_macro_button.setPosition(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (console_width / 2) - 13, prior_line_y + console_height - 14);
+        paste_macro_button.setTooltip(Tooltip.create(Component.translatable("gui.pulsetech.paste_description")));
 
+        addRenderableWidget(paste_macro_button);
+    }
+
+    @Override
+    public void tick() {
+        if(force_focus_timer > 0) {
+            setFocused(command_box);
+            command_box.setEditable(true);
+            command_box.setFocused(true);
+            force_focus_timer--;
+        }
+    }
+
+    private ResourceLocation getFocusedSprite(String beginning) {
+        return Pulsetech.location(beginning + color.name().toLowerCase());
     }
 
     private static final int AMBER_COLOR = 0xFFE09E;

@@ -35,7 +35,7 @@ public record ConsoleClipboardPastePayload(BlockPos pos, String contents) implem
         if(!context.player().level().isLoaded(pos)) {
             return;
         }
-        console.ingestMacroData(contents, (ServerPlayer) context.player());
+        console.ingestClipboardData(contents, (ServerPlayer) context.player());
     }
 
 }
