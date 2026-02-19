@@ -26,6 +26,7 @@ import java.util.List;
 public class ConsoleScreen extends Screen {
     private BetterFittingMultiLineTextWidget prior_lines;
     private EditBox command_box;
+    private ConsoleSuggester suggester;
 
     private final BlockPos pos;
     private final String prior_lines_str;
@@ -58,8 +59,10 @@ public class ConsoleScreen extends Screen {
         int command_box_height = font.lineHeight * 2;
         int console_height = font.lineHeight * 22 + 6;
         command_box = new EditBox(font, this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (console_width / 2), this.getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + (console_height / 2) - 5, console_width, command_box_height, Component.empty());
+        suggester = new ConsoleSuggester(command_box);
         command_box.setMaxLength(104);
         command_box.setValue(initial_command_box_text);
+        command_box.setResponder(suggester::responder);
         addRenderableWidget(command_box);
         int prior_line_y = this.getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - (console_height / 2) - 10;
         prior_lines = new BetterFittingMultiLineTextWidget(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (console_width / 2), prior_line_y, console_width, console_height, Component.literal(prior_lines_str), font);
@@ -169,6 +172,10 @@ public class ConsoleScreen extends Screen {
                 }
                 command_box.setValue(past_commands.get(past_commands_cursor));
             }
+            return true;
+        }
+        if(keyCode == GLFW.GLFW_KEY_RIGHT || keyCode == GLFW.GLFW_KEY_TAB) {
+            suggester.confirmSuggestion();
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
