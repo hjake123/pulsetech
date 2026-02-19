@@ -32,6 +32,11 @@ public interface ProgramExecutor {
         }
     }
 
+    default void setMacroHidden(String macro) {
+        getHiddenMacros().add(macro);
+        setChanged();
+    }
+
     default void toggleMacroHidden(String macro) {
         if(getHiddenMacros().contains(macro)) {
             getHiddenMacros().remove(macro);

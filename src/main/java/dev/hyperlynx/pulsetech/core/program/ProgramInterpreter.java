@@ -296,7 +296,7 @@ public class ProgramInterpreter {
             }
             executor.addMacro(noun, new ArrayList<>(definition));
             if(hidden) {
-                executor.toggleMacroHidden(noun);
+                executor.setMacroHidden(noun);
             }
         }
     }
