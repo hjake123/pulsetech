@@ -12,16 +12,16 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /// The ONLY class within the client package that is safe to call upon from outside the package!
 public class ClientWrapper {
-    public static void openConsoleScreen(BlockPos pos, String prior_lines) {
-        PulsetechClient.openConsoleScreen(pos, prior_lines);
+    public static void openConsoleScreen(BlockPos pos, String prior_lines, String command_box_text) {
+        PulsetechClient.openConsoleScreen(pos, prior_lines, command_box_text);
     }
 
     public static void acceptConsoleLine(BlockPos pos, String line) {
         PulsetechClient.acceptConsoleLine(pos, line);
     }
 
-    public static void setPriorConsoleLines(BlockPos pos, String lines) {
-        PulsetechClient.setPriorConsoleLines(pos, lines);
+    public static void setPriorConsoleLines(BlockPos pos, String lines, String command_box_text) {
+        PulsetechClient.setPriorConsoleLines(pos, lines, command_box_text);
     }
 
     public static void openSequenceScreen(BlockPos pos) {

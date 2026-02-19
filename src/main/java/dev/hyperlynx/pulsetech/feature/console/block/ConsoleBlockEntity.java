@@ -3,7 +3,6 @@ package dev.hyperlynx.pulsetech.feature.console.block;
 import com.mojang.serialization.Codec;
 import dev.hyperlynx.pulsetech.core.PulseBlockEntity;
 import dev.hyperlynx.pulsetech.core.program.*;
-import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetEntry;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetProvider;
@@ -30,6 +29,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
     ProgramEmitterModule emitter = new ProgramEmitterModule();
     private CommandMode command_mode = CommandMode.PARSE;
     private String saved_lines = "";
+    private String saved_command_box_text = "";
 
     private Map<String, List<String>> macros = new HashMap<>(); // Defined macros for this console. TODO better persistence?
     private static final Codec<Map<String, List<String>>> MACRO_CODEC = Codec.unboundedMap(Codec.STRING, Codec.STRING.listOf());
@@ -75,6 +75,9 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         if(!saved_lines.isEmpty()) {
             tag.putString("saved_lines", saved_lines);
         }
+        if(!saved_command_box_text.isEmpty()) {
+            tag.putString("saved_command_box_text", saved_command_box_text);
+        }
         if(!macros.isEmpty()) {
             MACRO_CODEC.encodeStart(NbtOps.INSTANCE, macros).ifSuccess(encoded -> tag.put("macros", encoded));
         }
@@ -94,6 +97,9 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         if(tag.contains("saved_lines")) {
             saved_lines = tag.getString("saved_lines");
         }
+        if(tag.contains("saved_command_box_text")) {
+            saved_command_box_text = tag.getString("saved_command_box_text");
+        }
         if(tag.contains("macros")) {
             MACRO_CODEC.decode(NbtOps.INSTANCE, tag.get("macros")).ifSuccess(pair -> macros = new HashMap<>(pair.getFirst()));
         }
@@ -110,8 +116,9 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         return emitter.getDelay() > 0;
     }
 
-    public void savePriorLines(String lines) {
+    public void savePriorLines(String lines, String command_box_text) {
         saved_lines = lines;
+        saved_command_box_text = command_box_text;
         setChanged();
     }
 
@@ -218,5 +225,9 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
 
     public HashSet<String> getHiddenMacros() {
         return hidden_macros;
+    }
+
+    public String getCommandBoxText() {
+        return saved_command_box_text;
     }
 }

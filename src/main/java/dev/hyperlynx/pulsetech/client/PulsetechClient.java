@@ -32,7 +32,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -108,8 +107,8 @@ public class PulsetechClient {
         event.registerLayerDefinition(OrbModel.LAYER_LOCATION, OrbModel::createBodyLayer);
     }
 
-    protected static void openConsoleScreen(BlockPos pos, String prior_lines) {
-        Minecraft.getInstance().setScreen(new ConsoleScreen(pos, prior_lines));
+    protected static void openConsoleScreen(BlockPos pos, String prior_lines, String command_box_text) {
+        Minecraft.getInstance().setScreen(new ConsoleScreen(pos, prior_lines, command_box_text));
     }
 
 
@@ -122,11 +121,11 @@ public class PulsetechClient {
         }
     }
 
-    protected static void setPriorConsoleLines(BlockPos pos, String lines) {
+    protected static void setPriorConsoleLines(BlockPos pos, String lines, String command_box_text) {
         Screen current_screen = Minecraft.getInstance().screen;
         if(current_screen instanceof ConsoleScreen console) {
             if(console.getPos().equals(pos)) {
-                console.setPriorLines(lines);
+                console.setPriorLines(lines, command_box_text);
             }
         }
     }

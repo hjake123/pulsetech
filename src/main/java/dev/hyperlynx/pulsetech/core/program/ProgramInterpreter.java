@@ -42,7 +42,7 @@ public class ProgramInterpreter {
             }),
             entry("clear", (player, executor) -> {
                 if(executor.isConsole()) {
-                    PacketDistributor.sendToPlayer(player, new ConsolePriorLinesPayload(executor.getBlockPos(), ""));
+                    PacketDistributor.sendToPlayer(player, new ConsolePriorLinesPayload(executor.getBlockPos(), "", ""));
                 }
             }),
             entry("stop", (player, executor) -> {

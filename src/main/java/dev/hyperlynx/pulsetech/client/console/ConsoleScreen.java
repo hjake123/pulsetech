@@ -4,7 +4,6 @@ import dev.hyperlynx.pulsetech.feature.console.ConsoleColor;
 import dev.hyperlynx.pulsetech.feature.console.ConsoleLinePayload;
 import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
 import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlock;
-import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
@@ -28,12 +27,14 @@ public class ConsoleScreen extends Screen {
     private final ConsoleColor color;
 
     private final List<String> past_commands = new ArrayList<>();
+    private String initial_command_box_text = "";
 
-    public ConsoleScreen(BlockPos pos, String lines) {
+    public ConsoleScreen(BlockPos pos, String lines, String command_box_text) {
         super(Component.translatable("block.pulsetech.console"));
         this.pos = pos;
         this.prior_lines_str = lines;
         past_commands.addAll(Arrays.stream(prior_lines_str.split("\n")).filter(line -> line.startsWith(">")).map(line -> line.substring(2)).toList());
+        initial_command_box_text = command_box_text;
 
         if (Minecraft.getInstance().level.getBlockState(pos).getBlock() instanceof ConsoleBlock console_block) {
             this.color = console_block.getColor();
@@ -51,6 +52,7 @@ public class ConsoleScreen extends Screen {
         int console_height = font.lineHeight * 22 + 6;
         command_box = new EditBox(font, this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (console_width / 2), this.getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + (console_height / 2) - 5, console_width, command_box_height, Component.empty());
         command_box.setMaxLength(104);
+        command_box.setValue(initial_command_box_text);
         addRenderableWidget(command_box);
         prior_lines = new BetterFittingMultiLineTextWidget(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (console_width / 2),this.getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - (console_height / 2) - 10, console_width, console_height, Component.literal(prior_lines_str), font);
         prior_lines.scrollToBottom();
@@ -142,12 +144,13 @@ public class ConsoleScreen extends Screen {
         return false;
     }
 
-    public void setPriorLines(String lines) {
+    public void setPriorLines(String lines, String command_box_text) {
         removeWidget(prior_lines);
         prior_lines = prior_lines.withMessage(Component.literal(lines));
         prior_lines.scrollToBottom();
         addRenderableWidget(prior_lines);
         setupTextColors();
+        command_box.setValue(command_box_text);
     }
 
     @Override
@@ -156,7 +159,7 @@ public class ConsoleScreen extends Screen {
         if(lines.length() > 8192) {
             lines = lines.substring(lines.length() - 8192);
         }
-        PacketDistributor.sendToServer(new ConsolePriorLinesPayload(pos, lines));
+        PacketDistributor.sendToServer(new ConsolePriorLinesPayload(pos, lines, command_box.getValue()));
         super.onClose();
     }
 }
