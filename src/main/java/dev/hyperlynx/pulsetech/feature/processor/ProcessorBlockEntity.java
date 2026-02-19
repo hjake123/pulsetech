@@ -133,6 +133,13 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
     }
 
     @Override
+    public void addMacro(String noun, List<String> definition) {
+        ProgramExecutor.super.addMacro(noun, definition);
+        computed_protocol = null;
+        setChanged();
+    }
+
+    @Override
     public Datasheet getDatasheet() {
         return new Datasheet(getBlockState().getBlock(),
                 fetchProtocol().getCommands().entrySet().stream().map(entry -> {

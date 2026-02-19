@@ -294,7 +294,7 @@ public class ProgramInterpreter {
             } else {
                 executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.defined").getString() + noun);
             }
-            executor.getMacros().put(noun, new ArrayList<>(definition));
+            executor.addMacro(noun, new ArrayList<>(definition));
             if(hidden) {
                 executor.toggleMacroHidden(noun);
             }
