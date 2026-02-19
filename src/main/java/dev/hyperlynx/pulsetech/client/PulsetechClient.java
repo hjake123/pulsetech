@@ -82,6 +82,10 @@ public class PulsetechClient {
         }
     }
 
+    public static void copyToClipboard(String contents) {
+        Minecraft.getInstance().keyboardHandler.setClipboard(contents);
+    }
+
     protected void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             ItemProperties.register(

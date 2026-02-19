@@ -59,4 +59,8 @@ public class ClientWrapper {
     public static void acceptDebuggerPosInfo(DebuggerPosInfo info, IPayloadContext context) {
         PulsetechClient.acceptDebuggerPosInfo(info);
     }
+
+    public static void copyToClipboard(String contents) {
+        PulsetechClient.copyToClipboard(contents);
+    }
 }

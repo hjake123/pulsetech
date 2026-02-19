@@ -1,9 +1,7 @@
 package dev.hyperlynx.pulsetech.registration;
 
 import dev.hyperlynx.pulsetech.client.ClientWrapper;
-import dev.hyperlynx.pulsetech.feature.console.ConsoleLinePayload;
-import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
-import dev.hyperlynx.pulsetech.feature.console.OpenConsolePayload;
+import dev.hyperlynx.pulsetech.feature.console.*;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoRequest;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerByteInfo;
@@ -108,6 +106,21 @@ public class ModPayloads {
                 DebuggerPosInfo.TYPE,
                 DebuggerPosInfo.STREAM_CODEC,
                 ClientWrapper::acceptDebuggerPosInfo
+        );
+
+        registrar.playBidirectional(
+                ConsoleClipboardCopyPayload.TYPE,
+                ConsoleClipboardCopyPayload.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(
+                        ConsoleClipboardCopyPayload::clientHandler,
+                        ConsoleClipboardCopyPayload::serverHandler
+                )
+        );
+
+        registrar.playToServer(
+                ConsoleClipboardPastePayload.TYPE,
+                ConsoleClipboardPastePayload.STREAM_CODEC,
+                ConsoleClipboardPastePayload::serverHandler
         );
     }
 }

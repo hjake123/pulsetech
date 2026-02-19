@@ -1,16 +1,19 @@
 package dev.hyperlynx.pulsetech.client.console;
 
-import dev.hyperlynx.pulsetech.feature.console.ConsoleColor;
-import dev.hyperlynx.pulsetech.feature.console.ConsoleLinePayload;
-import dev.hyperlynx.pulsetech.feature.console.ConsolePriorLinesPayload;
+import com.mojang.serialization.Codec;
+import dev.hyperlynx.pulsetech.feature.console.*;
 import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlock;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
@@ -21,13 +24,16 @@ import java.util.List;
 public class ConsoleScreen extends Screen {
     private BetterFittingMultiLineTextWidget prior_lines;
     private EditBox command_box;
+    private Button copy_macro_button;
+    private Button paste_macro_button;
+
     private final BlockPos pos;
     private final String prior_lines_str;
     private int past_commands_cursor = -1;
     private final ConsoleColor color;
 
     private final List<String> past_commands = new ArrayList<>();
-    private String initial_command_box_text = "";
+    private final String initial_command_box_text;
 
     public ConsoleScreen(BlockPos pos, String lines, String command_box_text) {
         super(Component.translatable("block.pulsetech.console"));
@@ -59,6 +65,17 @@ public class ConsoleScreen extends Screen {
         addRenderableWidget(prior_lines);
         setInitialFocus(command_box);
         setupTextColors();
+
+        copy_macro_button = Button.builder(Component.literal("copy"), button -> {
+            PacketDistributor.sendToServer(new ConsoleClipboardCopyPayload(pos, ""));
+        }).pos(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) + (console_width / 2), getRectangle().getCenterInAxis(ScreenAxis.VERTICAL)).build();
+        addRenderableWidget(copy_macro_button);
+
+        paste_macro_button = Button.builder(Component.literal("paste"), button -> {
+            PacketDistributor.sendToServer(new ConsoleClipboardPastePayload(pos, Minecraft.getInstance().keyboardHandler.getClipboard()));
+        }).pos(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) + (console_width / 2), getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + 20).build();
+        addRenderableWidget(paste_macro_button);
+
     }
 
     private static final int AMBER_COLOR = 0xFFE09E;

@@ -1,6 +1,12 @@
 package dev.hyperlynx.pulsetech.feature.console.block;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.PulseBlockEntity;
 import dev.hyperlynx.pulsetech.core.program.*;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
@@ -229,5 +235,33 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
 
     public String getCommandBoxText() {
         return saved_command_box_text;
+    }
+
+    public void ingestMacroData(String data, ServerPlayer player) {
+        try {
+            var json = JsonParser.parseString(data);
+            var decode_result = Macros.CODEC.decode(JsonOps.COMPRESSED, json);
+            decode_result.ifError(error -> {
+                sendLineIfConsole(player, Component.translatable("console.pulsetech.invalid_json_pasted").getString());
+            });
+            decode_result.ifSuccess(pair -> {
+                addMacros(pair.getFirst().macros());
+                hidden_macros.addAll(pair.getFirst().hidden_macros());
+                sendLineIfConsole(player, Component.translatable("console.pulsetech.ingested_macros_1")
+                        .append(String.valueOf(pair.getFirst().macros().size()))
+                        .append(Component.translatable("console.pulsetech.ingested_macros_2")).getString());
+            });
+        } catch (JsonSyntaxException e) {
+            sendLineIfConsole(player, Component.translatable("console.pulsetech.invalid_json_pasted").getString());
+        }
+    }
+
+    public String getEncodedMacroData(ServerPlayer player) {
+        var encode_result = Macros.CODEC.encodeStart(JsonOps.COMPRESSED, new Macros(macros, hidden_macros));
+        encode_result.ifError(error -> {
+            Pulsetech.LOGGER.error("Failed to serialize macro data. This is a bug!");
+            sendLineIfConsole(player, Component.translatable("console.pulsetech.bug").getString());
+        });
+        return encode_result.getOrThrow().toString();
     }
 }
