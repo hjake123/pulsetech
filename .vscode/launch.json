@@ -1,0 +1,93 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Client",
+      "presentation": {
+        "group": "Mod Development - pulsetech",
+        "order": 0
+      },
+      "projectName": "pulsetech",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/home/justus/Dokumente/programming/pulsetech/build/moddev/clientRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/home/justus/Dokumente/programming/pulsetech/build/moddev/clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dpulsetech%%/home/justus/Dokumente/programming/pulsetech/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Data",
+      "presentation": {
+        "group": "Mod Development - pulsetech",
+        "order": 1
+      },
+      "projectName": "pulsetech",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/home/justus/Dokumente/programming/pulsetech/build/moddev/dataRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/home/justus/Dokumente/programming/pulsetech/build/moddev/dataRunVmArgs.txt",
+        "-Dfml.modFolders\u003dpulsetech%%/home/justus/Dokumente/programming/pulsetech/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "GameTestServer",
+      "presentation": {
+        "group": "Mod Development - pulsetech",
+        "order": 2
+      },
+      "projectName": "pulsetech",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/home/justus/Dokumente/programming/pulsetech/build/moddev/gameTestServerRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/home/justus/Dokumente/programming/pulsetech/build/moddev/gameTestServerRunVmArgs.txt",
+        "-Dfml.modFolders\u003dpulsetech%%/home/justus/Dokumente/programming/pulsetech/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Server",
+      "presentation": {
+        "group": "Mod Development - pulsetech",
+        "order": 3
+      },
+      "projectName": "pulsetech",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/home/justus/Dokumente/programming/pulsetech/build/moddev/serverRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/home/justus/Dokumente/programming/pulsetech/build/moddev/serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dpulsetech%%/home/justus/Dokumente/programming/pulsetech/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    }
+  ]
+}
