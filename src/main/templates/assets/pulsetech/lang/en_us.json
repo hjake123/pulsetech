@@ -44,7 +44,7 @@
   "console.pulsetech.description.forget": "Erases a stored macro completely.",
   "console.pulsetech.parameters.forget": "macro",
   "help.pulsetech.loop": "Loop to a repeat keyword a specified number of times ",
-  "console.pulsetech.description.loop": "Repeat all commands until the 'repeat' command is reached the specified number of times.\n\nFor example: 'loop 3 emit 1 repeat' would have the same effect as 'emit 1 emit 1 emit 1'",
+  "console.pulsetech.description.loop": "Repeat all commands until the 'repeat' command is reached the specified number of times.\n\nFor example: 'loop 3 emit 1 repeat' would have the same effect as 'emit 1 emit 1 emit 1'.\nAdditionally like in define you can use 'x?' to use the current iteration of the loop.\nFor example: 'loop 3 num x?' this will loop 3 times and output the number 0, 1 and 2.",
   "console.pulsetech.parameters.loop": "times ... repeat",
   "help.pulsetech.repeat": "Defines the end of a loop (see 'loop')",
   "console.pulsetech.description.repeat": "See 'loop' for details. Does nothing if not preceded by 'loop'.",
