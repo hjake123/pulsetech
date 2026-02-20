@@ -1,1 +1,6 @@
-- Fixed an issue where Pattern Detectors set to some number of 0s would get stuck on after any signal
+- Added new buttons in the Console to copy and paste their macros from the clipboard, so that complex sets of macros can be shared between worlds or players
+- Added a simple autocomplete feature to the Console
+- Made the Console's command entry field persist when its screen is closed
+- Fixed various issues involving the `forget` command in Program Emitters
+- Fixed an issue where Program Emitters would not update their protocol after defining a new macro until reloaded
+- `hide define` statements no longer unhide macros sometimes
