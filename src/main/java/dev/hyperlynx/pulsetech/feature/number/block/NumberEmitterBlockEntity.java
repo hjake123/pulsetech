@@ -52,10 +52,6 @@ public class NumberEmitterBlockEntity extends PulseBlockEntity implements Number
         }
     }
 
-    public void adjustNumber(int amount) {
-        number = (byte) Math.clamp(number + amount, Byte.MIN_VALUE, Byte.MAX_VALUE);
-    }
-
     @Override
     public byte getNumber() {
         return number;

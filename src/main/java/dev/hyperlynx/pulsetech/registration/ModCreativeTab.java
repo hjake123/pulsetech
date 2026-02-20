@@ -14,7 +14,7 @@ public class ModCreativeTab {
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
     // Creates a creative tab with the id "pulsetech:example_tab" for the example item, that is placed after the combat tab
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = TABS.register("tab",
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB = TABS.register("tab",
             () -> CreativeModeTab.builder().title(Component.translatable("pulsetech.tab"))
                     .withTabsBefore(CreativeModeTabs.COMBAT)
                     .icon(() -> ModItems.PATTERN_DETECTOR.get().getDefaultInstance())

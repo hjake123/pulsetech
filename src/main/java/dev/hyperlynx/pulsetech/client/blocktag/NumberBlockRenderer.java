@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class NumberBlockRenderer<T extends BlockEntity & NumberKnower> implements BlockEntityRenderer<T> {
-    EntityRenderDispatcher dispatcher;
+    private final EntityRenderDispatcher dispatcher;
 
     public NumberBlockRenderer(BlockEntityRendererProvider.Context context) {
         dispatcher = context.getEntityRenderer();

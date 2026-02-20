@@ -1,12 +1,7 @@
 package dev.hyperlynx.pulsetech.feature.number;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
-import dev.hyperlynx.pulsetech.client.ClientWrapper;
-import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
-import dev.hyperlynx.pulsetech.feature.pattern.OpenSequenceChooserPayload;
-import dev.hyperlynx.pulsetech.feature.pattern.SequenceSelectPayload;
-import dev.hyperlynx.pulsetech.feature.pattern.block.PatternBlockEntity;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;

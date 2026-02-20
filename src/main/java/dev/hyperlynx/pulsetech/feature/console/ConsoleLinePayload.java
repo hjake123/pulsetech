@@ -29,7 +29,7 @@ public record ConsoleLinePayload(BlockPos pos, String line) implements CustomPac
             ConsoleLinePayload::new
     );
 
-    public void clientHandler(IPayloadContext context) {
+    public void clientHandler(IPayloadContext ignored) {
         ClientWrapper.acceptConsoleLine(pos, line);
     }
 

@@ -25,7 +25,6 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -243,9 +242,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         try {
             var json = JsonParser.parseString(data);
             var decode_result = Macros.CODEC.decode(JsonOps.COMPRESSED, json);
-            decode_result.ifError(error -> {
-                sendLineIfConsole(player, Component.translatable("console.pulsetech.invalid_json_pasted").getString());
-            });
+            decode_result.ifError(error -> sendLineIfConsole(player, Component.translatable("console.pulsetech.invalid_json_pasted").getString()));
             decode_result.ifSuccess(pair -> {
                 addMacros(pair.getFirst().macros());
                 hidden_macros.addAll(pair.getFirst().hidden_macros());

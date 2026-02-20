@@ -3,7 +3,6 @@ package dev.hyperlynx.pulsetech.feature.pattern.block;
 import com.mojang.serialization.MapCodec;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;

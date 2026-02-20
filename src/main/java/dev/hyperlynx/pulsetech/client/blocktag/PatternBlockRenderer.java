@@ -2,7 +2,6 @@ package dev.hyperlynx.pulsetech.client.blocktag;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.hyperlynx.pulsetech.core.PatternHolder;
-import dev.hyperlynx.pulsetech.feature.pattern.block.PatternBlockEntity;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -12,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class PatternBlockRenderer <T extends BlockEntity & PatternHolder> implements BlockEntityRenderer<T> {
-    EntityRenderDispatcher dispatcher;
+    private final EntityRenderDispatcher dispatcher;
 
     public PatternBlockRenderer(BlockEntityRendererProvider.Context context) {
         dispatcher = context.getEntityRenderer();

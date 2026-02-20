@@ -34,7 +34,7 @@ public class ClientWrapper {
         PulsetechClient.openDatasheetScreen(datasheet);
     }
 
-    public static void acceptScreenBlockPayload(ScreenUpdatePayload payload, IPayloadContext context) {
+    public static void acceptScreenBlockPayload(ScreenUpdatePayload payload, IPayloadContext ignored) {
         PulsetechClient.updateScreenBlock(payload.data(), payload.pos());
     }
 
@@ -42,23 +42,23 @@ public class ClientWrapper {
         PulsetechClient.openNumberChooseScreen(pos);
     }
 
-    public static void openDebuggerScreen(DebuggerInfoManifest manifest, IPayloadContext context) {
+    public static void openDebuggerScreen(DebuggerInfoManifest manifest, IPayloadContext ignored) {
         PulsetechClient.openDebuggerScreen(manifest);
     }
 
-    public static void acceptDebuggerSequenceInfo(DebuggerSequenceInfo info, IPayloadContext iPayloadContext) {
+    public static void acceptDebuggerSequenceInfo(DebuggerSequenceInfo info, IPayloadContext ignored) {
         PulsetechClient.acceptDebuggerSequenceInfo(info);
     }
 
-    public static void acceptDebuggerByteInfo(DebuggerByteInfo info, IPayloadContext context) {
+    public static void acceptDebuggerByteInfo(DebuggerByteInfo info, IPayloadContext ignored) {
         PulsetechClient.acceptDebuggerByteInfo(info);
     }
 
-    public static void acceptDebuggerTextInfo(DebuggerTextInfo info, IPayloadContext context) {
+    public static void acceptDebuggerTextInfo(DebuggerTextInfo info, IPayloadContext ignored) {
         PulsetechClient.acceptDebuggerTextInfo(info);
     }
 
-    public static void acceptDebuggerPosInfo(DebuggerPosInfo info, IPayloadContext context) {
+    public static void acceptDebuggerPosInfo(DebuggerPosInfo info, IPayloadContext ignored) {
         PulsetechClient.acceptDebuggerPosInfo(info);
     }
 

@@ -35,8 +35,4 @@ public record Macros(Map<String, List<String>> macros, HashSet<String> hidden_ma
         merged_hidden_macros.addAll(other.hidden_macros());
         return new Macros(merged_macros, merged_hidden_macros);
     }
-
-    public void add(String noun, ArrayList<String> definition) {
-        macros().put(noun, new ArrayList<>(definition));
-    }
 }

@@ -26,14 +26,13 @@ public class OrbRenderer extends EntityRenderer<Orb> {
     @Override
     public void render(Orb orb, float entityYaw, float partialTick, PoseStack stack, MultiBufferSource source, int packedLight) {
         Vec3 render_pos = orb.position();
-        Vec3 render_offset = Vec3.ZERO;
         if(orb.hasNextDestination()) {
             Vec3 next_step = orb.getStep();
-            render_offset = next_step.scale(partialTick);
+            Vec3 render_offset = next_step.scale(partialTick);
             render_pos = orb.position().add(render_offset);
         }
 
-        renderOrbModel(orb, stack, source, packedLight, render_offset);
+        renderOrbModel(orb, stack, source, packedLight);
         if(!Minecraft.getInstance().isPaused()) {
             if(orb.level().random.nextFloat() < 0.05F) {
                 Minecraft.getInstance().level.addParticle(DustParticleOptions.REDSTONE, render_pos.x(), render_pos.y() + 0.15, render_pos.z(), 0, 0, 0);
@@ -47,7 +46,7 @@ public class OrbRenderer extends EntityRenderer<Orb> {
             }
         }
     }
-    private void renderOrbModel(Orb orb, PoseStack stack, MultiBufferSource source, int packedLight, Vec3 render_offset) {
+    private void renderOrbModel(Orb orb, PoseStack stack, MultiBufferSource source, int packedLight) {
         stack.pushPose();
         stack.translate(0, -1.2F, 0);
         this.model.setupAnim(orb, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);

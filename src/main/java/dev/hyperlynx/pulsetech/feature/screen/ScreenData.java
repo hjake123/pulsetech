@@ -2,14 +2,11 @@ package dev.hyperlynx.pulsetech.feature.screen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.util.Color;
 import dev.hyperlynx.pulsetech.util.MapListPairConverter;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -41,7 +41,7 @@ public record ConsoleClipboardCopyPayload(BlockPos pos, String contents) impleme
         PacketDistributor.sendToPlayer((ServerPlayer) context.player(), new ConsoleClipboardCopyPayload(pos, console.getClipboardData((ServerPlayer) context.player())));
     }
 
-    public void clientHandler(IPayloadContext context) {
+    public void clientHandler(IPayloadContext ignored) {
         ClientWrapper.copyToClipboard(contents);
     }
 

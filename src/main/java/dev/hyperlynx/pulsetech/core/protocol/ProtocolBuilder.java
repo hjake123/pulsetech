@@ -1,7 +1,6 @@
 package dev.hyperlynx.pulsetech.core.protocol;
 
 import dev.hyperlynx.pulsetech.core.Sequence;
-import dev.hyperlynx.pulsetech.datagen.ProtocolGenerator;
 
 import java.util.HashMap;
 import java.util.Map;

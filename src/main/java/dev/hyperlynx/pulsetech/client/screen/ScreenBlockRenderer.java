@@ -59,9 +59,8 @@ public class ScreenBlockRenderer implements BlockEntityRenderer<ScreenBlockEntit
                 stack.mulPose(Axis.YP.rotationDegrees(270));
                 stack.translate(-0.5, -0.5, 0.480);
             }
-            default -> { // SOUTH
-                stack.translate(0, 0, 1.001);
-            }
+            default -> // SOUTH
+                    stack.translate(0, 0, 1.001);
         }
     }
 

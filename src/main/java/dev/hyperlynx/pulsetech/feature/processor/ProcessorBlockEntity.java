@@ -88,12 +88,8 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
         super.tick();
         if(level instanceof ServerLevel slevel) {
             switch (operation_mode) {
-                case OUTPUT -> {
-                    emitter.looping = false;
-                }
-                case LOOP_OUTPUT -> {
-                    emitter.looping = true;
-                }
+                case OUTPUT -> emitter.looping = false;
+                case LOOP_OUTPUT -> emitter.looping = true;
             }
             emitter.tick(slevel, this);
         }

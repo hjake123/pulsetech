@@ -1,7 +1,6 @@
 package dev.hyperlynx.pulsetech.registration;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
-import dev.hyperlynx.pulsetech.core.protocol.Protocol;
 import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
 import net.minecraft.core.BlockPos;
@@ -12,11 +11,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ModComponentTypes {
     public static final DeferredRegister.DataComponents TYPES = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, Pulsetech.MODID);
-
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Protocol>> PROTOCOL = TYPES.register("protocol", () ->
-            DataComponentType.<Protocol>builder()
-                    .persistent(Protocol.CODEC)
-                    .build());
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Macros>> MACROS = TYPES.register("macros", () ->
             DataComponentType.<Macros>builder()

@@ -8,12 +8,11 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 @EventBusSubscriber
 public class PulsetechDataGen {
     @SubscribeEvent
-    public static void gatherData (GatherDataEvent event) throws ExecutionException, InterruptedException {
+    public static void gatherData (GatherDataEvent event) {
         var lookup = event.getLookupProvider();
         var output = event.getGenerator().getPackOutput();
 

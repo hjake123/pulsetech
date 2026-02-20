@@ -145,7 +145,7 @@ public class Sequence implements Comparable<Sequence> {
         for(boolean bit : getAsBooleans()) {
             boolean flipped = !bit;
             boolean result = (flipped ^ ones_place) ^ carry;
-            carry = (flipped && ones_place) || (carry && (flipped ^ ones_place));
+            carry = flipped && ones_place || carry && flipped;
             negated.append(result);
             ones_place = false;
         }

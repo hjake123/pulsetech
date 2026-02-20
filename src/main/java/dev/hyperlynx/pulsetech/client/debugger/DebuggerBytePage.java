@@ -4,9 +4,7 @@ import dev.hyperlynx.pulsetech.client.SequenceDisplayWidget;
 import dev.hyperlynx.pulsetech.core.Sequence;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 
 public class DebuggerBytePage extends DebuggerPage {
     private final SequenceDisplayWidget byte_sequence_display;

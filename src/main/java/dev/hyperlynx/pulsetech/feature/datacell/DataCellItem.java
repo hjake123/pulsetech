@@ -51,7 +51,9 @@ public class DataCellItem extends Item {
         if(context.getLevel().getBlockState(context.getClickedPos()).is(ModBlocks.SCANNER)) {
             stack.set(ModComponentTypes.SCANNER_LINK_POSITION, context.getClickedPos());
             context.getLevel().playSound(null, context.getClickedPos(), ModSounds.BEEP.value(), SoundSource.PLAYERS, 1.0F, 1.1F + context.getLevel().random.nextFloat() * 0.05F);
-            context.getPlayer().displayClientMessage(Component.translatable("pulsetech.stored_scanner_pos"), true);
+            if(context.getPlayer() != null) {
+                context.getPlayer().displayClientMessage(Component.translatable("pulsetech.stored_scanner_pos"), true);
+            }
         } else if(stack.has(ModComponentTypes.SCANNER_LINK_POSITION) && context.getLevel().getBlockEntity(context.getClickedPos()) instanceof ScannerLinkable linkable) {
             boolean success = linkable.setLinkedOrigin(stack.get(ModComponentTypes.SCANNER_LINK_POSITION));
             if(context.getPlayer() != null) {
@@ -73,6 +75,7 @@ public class DataCellItem extends Item {
         boolean data = false;
         if(stack.has(ModComponentTypes.MACROS)) {
             Macros macros = stack.get(ModComponentTypes.MACROS);
+            assert macros != null;
             tooltip.add(Component.literal(macros.macros().size() + " ").append(Component.translatable("pulsetech.macros_stored")).withStyle(ChatFormatting.GRAY));
             data = true;
         }

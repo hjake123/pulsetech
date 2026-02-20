@@ -41,6 +41,7 @@ public class ConsoleScreen extends Screen {
         initial_command_box_text = command_box_text;
         this.initial_extra_names = extra_names;
 
+        assert Minecraft.getInstance().level != null;
         if (Minecraft.getInstance().level.getBlockState(pos).getBlock() instanceof ConsoleBlock console_block) {
             this.color = console_block.getColor();
         } else {

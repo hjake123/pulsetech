@@ -23,7 +23,7 @@ public record OpenSequenceChooserPayload(BlockPos pos) implements CustomPacketPa
             OpenSequenceChooserPayload::new
     );
 
-    public void handler(IPayloadContext context) {
+    public void handler(IPayloadContext ignored) {
         ClientWrapper.openSequenceScreen(pos);
     }
 }

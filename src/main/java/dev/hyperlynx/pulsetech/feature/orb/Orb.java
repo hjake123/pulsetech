@@ -3,6 +3,7 @@ package dev.hyperlynx.pulsetech.feature.orb;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.hyperlynx.pulsetech.Config;
+import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.registration.ModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -29,7 +30,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import javax.print.attribute.standard.Destination;
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Objects;
@@ -101,6 +101,10 @@ public class Orb extends Entity {
     }
 
     public Vec3 getStep() {
+        if(nextDestination() == null) {
+            Pulsetech.LOGGER.error("Don't call getStep() when the next destination is null!");
+            return Vec3.ZERO;
+        }
         Vec3 destination_pos = nextDestination().getCenter();
         Vec3 displacement = destination_pos.subtract(this.position());
         return displacement.normalize().multiply(Config.ORB_SPEED.get(), Config.ORB_SPEED.get(), Config.ORB_SPEED.get());
@@ -188,7 +192,7 @@ public class Orb extends Entity {
             destinations = new ArrayDeque<>(Destination.CODEC.listOf().decode(NbtOps.INSTANCE, tag.get("Destinations")).getOrThrow().getFirst());
         }
         if(tag.contains("NextDestination")) {
-            setNextDestination(NbtUtils.readBlockPos(tag, "NextDestination").orElse(null));
+            setNextDestination(NbtUtils.readBlockPos(tag, "NextDestination").orElse(BlockPos.ZERO));
         }
         if(tag.contains("Projectile")) {
             toggleProjectile();

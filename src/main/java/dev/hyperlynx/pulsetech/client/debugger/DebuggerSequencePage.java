@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DebuggerSequencePage extends DebuggerPage {
-    List<SequenceDisplayWidget> sequence_displays = new ArrayList<>();
+    private final List<SequenceDisplayWidget> sequence_displays = new ArrayList<>();
     private int total_bits = 0;
 
     public DebuggerSequencePage(BlockPos pos, int id, String title, int x, int y) {

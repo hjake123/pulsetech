@@ -58,9 +58,8 @@ public class ScopeBlockRenderer implements BlockEntityRenderer<ScopeBlockEntity>
                 stack.mulPose(Axis.YP.rotationDegrees(270));
                 stack.translate(-0.5, -0.5, 0.501);
             }
-            default -> { // SOUTH
-                stack.translate(0, 0, 1.001);
-            }
+            default -> // SOUTH
+                    stack.translate(0, 0, 1.001);
         }
     }
 

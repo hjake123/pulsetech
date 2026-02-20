@@ -47,9 +47,9 @@ public record DebuggerInfoManifest(List<Entry> entries, BlockPos pos) implements
     }
 
     public static class Entry {
-        private String title;
-        private DebuggerInfoType type;
-        private Supplier<CustomPacketPayload> getter;
+        private final String title;
+        private final DebuggerInfoType type;
+        private final Supplier<CustomPacketPayload> getter;
 
         static final StreamCodec<RegistryFriendlyByteBuf, Entry> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.STRING_UTF8, Entry::title,

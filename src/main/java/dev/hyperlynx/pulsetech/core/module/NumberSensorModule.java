@@ -2,7 +2,6 @@ package dev.hyperlynx.pulsetech.core.module;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.core.PulseBlockEntity;
 

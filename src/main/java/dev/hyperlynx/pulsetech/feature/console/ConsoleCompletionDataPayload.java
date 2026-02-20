@@ -28,7 +28,7 @@ public record ConsoleCompletionDataPayload(BlockPos pos, List<String> macros) im
             ConsoleCompletionDataPayload::new
     );
 
-    public void clientHandler(IPayloadContext context) {
+    public void clientHandler(IPayloadContext ignored) {
         ClientWrapper.acceptConsoleCompletionData(pos, macros);
     }
 }

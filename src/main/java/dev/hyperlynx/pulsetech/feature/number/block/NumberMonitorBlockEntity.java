@@ -1,7 +1,6 @@
 package dev.hyperlynx.pulsetech.feature.number.block;
 
 import dev.hyperlynx.pulsetech.core.PulseBlockEntity;
-import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoSource;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerByteInfo;

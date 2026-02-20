@@ -23,7 +23,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class Storyboards {
     static void patternEmitter(SceneBuilder scene, SceneBuildingUtil util) {

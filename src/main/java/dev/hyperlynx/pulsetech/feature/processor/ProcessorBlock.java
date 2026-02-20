@@ -3,10 +3,6 @@ package dev.hyperlynx.pulsetech.feature.processor;
 import com.mojang.serialization.MapCodec;
 import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.core.program.Macros;
-import dev.hyperlynx.pulsetech.core.program.ProgramInterpreter;
-import dev.hyperlynx.pulsetech.core.protocol.ExecutionContext;
-import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommand;
-import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternDetectorBlock;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModBlocks;
@@ -24,7 +20,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -32,13 +27,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static dev.hyperlynx.pulsetech.core.PulseBlock.FACING;
 
 public class ProcessorBlock extends PulseBlock implements EntityBlock {
     protected static final VoxelShape SHAPE_EAST = Shapes.or(Block.box(2, 2, 6, 4, 3, 10), Block.box(4, 2, 4, 12, 6, 12), Block.box(0, 0, 0, 16, 2, 16), Block.box(5, 6, 5, 11, 12, 11));

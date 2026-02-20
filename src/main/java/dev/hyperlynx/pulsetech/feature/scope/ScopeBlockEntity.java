@@ -4,7 +4,6 @@ import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.PatternHolder;
 import dev.hyperlynx.pulsetech.core.PulseBlockEntity;
 import dev.hyperlynx.pulsetech.core.Sequence;
-import dev.hyperlynx.pulsetech.core.module.EmitterModule;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;

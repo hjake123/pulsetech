@@ -62,20 +62,6 @@ public class Color {
     private int green() { return green; }
     private int blue() { return blue; }
 
-    public void reset(){
-        red = 0;
-        green = 0;
-        blue = 0;
-        hex = 0;
-    }
-
-    public void set(Color to){
-        red = to.red;
-        green = to.green;
-        blue = to.blue;
-        hex = to.hex;
-    }
-
     @Override
     public boolean equals(Object obj) {
         boolean obj_equals = super.equals(obj);

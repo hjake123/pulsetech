@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.Block;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class DatasheetScreen extends Screen {
     private static final ResourceLocation BACKGROUND = Pulsetech.location("textures/gui/datasheet_background.png");

@@ -3,7 +3,6 @@ package dev.hyperlynx.pulsetech.feature.console.block;
 import com.mojang.serialization.MapCodec;
 import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.feature.console.ConsoleColor;
-import dev.hyperlynx.pulsetech.feature.console.ConsoleCompletionDataPayload;
 import dev.hyperlynx.pulsetech.feature.console.OpenConsolePayload;
 import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;

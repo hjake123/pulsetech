@@ -6,7 +6,6 @@ import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.core.module.NumberSensorModule;
 import dev.hyperlynx.pulsetech.core.module.SequenceModule;
-import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetEntry;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

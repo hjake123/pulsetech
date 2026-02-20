@@ -55,7 +55,7 @@ public class CannonBlockEntity extends ProtocolBlockEntity implements ScannerLin
     }
 
     public void fire() {
-        if(!level.isLoaded(target)) {
+        if(level == null || !level.isLoaded(target)) {
             return;
         }
         ParticleScribe.drawParticleLine(level, ParticleTypes.ELECTRIC_SPARK, getBlockPos(), target, 30, 0.5F);
@@ -134,10 +134,6 @@ public class CannonBlockEntity extends ProtocolBlockEntity implements ScannerLin
                 DebuggerInfoTypes.BLOCK_POS.value(),
                 () -> new DebuggerPosInfo(target.subtract(origin))
         ));
-    }
-
-    public void forceSetOrigin(BlockPos blockPos) {
-        this.origin = blockPos;
     }
 
     public BlockPos getTargetOffset() {

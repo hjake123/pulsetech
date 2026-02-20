@@ -5,10 +5,8 @@ import dev.hyperlynx.pulsetech.core.protocol.ProtocolExecutorModule;
 import dev.hyperlynx.pulsetech.feature.cannon.CannonBlockEntity;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberMonitorBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
-import dev.hyperlynx.pulsetech.registration.ModBlocks;
 import dev.hyperlynx.pulsetech.util.Color;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.block.Blocks;
@@ -212,9 +210,7 @@ public class Tests {
             helper.assertTrue(helper.getLevel().getDirectSignalTo(helper.absolutePos(wire_pos)) > 0, "Controller did not turn on when commanded");
             helper.pulseRedstone(new BlockPos(0, 3, 0), 5);
         });
-        helper.runAfterDelay(80, () -> {
-            helper.assertTrue(helper.getLevel().getDirectSignalTo(helper.absolutePos(wire_pos)) == 0, "Controller did not turn off when commanded");
-        });
+        helper.runAfterDelay(80, () -> helper.assertTrue(helper.getLevel().getDirectSignalTo(helper.absolutePos(wire_pos)) == 0, "Controller did not turn off when commanded"));
         helper.runAfterDelay(82, helper::succeed);
     }
 

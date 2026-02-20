@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -42,11 +41,6 @@ public class NumberMonitorBlock extends PulseBlock implements EntityBlock {
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return ModBlockEntityTypes.NUMBER_MONITOR.get().create(pos, state);
-    }
-
-    @Override
-    protected boolean hasAnalogOutputSignal(BlockState state) {
-        return true;
     }
 
     @Override

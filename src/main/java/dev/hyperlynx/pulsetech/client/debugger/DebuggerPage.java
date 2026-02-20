@@ -3,7 +3,6 @@ package dev.hyperlynx.pulsetech.client.debugger;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoRequest;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public abstract class DebuggerPage implements Renderable {

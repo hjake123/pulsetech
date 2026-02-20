@@ -11,8 +11,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.List;
-
 public record DebuggerInfoRequest(BlockPos pos, int id) implements CustomPacketPayload {
     public static final StreamCodec<ByteBuf, DebuggerInfoRequest> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC, DebuggerInfoRequest::pos,
