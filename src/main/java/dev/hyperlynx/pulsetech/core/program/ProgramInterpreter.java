@@ -149,11 +149,12 @@ public class ProgramInterpreter {
         List<String> modifiable_tokens = new ArrayList<>(tokens_before_outermost_loop);
         List<String> recursively_processed_interior = processLoopCommands(executor, tokens_inside_outermost_loop, player);
         for(int i = 0; i < Math.abs(loop_count); i++) {
-            for (int f = 0; f < recursively_processed_interior.size(); f++) {
-                String token = recursively_processed_interior.get(f);
-                if (token.equals("x?")) {
+            for (String token : recursively_processed_interior) {
+                if (token.equals("i?")) {
                     int temp = i;
-                    if (loop_count < 0) {temp = Math.abs(loop_count)-i-1;}
+                    if (loop_count < 0) {
+                        temp = Math.abs(loop_count) - i - 1;
+                    }
                     modifiable_tokens.add(Integer.toString(temp));
                 } else {
                     modifiable_tokens.add(token);

@@ -1,7 +1,2 @@
-- Added new buttons in the Console to copy and paste their macros from the clipboard, so that complex sets of macros can be shared between worlds or players
-- Added a simple autocomplete feature to the Console
-  - This feature can be disabled using the client-side config
-- Made the Console's command entry field persist when its screen is closed
-- Fixed various issues involving the `forget` command in Program Emitters
-- Fixed an issue where Program Emitters would not update their protocol after defining a new macro until reloaded
-- `hide define` statements no longer unhide macros sometimes
+(This is a development version and shouldn't be uploaded...)
+- Added `i?` parameter marker which is parsed into the current iteration of a loop (by NMCV1-9) 
