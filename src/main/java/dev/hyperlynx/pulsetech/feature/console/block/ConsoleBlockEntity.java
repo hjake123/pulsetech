@@ -7,6 +7,7 @@ import com.mojang.serialization.JsonOps;
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.PulseBlockEntity;
 import dev.hyperlynx.pulsetech.core.program.*;
+import dev.hyperlynx.pulsetech.feature.console.ConsoleCompletionDataPayload;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetEntry;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetProvider;
@@ -24,9 +25,12 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.network.PacketDistributor;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetProvider, ProgramExecutor, DebuggerInfoSource {
@@ -264,5 +268,12 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
                 .append(String.valueOf(macros.size()))
                 .append(Component.translatable("console.pulsetech.copied_macros_2")).getString());
         return encode_result.getOrThrow().toString();
+    }
+
+    @Override
+    public void onMacrosChanged(String noun, @Nullable ServerPlayer current_user) {
+        if(current_user != null) {
+            PacketDistributor.sendToPlayer(current_user, new ConsoleCompletionDataPayload(getBlockPos(), macros.keySet().stream().toList()));
+        }
     }
 }

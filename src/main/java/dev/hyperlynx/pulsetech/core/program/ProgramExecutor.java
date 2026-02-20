@@ -37,6 +37,11 @@ public interface ProgramExecutor {
         setChanged();
     }
 
+    default void setMacroNotHidden(String token) {
+        getHiddenMacros().remove(token);
+        setChanged();
+    }
+
     default void toggleMacroHidden(String macro) {
         if(getHiddenMacros().contains(macro)) {
             getHiddenMacros().remove(macro);
@@ -50,7 +55,5 @@ public interface ProgramExecutor {
         return getHiddenMacros().contains(key);
     }
 
-    default void addMacro(String noun, List<String> definition) {
-        getMacros().put(noun, definition);
-    }
+    void onMacrosChanged(String noun, ServerPlayer player);
 }

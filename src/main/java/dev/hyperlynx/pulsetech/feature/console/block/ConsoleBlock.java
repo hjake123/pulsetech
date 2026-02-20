@@ -3,6 +3,7 @@ package dev.hyperlynx.pulsetech.feature.console.block;
 import com.mojang.serialization.MapCodec;
 import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.feature.console.ConsoleColor;
+import dev.hyperlynx.pulsetech.feature.console.ConsoleCompletionDataPayload;
 import dev.hyperlynx.pulsetech.feature.console.OpenConsolePayload;
 import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
@@ -45,7 +46,7 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
     @Override
     protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (player instanceof ServerPlayer splayer && level.getBlockEntity(pos) instanceof ConsoleBlockEntity console) {
-            PacketDistributor.sendToPlayer(splayer, new OpenConsolePayload(pos, console.getPriorLinesOrEmpty(), console.getCommandBoxText()));
+            PacketDistributor.sendToPlayer(splayer, new OpenConsolePayload(pos, console.getPriorLinesOrEmpty(), console.getCommandBoxText(), console.getMacros().keySet().stream().toList()));
         }
         return InteractionResult.SUCCESS;
     }

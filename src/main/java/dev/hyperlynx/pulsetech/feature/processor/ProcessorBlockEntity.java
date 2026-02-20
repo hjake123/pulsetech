@@ -20,6 +20,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +41,7 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
 
     // Recomputed when needed
     private Protocol computed_protocol;
+    private int last_macro_count = 0; // Used to invalidate protocol at the proper times after loading the BE.
 
     public ProcessorBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.PROCESSOR.get(), pos, blockState);
@@ -133,8 +135,7 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
     }
 
     @Override
-    public void addMacro(String noun, List<String> definition) {
-        ProgramExecutor.super.addMacro(noun, definition);
+    public void onMacrosChanged(String noun, @Nullable ServerPlayer current_user) {
         computed_protocol = null;
         setChanged();
     }
@@ -145,9 +146,12 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
                 fetchProtocol().getCommands().entrySet().stream().map(entry -> {
                     if(entry.getKey() instanceof MacroProtocolCommand mcommand) {
                         Sequence command_sequence = entry.getValue();
+                        if(!macros.containsKey(mcommand.macro())) {
+                            return new DatasheetEntry(Component.literal("??MISSING??"), Component.empty(), Component.empty(), null);
+                        }
                         return new DatasheetEntry(
                                 Component.literal(mcommand.macro()),
-                                Component.literal(macros.get(mcommand.macro()).stream().reduce((a, b) -> a + " " + b).orElse("??MISSING??")),
+                                Component.literal(macros.get(mcommand.macro()).stream().reduce((a, b) -> a + " " + b).orElse("??EMPTY??")),
                                 Component.empty(),
                                 command_sequence
                         );
@@ -207,6 +211,11 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
         }
         if(tag.contains("macros")) {
             MACRO_CODEC.decode(NbtOps.INSTANCE, tag.get("macros")).ifSuccess(pair -> macros = new HashMap<>(pair.getFirst()));
+            if(macros.size() != last_macro_count) {
+                // If the macro list changed size since we last loaded, we need to destroy the old protocol if there was one.
+                computed_protocol = null;
+                last_macro_count = macros.size();
+            }
         }
         if(tag.contains("OperationMode")) {
             operation_mode = OperationMode.valueOf(tag.getString("OperationMode"));

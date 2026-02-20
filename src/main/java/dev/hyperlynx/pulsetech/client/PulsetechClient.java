@@ -41,6 +41,8 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
+import java.util.List;
+
 @Mod(value = Pulsetech.MODID, dist = Dist.CLIENT)
 public class PulsetechClient {
 
@@ -68,7 +70,8 @@ public class PulsetechClient {
     public static void acceptDebuggerByteInfo(DebuggerByteInfo info) {
         if(Minecraft.getInstance().screen instanceof DebuggerScreen screen) {
             screen.acceptInfo(info.number());
-        }    }
+        }
+    }
 
     public static void acceptDebuggerTextInfo(DebuggerTextInfo info) {
         if(Minecraft.getInstance().screen instanceof DebuggerScreen screen) {
@@ -84,6 +87,15 @@ public class PulsetechClient {
 
     public static void copyToClipboard(String contents) {
         Minecraft.getInstance().keyboardHandler.setClipboard(contents);
+    }
+
+    public static void acceptConsoleCompletionData(BlockPos pos, List<String> macros) {
+        Screen current_screen = Minecraft.getInstance().screen;
+        if(current_screen instanceof ConsoleScreen console) {
+            if(console.getPos().equals(pos)) {
+                console.setCompletionNames(macros);
+            }
+        }
     }
 
     protected void onClientSetup(FMLClientSetupEvent event) {
@@ -111,8 +123,8 @@ public class PulsetechClient {
         event.registerLayerDefinition(OrbModel.LAYER_LOCATION, OrbModel::createBodyLayer);
     }
 
-    protected static void openConsoleScreen(BlockPos pos, String prior_lines, String command_box_text) {
-        Minecraft.getInstance().setScreen(new ConsoleScreen(pos, prior_lines, command_box_text));
+    protected static void openConsoleScreen(BlockPos pos, String prior_lines, String command_box_text, List<String> extra_names) {
+        Minecraft.getInstance().setScreen(new ConsoleScreen(pos, prior_lines, command_box_text, extra_names));
     }
 
 

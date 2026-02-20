@@ -122,5 +122,11 @@ public class ModPayloads {
                 ConsoleClipboardPastePayload.STREAM_CODEC,
                 ConsoleClipboardPastePayload::serverHandler
         );
+
+        registrar.playToClient(
+                ConsoleCompletionDataPayload.TYPE,
+                ConsoleCompletionDataPayload.STREAM_CODEC,
+                ConsoleCompletionDataPayload::clientHandler
+        );
     }
 }

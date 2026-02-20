@@ -1,20 +1,15 @@
 package dev.hyperlynx.pulsetech.client.console;
 
-import com.mojang.serialization.Codec;
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.feature.console.*;
 import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlock;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
@@ -36,13 +31,15 @@ public class ConsoleScreen extends Screen {
     private final List<String> past_commands = new ArrayList<>();
     private final String initial_command_box_text;
     private int force_focus_timer = 0;
+    private final List<String> initial_extra_names;
 
-    public ConsoleScreen(BlockPos pos, String lines, String command_box_text) {
+    public ConsoleScreen(BlockPos pos, String lines, String command_box_text, List<String> extra_names) {
         super(Component.translatable("block.pulsetech.console"));
         this.pos = pos;
         this.prior_lines_str = lines;
         past_commands.addAll(Arrays.stream(prior_lines_str.split("\n")).filter(line -> line.startsWith(">")).map(line -> line.substring(2)).toList());
         initial_command_box_text = command_box_text;
+        this.initial_extra_names = extra_names;
 
         if (Minecraft.getInstance().level.getBlockState(pos).getBlock() instanceof ConsoleBlock console_block) {
             this.color = console_block.getColor();
@@ -59,7 +56,7 @@ public class ConsoleScreen extends Screen {
         int command_box_height = font.lineHeight * 2;
         int console_height = font.lineHeight * 22 + 6;
         command_box = new EditBox(font, this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (console_width / 2), this.getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) + (console_height / 2) - 5, console_width, command_box_height, Component.empty());
-        suggester = new ConsoleSuggester(command_box);
+        suggester = new ConsoleSuggester(command_box, initial_extra_names);
         command_box.setMaxLength(104);
         command_box.setValue(initial_command_box_text);
         command_box.setResponder(suggester::responder);
@@ -219,5 +216,9 @@ public class ConsoleScreen extends Screen {
         }
         PacketDistributor.sendToServer(new ConsolePriorLinesPayload(pos, lines, command_box.getValue()));
         super.onClose();
+    }
+
+    public void setCompletionNames(List<String> macros) {
+        suggester.setExtraNames(macros);
     }
 }

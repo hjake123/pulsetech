@@ -10,10 +10,12 @@ import dev.hyperlynx.pulsetech.feature.screen.ScreenUpdatePayload;
 import net.minecraft.core.BlockPos;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+import java.util.List;
+
 /// The ONLY class within the client package that is safe to call upon from outside the package!
 public class ClientWrapper {
-    public static void openConsoleScreen(BlockPos pos, String prior_lines, String command_box_text) {
-        PulsetechClient.openConsoleScreen(pos, prior_lines, command_box_text);
+    public static void openConsoleScreen(BlockPos pos, String prior_lines, String command_box_text, List<String> extra_names) {
+        PulsetechClient.openConsoleScreen(pos, prior_lines, command_box_text, extra_names);
     }
 
     public static void acceptConsoleLine(BlockPos pos, String line) {
@@ -62,5 +64,9 @@ public class ClientWrapper {
 
     public static void copyToClipboard(String contents) {
         PulsetechClient.copyToClipboard(contents);
+    }
+
+    public static void acceptConsoleCompletionData(BlockPos pos, List<String> macros) {
+        PulsetechClient.acceptConsoleCompletionData(pos, macros);
     }
 }
