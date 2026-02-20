@@ -198,7 +198,7 @@ public class ProgramInterpreter {
                     if(executor.getMacros().remove(token) != null) {
                         executor.setMacroNotHidden(token);
                         executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.forgot").getString() + token);
-                        executor.onMacrosChanged(token, player);
+                        executor.onMacrosChanged(player);
                     }
                 }
                 case SET_DELAY -> {
@@ -297,7 +297,7 @@ public class ProgramInterpreter {
                 executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.defined").getString() + noun);
             }
             executor.getMacros().put(noun, definition);
-            executor.onMacrosChanged(noun, player);
+            executor.onMacrosChanged(player);
             if(hidden) {
                 executor.setMacroHidden(noun);
             }

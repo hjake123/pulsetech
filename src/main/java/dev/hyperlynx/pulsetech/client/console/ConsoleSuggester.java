@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.client.console;
 
+import dev.hyperlynx.pulsetech.Config;
 import dev.hyperlynx.pulsetech.core.program.ProgramInterpreter;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
@@ -21,6 +22,9 @@ public class ConsoleSuggester {
     }
 
     public void responder(String current_input) {
+        if(!Config.CONSOLE_AUTOCOMPLETE.get()) {
+            return;
+        }
         String initial_word = Arrays.stream(current_input.split(" ")).toList().getLast();
         current_suggestion = "";
         if(!initial_word.isEmpty()) {

@@ -135,7 +135,7 @@ public class ProcessorBlockEntity extends ProtocolBlockEntity implements Program
     }
 
     @Override
-    public void onMacrosChanged(String noun, @Nullable ServerPlayer current_user) {
+    public void onMacrosChanged(@Nullable ServerPlayer current_user) {
         computed_protocol = null;
         setChanged();
     }

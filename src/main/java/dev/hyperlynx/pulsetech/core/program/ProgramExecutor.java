@@ -55,5 +55,5 @@ public interface ProgramExecutor {
         return getHiddenMacros().contains(key);
     }
 
-    void onMacrosChanged(String noun, ServerPlayer player);
+    void onMacrosChanged(ServerPlayer player);
 }

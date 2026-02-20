@@ -4,7 +4,6 @@ import com.mojang.logging.LogUtils;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
 import dev.hyperlynx.pulsetech.registration.*;
-import net.createmod.ponder.api.registration.PonderPlugin;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -19,7 +18,6 @@ public class Pulsetech {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public Pulsetech(IEventBus bus, ModContainer container) {
-        bus.addListener(this::commonSetup);
         ModBlocks.BLOCKS.register(bus);
         ModBlockEntityTypes.TYPES.register(bus);
         ModItems.ITEMS.register(bus);
@@ -29,10 +27,8 @@ public class Pulsetech {
         ModSounds.SOUND_EVENTS.register(bus);
         ProtocolCommands.COMMANDS.register(bus);
         DebuggerInfoTypes.TYPES.register(bus);
-        container.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-    }
-
-    private void commonSetup(final FMLCommonSetupEvent event) {
+        container.registerConfig(ModConfig.Type.COMMON, Config.COMMON_SPEC);
+        container.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_SPEC);
     }
 
     public static ResourceLocation location(String path) {

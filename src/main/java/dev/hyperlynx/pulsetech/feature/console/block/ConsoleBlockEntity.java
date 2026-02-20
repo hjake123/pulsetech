@@ -39,7 +39,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
     private String saved_lines = "";
     private String saved_command_box_text = "";
 
-    private Map<String, List<String>> macros = new HashMap<>(); // Defined macros for this console. TODO better persistence?
+    private Map<String, List<String>> macros = new HashMap<>(); // Defined macros for this console.
     private static final Codec<Map<String, List<String>>> MACRO_CODEC = Codec.unboundedMap(Codec.STRING, Codec.STRING.listOf());
     private int unwrap_count = 0;
     private HashSet<String> hidden_macros = new HashSet<>();
@@ -271,7 +271,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
     }
 
     @Override
-    public void onMacrosChanged(String noun, @Nullable ServerPlayer current_user) {
+    public void onMacrosChanged(@Nullable ServerPlayer current_user) {
         if(current_user != null) {
             PacketDistributor.sendToPlayer(current_user, new ConsoleCompletionDataPayload(getBlockPos(), macros.keySet().stream().toList()));
         }

@@ -8,6 +8,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +37,7 @@ public record ConsoleClipboardPastePayload(BlockPos pos, String contents) implem
             return;
         }
         console.ingestClipboardData(contents, (ServerPlayer) context.player());
+        PacketDistributor.sendToPlayer((ServerPlayer) context.player(), new ConsoleCompletionDataPayload(pos, console.getMacros().keySet().stream().toList()));
     }
 
 }
