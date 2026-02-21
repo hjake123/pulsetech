@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+/// A complete set of Macro data to be saved into the Data Cell and moved between Consoles or Program Emitters.
 public record Macros(Map<String, List<String>> macros, HashSet<String> hidden_macros) {
     public static final Codec<Macros> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(

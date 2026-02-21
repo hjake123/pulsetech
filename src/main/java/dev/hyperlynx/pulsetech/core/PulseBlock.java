@@ -34,7 +34,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumSet;
 import java.util.function.BiFunction;
 
-/// See {@link PulseBlockEntity}
+/// See {@link PulseBlockEntity}. This block implements the fundamental block behavior for working with pulse signals.
+/// Each one has a [SideIO], and the block has a facing direction and the ability to input and output pulses.
 public abstract class PulseBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final BooleanProperty OUTPUT = BooleanProperty.create("output");
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
@@ -114,6 +115,7 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
             return;
         }
         if(measureInput(level, pos, change_direction) && level.getBlockEntity(pos) instanceof PulseBlockEntity entity && !entity.isActive() && !entity.isDelayed() && !entity.wake_triggered) {
+            // We've heard the wake signal. Begin waking from rest.
             entity.wake_triggered = true;
             level.scheduleTick(pos, this, pulse_input ? 4 : 3, TickPriority.VERY_HIGH);
             // If this block is a pulse input, we wait an additional tick so that, if this device ends up before the
@@ -127,6 +129,7 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
         return level.getSignal(pos.relative(change_direction), change_direction) > 0;
     }
 
+    /// Checks the defined input sides for signals.
     public static boolean measureAllInputs(Level level, BlockPos pos) {
         Block block = level.getBlockState(pos).getBlock();
         if(block instanceof PulseBlock pulse_block) {
@@ -135,6 +138,7 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
         throw new AssertionError("Can't use PulseBlock methods on non PulseBlocks!");
     }
 
+    /// Sends a block update to the neighbors of the blocks on each output side to enable weak signaling
     public static void updateOutputNeighbors(Level level, BlockPos pos, BlockState state) {
         Block block = state.getBlock();
         if(block instanceof PulseBlock pulse_block) {
@@ -144,6 +148,7 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
         throw new AssertionError("Can't use PulseBlock methods on non PulseBlocks!");
     }
 
+    /// After the wake pulse's delay, this runs, activating the block entity and beginning signal sensing.
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if(level.getBlockEntity(pos) instanceof PulseBlockEntity entity) {
@@ -183,6 +188,7 @@ public abstract class PulseBlock extends HorizontalDirectionalBlock implements E
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
+    /// A single capability that one side of the block could have.
     public enum SideFunction implements StringRepresentable {
         INPUT,
         OUTPUT,

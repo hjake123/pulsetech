@@ -6,6 +6,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+/// A block entity that works with pulsed data. See [PulseBlock].
 public abstract class PulseBlockEntity extends BlockEntity {
     boolean wake_triggered = false;
 

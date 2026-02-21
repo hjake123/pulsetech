@@ -32,6 +32,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import javax.annotation.Nullable;
 import java.util.*;
 
+/// The Console is one of two [ProgramExecutor]s. These blocks use the [ProgramInterpreter] to run programs written in the mod's
+/// scripting language.
 public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetProvider, ProgramExecutor, DebuggerInfoSource {
     ProgramEmitterModule emitter = new ProgramEmitterModule();
     private CommandMode command_mode = CommandMode.PARSE;
@@ -61,6 +63,7 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         macros.putAll(other_macros);
     }
 
+    /// Split and execute the given command string,
     public void processLine(String line, ServerPlayer player) {
         ProgramInterpreter.startProcessTokenList(this, Arrays.stream(line.split(" ")).toList(), player);
     }

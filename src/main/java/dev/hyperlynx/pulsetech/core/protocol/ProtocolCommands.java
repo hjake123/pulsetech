@@ -10,6 +10,7 @@ import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
 /// A static registry of all commands.
+/// Specific commands are registered within the PulseBlock subclass for each feature.
 @EventBusSubscriber
 public class ProtocolCommands {
     public static final ResourceKey<Registry<ProtocolCommand>> REGISTRY_KEY = ResourceKey.createRegistryKey(Pulsetech.location("protocol_commands"));

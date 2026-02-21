@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/// A module for use by a [ProtocolBlockEntity]. Contains information about the active [ProtocolCommand], a [NumberSensorModule]
+/// that is used to read parameters, and remembers the state of command execution.
 public class ProtocolExecutorModule extends SequenceModule<ProtocolBlockEntity> {
     private State state = State.AWAIT_COMMAND;
     @Nullable private ProtocolCommand active_command = null;

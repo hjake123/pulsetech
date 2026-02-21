@@ -13,6 +13,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.util.List;
 
 /// The ONLY class within the client package that is safe to call upon from outside the package!
+/// Wraps all the capabilities of the client.
 public class ClientWrapper {
     public static void openConsoleScreen(BlockPos pos, String prior_lines, String command_box_text, List<String> extra_names) {
         PulsetechClient.openConsoleScreen(pos, prior_lines, command_box_text, extra_names);

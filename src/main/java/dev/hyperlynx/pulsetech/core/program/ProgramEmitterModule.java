@@ -10,6 +10,8 @@ import dev.hyperlynx.pulsetech.util.MapListPairConverter;
 
 import java.util.*;
 
+/// Emitter module that keeps track of extra information, including whether it is in a loop and at what times during emission
+/// it should delay, for use in the [ProgramExecutor] blocks.
 public class ProgramEmitterModule extends EmitterModule {
     public Map<Integer, Short> delay_points = new HashMap<>();
     public boolean looping = false;

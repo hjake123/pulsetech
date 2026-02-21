@@ -17,7 +17,8 @@ import java.util.function.BiConsumer;
 
 import static java.util.Map.entry;
 
-/// Helper class which can run a List of tokens as a program, given a ProgramExecutor instance.
+/// Core class of the Program system. Runs programs made up of the list of commands below, their parameters, and
+/// macros. The commands are run by [ProgramExecutor]s passed to each lambda.
 public class ProgramInterpreter {
     public static final Map<String, BiConsumer<ServerPlayer, ProgramExecutor>> BUILT_IN_COMMANDS = Map.ofEntries(
             entry("about", (player, executor) -> {
@@ -88,6 +89,8 @@ public class ProgramInterpreter {
         }
     }
 
+    /// Before a loop command is run, this method pre-preprocesses and expands it.
+    /// It can handle nested loops, and handles the i? index token.
     private static List<String> processLoopCommands(ProgramExecutor executor, List<String> tokens, @Nullable ServerPlayer player) {
         if(tokens.contains("define")) {
             // Don't process loops during definitions
@@ -112,6 +115,7 @@ public class ProgramInterpreter {
             return List.of();
         }
 
+        // Look for the end of the outermost loop and process the loop count.
         for(int i = 0; i < tokens.size(); i++) {
             String token = tokens.get(i);
 
@@ -146,10 +150,12 @@ public class ProgramInterpreter {
             }
         }
 
+        // Perform the expansion of the loop
         List<String> modifiable_tokens = new ArrayList<>(tokens_before_outermost_loop);
         List<String> recursively_processed_interior = processLoopCommands(executor, tokens_inside_outermost_loop, player);
         for(int i = 0; i < Math.abs(loop_count); i++) {
             for (String token : recursively_processed_interior) {
+                // Scan for 'i?' tokens and replace them with their iteration number
                 if (token.equals("i?")) {
                     int temp = i;
                     if (loop_count < 0) {
@@ -166,12 +172,15 @@ public class ProgramInterpreter {
         return modifiable_tokens;
     }
 
+    /// Call this method to execute a list of tokens that form a program
     public static void startProcessTokenList(ProgramExecutor executor, List<String> tokens, @Nullable ServerPlayer player) {
         executor.resetUnwrapCount();
         processTokenList(executor, tokens, player);
     }
 
-    public static void processTokenList(ProgramExecutor executor, List<String> tokens, @Nullable ServerPlayer player) {
+    /// Recursively evaluates the token list. Uses the executor's command mode as a state to decide what to do for each token.
+    /// Each keyword that changes the meaning of future tokens has a distinct command mode
+    private static void processTokenList(ProgramExecutor executor, List<String> tokens, @Nullable ServerPlayer player) {
         executor.setCommandMode(CommandMode.PARSE);
         boolean error = false; // Tracks invalid tokens during parsing
         String noun = ""; // Used for define operations
@@ -277,6 +286,7 @@ public class ProgramInterpreter {
                 }
             }
         }
+        // Handlers for different conditions after reaching the end of the expression.
         if(!executor.getEmitter().getBuffer().isEmpty() && !error) {
             executor.setActive(true);
         }
@@ -294,6 +304,8 @@ public class ProgramInterpreter {
         }
     }
 
+    /// Executes the define command. The given noun will become the name of a new macro, and the list of tokens its definition.
+    /// If hidden is true, the macro will be hidden by default.
     private static void runDefine(ProgramExecutor executor, @Nullable ServerPlayer player, String noun, List<String> definition, boolean hidden) {
         if(BUILT_IN_COMMANDS.containsKey(noun)) {
             executor.sendLineIfConsole(player, Component.translatable("console.pulsetech.macro_name_taken_1").append("\"" + noun + "\"").append(Component.translatable("console.pulsetech.macro_name_taken_2")).getString());
@@ -314,7 +326,8 @@ public class ProgramInterpreter {
         }
     }
 
-
+    /// Attempts to run the given token as a command. This could invoke one of the lambdas in BUILT_IN_COMMANDS above,
+    /// could recurse back to processTokenList with the tokens of a macro, or could fail.
     private static boolean processToken(ProgramExecutor executor, @Nullable ServerPlayer player, String token, Iterator<String> tokens) {
         if(BUILT_IN_COMMANDS.containsKey(token.toLowerCase())) {
             BUILT_IN_COMMANDS.get(token.toLowerCase()).accept(player, executor);
