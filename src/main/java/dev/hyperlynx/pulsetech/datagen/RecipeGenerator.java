@@ -33,7 +33,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .pattern("   ")
                 .pattern("cmr")
                 .pattern("sss")
-                .define('r', Items.REDSTONE)
+                .define('r', Items.REDSTONE_TORCH)
                 .define('s', Items.STONE)
                 .define('c', Items.COPPER_INGOT)
                 .define('m', ModItems.PULSE_MODULE)

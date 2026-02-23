@@ -1,2 +1,2 @@
-(This is a development version and shouldn't be uploaded...)
-- Added `i?` parameter marker which is parsed into the current iteration of a loop (by NMCV1-9) 
+- Added `i?` parameter marker which is parsed into the current iteration of a loop (Contributed by NMCV1-9)
+- Fixed the Pattern Detector being impossible to craft due to vanilla's recipe flipping mechanic
