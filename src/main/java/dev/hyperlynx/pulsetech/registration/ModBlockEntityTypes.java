@@ -74,4 +74,8 @@ public class ModBlockEntityTypes {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessorBlockEntity>> PROCESSOR =
             TYPES.register("processor", () ->
                     BlockEntityType.Builder.of(ProcessorBlockEntity::new, ModBlocks.PROCESSOR.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessorBlockEntity>> RETRIEVER =
+            TYPES.register("retriever", () ->
+                    BlockEntityType.Builder.of(ProcessorBlockEntity::new, ModBlocks.RETRIEVER.get()).build(null));
 }

@@ -6,6 +6,7 @@ import dev.hyperlynx.pulsetech.feature.controller.ControllerBlock;
 import dev.hyperlynx.pulsetech.feature.orb.OrbBlock;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlock;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlock;
+import dev.hyperlynx.pulsetech.feature.storage.RetrieverBlock;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -72,6 +73,14 @@ public class ProtocolGenerator extends DataMapProvider {
                                 .add(OrbBlock.GRAB)
                                 .add(OrbBlock.TOGGLE_PEN)
                                 .add(OrbBlock.TOGGLE_PROJECTILE)
+                                .build(), false
+                )
+                .add(ModBlockEntityTypes.RETRIEVER,
+                        ProtocolBuilder.builder(2)
+                                .add(RetrieverBlock.SYNC)
+                                .add(RetrieverBlock.SELECT_FILTER)
+                                .add(RetrieverBlock.COUNT)
+                                .add(RetrieverBlock.RETRIEVE)
                                 .build(), false
                 );
 

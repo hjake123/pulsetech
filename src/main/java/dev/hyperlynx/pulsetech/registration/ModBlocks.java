@@ -71,4 +71,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<ProcessorBlock> PROCESSOR = BLOCKS.register("processor", () ->
             new ProcessorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COMPARATOR), PulseBlock.FRONT_OUT_OTHER_IN));
+
+    public static final DeferredBlock<ProcessorBlock> RETRIEVER = BLOCKS.register("retriever", () ->
+            new ProcessorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK), PulseBlock.FRONT_OUT_BACK_IN));
 }
