@@ -13,6 +13,8 @@ import dev.hyperlynx.pulsetech.feature.processor.ProcessorBlockEntity;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlockEntity;
 import dev.hyperlynx.pulsetech.feature.scope.ScopeBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
+import dev.hyperlynx.pulsetech.feature.storage.RetrieverBlockEntity;
+import dev.hyperlynx.pulsetech.feature.storage.StorageModemBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -75,7 +77,11 @@ public class ModBlockEntityTypes {
             TYPES.register("processor", () ->
                     BlockEntityType.Builder.of(ProcessorBlockEntity::new, ModBlocks.PROCESSOR.get()).build(null));
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessorBlockEntity>> RETRIEVER =
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RetrieverBlockEntity>> RETRIEVER =
             TYPES.register("retriever", () ->
-                    BlockEntityType.Builder.of(ProcessorBlockEntity::new, ModBlocks.RETRIEVER.get()).build(null));
+                    BlockEntityType.Builder.of(RetrieverBlockEntity::new, ModBlocks.RETRIEVER.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<StorageModemBlockEntity>> STORAGE_MODEM =
+            TYPES.register("storage_modem", () ->
+                    BlockEntityType.Builder.of(StorageModemBlockEntity::new, ModBlocks.STORAGE_MODEM.get()).build(null));
 }

@@ -31,7 +31,8 @@ public class BlockTagGenerator extends BlockTagsProvider {
                         ModBlocks.GREEN_CONSOLE.getKey(),
                         ModBlocks.INDIGO_CONSOLE.getKey(),
                         ModBlocks.WHITE_CONSOLE.getKey(),
-                        ModBlocks.RETRIEVER.getKey()
+                        ModBlocks.RETRIEVER.getKey(),
+                        ModBlocks.STORAGE_MODEM.getKey()
                 );
     }
 }

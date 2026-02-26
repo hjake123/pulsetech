@@ -16,6 +16,7 @@ import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlock;
 import dev.hyperlynx.pulsetech.feature.scope.ScopeBlock;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlock;
 import dev.hyperlynx.pulsetech.feature.storage.RetrieverBlock;
+import dev.hyperlynx.pulsetech.feature.storage.StorageModemBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -74,5 +75,9 @@ public class ModBlocks {
             new ProcessorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COMPARATOR), PulseBlock.FRONT_OUT_OTHER_IN));
 
     public static final DeferredBlock<RetrieverBlock> RETRIEVER = BLOCKS.register("retriever", () ->
-            new RetrieverBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK), PulseBlock.FRONT_OUT_BACK_IN, true));
+            new RetrieverBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK), PulseBlock.FRONT_OUT_OTHER_IN));
+
+    public static final DeferredBlock<StorageModemBlock> STORAGE_MODEM = BLOCKS.register("storage_modem", () ->
+            new StorageModemBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK), PulseBlock.MAIN_OUTPUT_ONLY));
+
 }

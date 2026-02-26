@@ -5,15 +5,19 @@ import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolBlockEntity;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoSource;
-import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoType;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerTextInfo;
+import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -21,14 +25,32 @@ import net.neoforged.neoforge.items.IItemHandler;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class RetrieverBlockEntity extends ProtocolBlockEntity implements DebuggerInfoSource {
-    private List<ItemFilter> filters = List.of(new ItemFilter(Items.COBBLESTONE.getDefaultInstance(), false));;
+public class RetrieverBlockEntity extends ProtocolBlockEntity implements DebuggerInfoSource, FilterBearer {
+    private List<ItemFilter> filters = List.of();
     private int selected_filter_index = 0;
     private boolean free_flowing = false;
     private int flow_timer = 0;
 
-    public RetrieverBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        super(type, pos, blockState);
+    public RetrieverBlockEntity(BlockPos pos, BlockState blockState) {
+        super(ModBlockEntityTypes.RETRIEVER.value(), pos, blockState);
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        tag.put("Filters", ItemFilter.CODEC.listOf().encodeStart(NbtOps.INSTANCE, filters).getPartialOrThrow());
+        tag.put("SelectedFilterIndex", IntTag.valueOf(selected_filter_index));
+        tag.put("Open", ByteTag.valueOf(free_flowing));
+        tag.put("FlowTimer", IntTag.valueOf(flow_timer));
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) { // TODO not loading data...?
+        super.loadAdditional(tag, registries);
+        filters = ItemFilter.CODEC.listOf().decode(NbtOps.INSTANCE, tag.get("Filters")).getPartialOrThrow().getFirst();
+        selected_filter_index = tag.getInt("SelectedFilterIndex");
+        free_flowing = tag.getBoolean("Open");
+        flow_timer = tag.getInt("FlowTimer");
     }
 
     private boolean matchesFilter(ItemStack stack) {
@@ -39,8 +61,12 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
     }
 
     /// Request an up-to-date set of filters from [FilterSyncMan].
-    public void syncFiltersUsingKey(Byte key) {
-        filters = FilterSyncMan.fetch(key);
+    public void syncFiltersUsingKey(Byte key_low, Byte key_high) {
+        short completed_key = (short) ((((short) key_high) << 8) | (0x00FF & ((short) key_low)));
+        var res = FilterSyncMan.fetch((ServerLevel) level, completed_key);
+        if(res != null) {
+            filters = res;
+        }
         setChanged();
     }
 
@@ -88,6 +114,7 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
         if(index < filters.size()) {
             selected_filter_index = index;
         }
+        setChanged();
     }
 
     /// Sets the retriever to constantly move items from the top the bottom that match its filters.
@@ -104,6 +131,7 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
                 retrieveUpToCountMatching((byte) 64);
             }
             flow_timer--;
+            setChanged();
         }
     }
 
@@ -181,5 +209,15 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
                 DebuggerInfoTypes.TEXT.value(),
                 () -> new DebuggerTextInfo(status_builder.toString())
         ));
+    }
+
+    @Override
+    public List<ItemFilter> getFilters() {
+        return filters;
+    }
+
+    @Override
+    public void setFilters(List<ItemFilter> filters) {
+        this.filters = filters;
     }
 }

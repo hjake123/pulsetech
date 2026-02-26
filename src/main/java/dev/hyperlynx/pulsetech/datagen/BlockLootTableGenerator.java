@@ -43,6 +43,7 @@ public class BlockLootTableGenerator extends BlockLootSubProvider {
         dropSelf(ModBlocks.SCANNER.get());
         dropOther(ModBlocks.PROCESSOR.get(), ModItems.PATTERN_EMITTER.asItem());
         dropSelf(ModBlocks.RETRIEVER.get());
+        dropSelf(ModBlocks.STORAGE_MODEM.get());
     }
 
 }

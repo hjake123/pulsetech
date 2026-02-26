@@ -12,6 +12,7 @@ import dev.hyperlynx.pulsetech.client.blocktag.NumberBlockRenderer;
 import dev.hyperlynx.pulsetech.client.blocktag.PatternBlockRenderer;
 import dev.hyperlynx.pulsetech.client.console.ConsoleScreen;
 import dev.hyperlynx.pulsetech.client.screen.ScreenBlockRenderer;
+import dev.hyperlynx.pulsetech.client.storage.StorageModemScreen;
 import dev.hyperlynx.pulsetech.core.PatternHolder;
 import dev.hyperlynx.pulsetech.feature.datacell.DataCellItem;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
@@ -23,6 +24,8 @@ import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerTextInfo;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
+import dev.hyperlynx.pulsetech.feature.storage.ItemFilter;
+import dev.hyperlynx.pulsetech.feature.storage.StorageModemBlockEntity;
 import dev.hyperlynx.pulsetech.ponder.PulsetechPonderPlugin;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModEntityTypes;
@@ -165,6 +168,12 @@ public class PulsetechClient {
     public static void updateScreenBlock(ScreenData screenData, BlockPos pos) {
         if(Minecraft.getInstance().level.getBlockEntity(pos) instanceof ScreenBlockEntity screen) {
             screen.setScreenData(screenData);
+        }
+    }
+
+    public static void openStorageModemScreen(BlockPos pos, List<ItemFilter> filters) {
+        if(Minecraft.getInstance().level != null && Minecraft.getInstance().level.getBlockEntity(pos) instanceof StorageModemBlockEntity modem) {
+            Minecraft.getInstance().setScreen(new StorageModemScreen(pos, filters));
         }
     }
 }

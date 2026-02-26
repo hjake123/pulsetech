@@ -15,26 +15,26 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
 public class RetrieverBlock extends PulseBlock {
-    public RetrieverBlock(Properties properties, SideIO io, boolean pulse_input) {
-        super(properties, io, pulse_input);
+    public RetrieverBlock(Properties properties, SideIO io) {
+        super(properties, io, true);
     }
 
     @Override
     protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return simpleCodec(RepeaterBlock::new);
+        return pulseCodec(RetrieverBlock::new);
     }
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new RetrieverBlockEntity(ModBlockEntityTypes.RETRIEVER.value(), blockPos, blockState);
+        return new RetrieverBlockEntity(blockPos, blockState);
     }
 
     public static final DeferredHolder<ProtocolCommand, ProtocolCommand> SYNC = ProtocolCommands.COMMANDS.register("retriever/sync", () ->
-            new ProtocolCommand(1) {
+            new ProtocolCommand(2) {
                 @Override
                 public void run(ExecutionContext context) {
                     if(context.block() instanceof RetrieverBlockEntity retriever) {
-                        retriever.syncFiltersUsingKey(context.params().getFirst());
+                        retriever.syncFiltersUsingKey(context.params().getFirst(), context.params().get(1));
                     }
                 }
             });
