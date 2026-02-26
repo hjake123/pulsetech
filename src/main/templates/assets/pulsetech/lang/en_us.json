@@ -239,6 +239,7 @@
   "debugger.pulsetech.orb_stationary": "Stationary",
   "debugger.pulsetech.retriever_data": "Active Filter",
   "debugger.pulsetech.selected_filter": "Selected filter",
+  "debugger.pulsetech.max": "max",
   "debugger.pulsetech.retriever_filter": "Filtering for ",
   "pulsetech.with": " with ",
   "pulsetech.components": " components",
