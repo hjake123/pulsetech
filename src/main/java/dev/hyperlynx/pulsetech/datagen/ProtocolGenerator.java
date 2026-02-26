@@ -76,11 +76,14 @@ public class ProtocolGenerator extends DataMapProvider {
                                 .build(), false
                 )
                 .add(ModBlockEntityTypes.RETRIEVER,
-                        ProtocolBuilder.builder(2)
+                        ProtocolBuilder.builder(3)
                                 .add(RetrieverBlock.SYNC)
                                 .add(RetrieverBlock.SELECT_FILTER)
-                                .add(RetrieverBlock.COUNT)
                                 .add(RetrieverBlock.RETRIEVE)
+                                .add(RetrieverBlock.TOGGLE_OPEN)
+                                .add(RetrieverBlock.COUNT)
+                                .add(RetrieverBlock.COUNT_STACKS)
+                                .add(RetrieverBlock.DETECT_FILTER)
                                 .build(), false
                 );
 

@@ -12,12 +12,12 @@ public record ItemFilter(ItemStack item, boolean match_data) {
     ).apply(instance, ItemFilter::new));
 
     public boolean matches(ItemStack stack) {
-        if(!stack.is(item.getItem())) {
+        if(!ItemStack.isSameItem(stack, item)) {
             return false;
         }
         if(!match_data) {
             return true;
         }
-        return stack.getComponentsPatch().equals(item.getComponentsPatch());
+        return ItemStack.isSameItemSameComponents(stack, item);
     }
 }
