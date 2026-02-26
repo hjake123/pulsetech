@@ -18,3 +18,6 @@ Once set up, use the `build` gradle task to compile everything. You should then 
 The `runClient` task is also quite useful for testing the mod. `runServer` also works, but you need to log in using an account, so you cannot log into the debug server using the debug client.
 
 If you have further questions, you can contact me at `dev@hyperlynx.dev`.
+
+# Contribution Information
+I do accept pull requests! I try to keep most development in the GitHub issues, and use GitHub features to make it clear what I'm up to. If I'm assigned to an open issue, that means I'm anticipating working on it myself. Feel free to comment on issues as well, as especially for feature/enhancement issues I like to talk things over with interested parties. In particular, if you're working on something, I'd appreciate if you comment on the issue so I know not to start it. I reserve the right to not merge features that I don't feel make sense for the mod, but I will almost always merge small enhancements, translations, and bug fixes. 
