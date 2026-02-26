@@ -3,8 +3,14 @@ package dev.hyperlynx.pulsetech.feature.storage;
 import dev.hyperlynx.pulsetech.Config;
 import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolBlockEntity;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
+import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoSource;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoType;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerInfoTypes;
+import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerTextInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -15,7 +21,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class RetrieverBlockEntity extends ProtocolBlockEntity {
+public class RetrieverBlockEntity extends ProtocolBlockEntity implements DebuggerInfoSource {
     private List<ItemFilter> filters = List.of(new ItemFilter(Items.COBBLESTONE.getDefaultInstance(), false));;
     private int selected_filter_index = 0;
     private boolean free_flowing = false;
@@ -162,4 +168,18 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity {
         emit(Sequence.fromByte((byte) count));
     }
 
+    @Override
+    public DebuggerInfoManifest getDebuggerInfoManifest() {
+        StringBuilder status_builder = new StringBuilder();
+        status_builder.append(Component.translatable("debugger.pulsetech.selected_filter").getString()).append(" ").append(selected_filter_index).append("\n\n");
+        if(filters.size() > selected_filter_index) {
+            status_builder.append(Component.translatable("debugger.pulsetech.retriever_filter").getString()).append(filters.get(selected_filter_index).toString());
+        }
+
+        return super.getDebuggerInfoManifest().append(new DebuggerInfoManifest.Entry(
+                Component.translatable("debugger.pulsetech.retriever_data").getString(),
+                DebuggerInfoTypes.TEXT.value(),
+                () -> new DebuggerTextInfo(status_builder.toString())
+        ));
+    }
 }
