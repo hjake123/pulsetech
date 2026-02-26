@@ -21,3 +21,5 @@ If you have further questions, you can contact me at `dev@hyperlynx.dev`.
 
 # Contribution Information
 I do accept pull requests! I try to keep most development in the GitHub issues, and use GitHub features to make it clear what I'm up to. If I'm assigned to an open issue, that means I'm anticipating working on it myself. Feel free to comment on issues as well, as especially for feature/enhancement issues I like to talk things over with interested parties. In particular, if you're working on something, I'd appreciate if you comment on the issue so I know not to start it. I reserve the right to not merge features that I don't feel make sense for the mod, but I will almost always merge small enhancements, translations, and bug fixes. 
+
+I add all contributors to a list inside `gradle.properties`, which displays in the mod entry in the NeoForge "Mods" menu.
