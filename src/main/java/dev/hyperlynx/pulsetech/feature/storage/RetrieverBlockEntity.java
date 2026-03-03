@@ -40,7 +40,6 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
         super.saveAdditional(tag, registries);
         tag.put("Filters", ItemFilter.CODEC.listOf().encodeStart(NbtOps.INSTANCE, filters).getPartialOrThrow());
         tag.put("SelectedFilterIndex", IntTag.valueOf(selected_filter_index));
-        tag.put("Open", ByteTag.valueOf(free_flowing));
         tag.put("FlowTimer", IntTag.valueOf(flow_timer));
     }
 
@@ -49,7 +48,6 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
         super.loadAdditional(tag, registries);
         filters = ItemFilter.CODEC.listOf().decode(NbtOps.INSTANCE, tag.get("Filters")).getPartialOrThrow().getFirst();
         selected_filter_index = tag.getInt("SelectedFilterIndex");
-        free_flowing = tag.getBoolean("Open");
         flow_timer = tag.getInt("FlowTimer");
     }
 
@@ -119,13 +117,14 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
 
     /// Sets the retriever to constantly move items from the top the bottom that match its filters.
     public void toggleFreeFlowing() {
-        free_flowing = !free_flowing;
+        assert level != null;
+        RetrieverBlock.toggleOpen(level, getBlockPos(), getBlockState());
     }
 
     @Override
     public void tick() {
         super.tick();
-        if(free_flowing) {
+        if(RetrieverBlock.isOpen(getBlockState())) {
             if(flow_timer < 0) {
                 flow_timer = Config.ITEM_FLOW_INTERVAL.get();
                 retrieveUpToCountMatching((byte) 64);
