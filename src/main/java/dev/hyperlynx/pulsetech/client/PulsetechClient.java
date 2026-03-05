@@ -30,8 +30,10 @@ import dev.hyperlynx.pulsetech.ponder.PulsetechPonderPlugin;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModItems;
+import dev.hyperlynx.pulsetech.registration.ModMenuTypes;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.BlockPos;
@@ -41,6 +43,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
@@ -57,6 +60,7 @@ public class PulsetechClient {
         bus.addListener(this::onClientSetup);
         bus.addListener(this::registerEntityRenderers);
         bus.addListener(this::registerLayerDefinitions);
+        bus.addListener(this::registerScreens);
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 
@@ -126,6 +130,11 @@ public class PulsetechClient {
         event.registerLayerDefinition(OrbModel.LAYER_LOCATION, OrbModel::createBodyLayer);
     }
 
+    public void registerScreens(RegisterMenuScreensEvent event) {
+        // This is the modern replacement for MenuScreens.register
+        event.register(ModMenuTypes.STORAGE_MODEM.get(), StorageModemScreen::new);
+    }
+
     protected static void openConsoleScreen(BlockPos pos, String prior_lines, String command_box_text, List<String> extra_names) {
         Minecraft.getInstance().setScreen(new ConsoleScreen(pos, prior_lines, command_box_text, extra_names));
     }
@@ -171,9 +180,9 @@ public class PulsetechClient {
         }
     }
 
-    public static void openStorageModemScreen(BlockPos pos, List<ItemFilter> filters) {
-        if(Minecraft.getInstance().level != null && Minecraft.getInstance().level.getBlockEntity(pos) instanceof StorageModemBlockEntity modem) {
-            Minecraft.getInstance().setScreen(new StorageModemScreen(pos, filters));
+    public static void updateStorageModemScreen(List<ItemFilter> filters) {
+        if(Minecraft.getInstance().level != null && Minecraft.getInstance().screen instanceof StorageModemScreen screen) {
+            screen.setFilters(filters);
         }
     }
 }

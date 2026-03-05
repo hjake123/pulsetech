@@ -22,6 +22,7 @@ import java.util.Map;
 @EventBusSubscriber
 public class FilterSyncMan {
     private static final Map<Short, SyncEntry> active_sync_requests = new HashMap<>();
+    public static final int SYNC_COOLDOWN = 1000;
 
     public static Short reserveSyncKey(BlockPos pos, List<ItemFilter> filters) throws NoFreeFilterSyncException {
         if(active_sync_requests.size() >= 65536) {
@@ -71,7 +72,7 @@ public class FilterSyncMan {
 
     private static class SyncEntry {
         private final BlockPos modem_pos;
-        private int timer = 1000;
+        private int timer = SYNC_COOLDOWN;
 
         public SyncEntry(BlockPos modem_pos) {
             this.modem_pos = modem_pos;

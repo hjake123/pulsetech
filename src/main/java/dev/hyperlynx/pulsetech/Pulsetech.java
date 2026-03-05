@@ -24,6 +24,7 @@ public class Pulsetech {
         ModCreativeTab.TABS.register(bus);
         ModComponentTypes.TYPES.register(bus);
         ModSounds.SOUND_EVENTS.register(bus);
+        ModMenuTypes.TYPES.register(bus);
         ProtocolCommands.COMMANDS.register(bus);
         DebuggerInfoTypes.TYPES.register(bus);
         container.registerConfig(ModConfig.Type.COMMON, Config.COMMON_SPEC);

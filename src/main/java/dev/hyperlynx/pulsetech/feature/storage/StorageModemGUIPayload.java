@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-/// An C <-> S payload for the Storage Modem's GUI. When sent to the client, it opens the relevant screen. When sent
+/// An C <-> S payload for the Storage Modem's GUI. When sent to the client, it updates the screen. When sent
 /// to a server, it tells the Storage Modem block to persist the changes.
 public record StorageModemGUIPayload(BlockPos pos, List<ItemFilter> filters) implements CustomPacketPayload {
     public static final Type<StorageModemGUIPayload> TYPE = new Type<>(Pulsetech.location("open_storage_modem_gui"));
@@ -28,7 +28,7 @@ public record StorageModemGUIPayload(BlockPos pos, List<ItemFilter> filters) imp
     );
 
     public void clientHandler(IPayloadContext ignored) {
-        ClientWrapper.openStorageModemScreen(pos, filters);
+        ClientWrapper.updateStorageModemScreen(filters);
     }
 
     public void serverHandler(IPayloadContext context) {

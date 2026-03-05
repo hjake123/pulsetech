@@ -72,7 +72,7 @@ public class ClientWrapper {
         PulsetechClient.acceptConsoleCompletionData(pos, macros);
     }
 
-    public static void openStorageModemScreen(BlockPos pos, List<ItemFilter> filters) {
-        PulsetechClient.openStorageModemScreen(pos, filters);
+    public static void updateStorageModemScreen(List<ItemFilter> filters) {
+        PulsetechClient.updateStorageModemScreen(filters);
     }
 }
