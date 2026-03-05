@@ -23,10 +23,10 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
     @Override
     protected void init() {
         sync_button = Button.builder(Component.literal("sync"), button -> {
-            getMenu().getSyncStatusSlot().set(StorageModemBlockEntity.SYNC_MODE_REQUESTED);
             PacketDistributor.sendToServer(new StorageModemSyncRequest(getMenu().getPos()));
             sync_button.active = false;
         }).build();
+        sync_button.active = syncAvailable();
         addRenderableWidget(sync_button);
 
         PacketDistributor.sendToServer(new StorageModemFiltersRequest(getMenu().getPos()));
@@ -41,10 +41,17 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
 
     }
 
+    private boolean syncAvailable() {
+        assert Minecraft.getInstance().level != null;
+        return !StorageModemBlock.isSyncing(Minecraft.getInstance().level.getBlockState(getMenu().getPos()));
+    }
+
     @Override
     public void containerTick() {
-        if(!sync_button.active && getMenu().getSyncStatusSlot().get() == StorageModemBlockEntity.SYNC_MODE_STANDBY) {
-            sync_button.active = true;
+        if(!sync_button.active && Minecraft.getInstance().level != null) {
+            if (syncAvailable() ) {
+                sync_button.active = true;
+            }
         }
     }
 

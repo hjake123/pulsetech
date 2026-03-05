@@ -1,11 +1,8 @@
 package dev.hyperlynx.pulsetech.feature.storage;
 
+import dev.hyperlynx.pulsetech.Pulsetech;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -14,6 +11,7 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 /// A helper class that coordinates the synchronization of item filters between Storage Modems and Retrievers.
 /// When Storage Modems are syncing, they should reserve a Sync Key from this class and emit it.
@@ -22,7 +20,9 @@ import java.util.Map;
 @EventBusSubscriber
 public class FilterSyncMan {
     private static final Map<Short, SyncEntry> active_sync_requests = new HashMap<>();
-    public static final int SYNC_COOLDOWN = 1000;
+    public static final int SYNC_COOLDOWN = 200;
+
+    private static final Semaphore sync_busy = new Semaphore(1);
 
     public static Short reserveSyncKey(BlockPos pos, List<ItemFilter> filters) throws NoFreeFilterSyncException {
         if(active_sync_requests.size() >= 65536) {
@@ -41,8 +41,17 @@ public class FilterSyncMan {
             }
             code_from_hash++;
         }
+
         // We now have a unique code to register and return.
-        active_sync_requests.put(code_from_hash, new SyncEntry(pos));
+        try {
+            sync_busy.acquire();
+            active_sync_requests.put(code_from_hash, new SyncEntry(pos));
+            sync_busy.release();
+        } catch (InterruptedException e) {
+            Pulsetech.LOGGER.error("Error! Storage filter sync was interrupted internally, so sync will fail.");
+            return 0;
+        }
+
         return code_from_hash;
     }
 
@@ -62,12 +71,18 @@ public class FilterSyncMan {
         if(event.getLevel().isClientSide()) {
             return;
         }
+        try {
+            sync_busy.acquire();
+        } catch (InterruptedException e) {
+            Pulsetech.LOGGER.debug("Caught interruption locking the sync semaphore: ", e);
+        }
         for(Short key : active_sync_requests.keySet()) {
             active_sync_requests.get(key).tick();
             if(active_sync_requests.get(key).isExpired()) {
                 active_sync_requests.remove(key);
             }
         }
+        sync_busy.release();
     }
 
     private static class SyncEntry {

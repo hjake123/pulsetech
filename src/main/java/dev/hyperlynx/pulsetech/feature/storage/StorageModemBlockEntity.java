@@ -9,17 +9,9 @@ import dev.hyperlynx.pulsetech.core.protocol.ProtocolDataMap;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +19,6 @@ public class StorageModemBlockEntity extends PulseBlockEntity implements FilterB
     private final EmitterModule emitter = new EmitterModule();
     private List<ItemFilter> filters = new ArrayList<>();
     private int sync_cooldown = 0;
-
-    // The current status of the filter sync system.
-    private final DataSlot sync_mode = DataSlot.standalone();
-    public static final int SYNC_MODE_STANDBY = 0;
-    public static final int SYNC_MODE_REQUESTED = 1;
-    public static final int SYNC_MODE_COOLDOWN = 2;
 
     public StorageModemBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.STORAGE_MODEM.value(), pos, blockState);
@@ -57,14 +43,8 @@ public class StorageModemBlockEntity extends PulseBlockEntity implements FilterB
             return;
         }
         emitter.tick((ServerLevel) level, this);
-        if(sync_mode.get() == SYNC_MODE_REQUESTED) {
-            performFilterSync();
-            sync_mode.set(SYNC_MODE_COOLDOWN);
-            sync_cooldown = FilterSyncMan.SYNC_COOLDOWN;
-        }
         if(sync_cooldown == 0) {
-            sync_mode.set(SYNC_MODE_STANDBY);
-            setChanged();
+            StorageModemBlock.setSyncing(level, getBlockPos(), getBlockState(), false);
         }
         if(sync_cooldown >= 0) {
             sync_cooldown--;
@@ -84,6 +64,10 @@ public class StorageModemBlockEntity extends PulseBlockEntity implements FilterB
                 // This was a duplicate sync request. Don't proceed.
                 return;
             }
+
+            assert level != null;
+            StorageModemBlock.setSyncing(level, getBlockPos(), getBlockState(), true);
+            sync_cooldown = FilterSyncMan.SYNC_COOLDOWN;
 
             // Fetch the sequence for the Retriever's SYNC command. First, get the registry holder for the Retriever.
             var retriever_registry_holder = ModBlockEntityTypes.RETRIEVER.get().builtInRegistryHolder();
@@ -125,9 +109,5 @@ public class StorageModemBlockEntity extends PulseBlockEntity implements FilterB
     @Override
     public void setFilters(List<ItemFilter> filters) {
         this.filters = filters;
-    }
-
-    public DataSlot getSyncStatus() {
-        return sync_mode;
     }
 }

@@ -11,7 +11,6 @@ import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.NbtOps;
@@ -28,7 +27,6 @@ import java.util.List;
 public class RetrieverBlockEntity extends ProtocolBlockEntity implements DebuggerInfoSource, FilterBearer {
     private List<ItemFilter> filters = List.of();
     private int selected_filter_index = 0;
-    private boolean free_flowing = false;
     private int flow_timer = 0;
 
     public RetrieverBlockEntity(BlockPos pos, BlockState blockState) {
@@ -52,7 +50,7 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
     }
 
     private boolean matchesFilter(ItemStack stack) {
-        if(filters.size() <= selected_filter_index) {
+        if(selected_filter_index >= filters.size() || selected_filter_index < 0) {
             return false;
         }
         return filters.get(selected_filter_index).matches(stack);
