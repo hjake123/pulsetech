@@ -39,7 +39,7 @@ public class ItemFilterEntry extends ObjectSelectionList.Entry<ItemFilterEntry> 
 
     @Override
     public void render(GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovering, float partialTick) {
-        graphics.renderItem(filter.item(), top, left);
+        graphics.renderItem(filter.item(), left + (width/2), top);
     }
 
     @Override
@@ -49,6 +49,16 @@ public class ItemFilterEntry extends ObjectSelectionList.Entry<ItemFilterEntry> 
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        ItemStack carried_on_mouse = accessor.getCarrying();
+        if(carried_on_mouse.isEmpty()) {
+            return true;
+        }
+        updateFilter(new ItemFilter(carried_on_mouse.copyWithCount(1), getFilter().match_data()));
+        return true;
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
         return true;
     }
 }
