@@ -344,5 +344,6 @@
   "caption.pulsetech.scanner_found": "Scanner detects",
   "caption.pulsetech.scanner_miss": "Scanner seeks",
   "caption.pulsetech.beep": "Machine beeps",
-  "menu.title.pulsetech.storage_modem": "Storage Modem"
+  "menu.title.pulsetech.storage_modem": "Storage Modem",
+  "pulsetech.any_item": "Any Item"
 }

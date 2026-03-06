@@ -30,4 +30,10 @@ public record ItemFilter(ItemStack item, boolean match_data) {
         }
         return item.getDisplayName().getString() + Component.translatable("pulsetech.with").getString() + item.getComponentsPatch().size() + Component.translatable("pulsetech.components").getString();
     }
+
+    public Component getFilterLabel() {
+        return item().isEmpty() ? Component.translatable("pulsetech.any_item") :
+                match_data() ? item.getHoverName() : item.getItem().getName(item.getItem().getDefaultInstance());
+    }
+
 }

@@ -4,6 +4,7 @@ import dev.hyperlynx.pulsetech.feature.storage.ItemFilter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -29,12 +30,24 @@ public class ItemFilterListWidget extends ObjectSelectionList<ItemFilterEntry> {
     }
 
     @Override
-    protected void renderListBackground(GuiGraphics guiGraphics) {
+    protected void renderListBackground(GuiGraphics graphics) {
         // NO-OP
     }
 
     @Override
-    protected void renderListSeparators(GuiGraphics guiGraphics) {
+    protected void renderListSeparators(GuiGraphics graphics) {
         // NO-OP
+    }
+
+    @Override
+    protected void renderSelection(GuiGraphics graphics, int top, int width, int height, int outerColor, int innerColor) {
+        // NO-OP
+    }
+
+    @Override
+    protected void renderItem(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int index, int left, int top, int width, int height) {
+        super.renderItem(graphics, mouseX, mouseY, partialTick, index, left, top, width, height);
+        int number_left = left + 30 + (index < 100 ? (index < 10 ? 6 : 2) : 0);
+        graphics.drawScrollingString(Minecraft.getInstance().font, Component.literal(String.valueOf(index)), number_left, number_left + 20, top + 4, 0xFFFFFFFF);
     }
 }

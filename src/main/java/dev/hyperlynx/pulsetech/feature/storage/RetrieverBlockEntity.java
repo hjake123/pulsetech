@@ -198,7 +198,7 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
         StringBuilder status_builder = new StringBuilder();
         status_builder.append(Component.translatable("debugger.pulsetech.selected_filter").getString()).append(" ").append(selected_filter_index).append(" (").append(Component.translatable("debugger.pulsetech.max").getString()).append(" ").append(filters.size() - 1).append(")").append("\n\n");
         if(filters.size() > selected_filter_index) {
-            status_builder.append(Component.translatable("debugger.pulsetech.retriever_filter").getString()).append(filters.get(selected_filter_index).toString());
+            status_builder.append(Component.translatable("debugger.pulsetech.retriever_filter").getString()).append(filters.get(selected_filter_index).getFilterLabel());
         }
 
         return super.getDebuggerInfoManifest().append(new DebuggerInfoManifest.Entry(

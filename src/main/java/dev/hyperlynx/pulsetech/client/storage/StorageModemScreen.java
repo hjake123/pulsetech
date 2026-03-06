@@ -61,7 +61,7 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
 
         PacketDistributor.sendToServer(new StorageModemFiltersRequest(getMenu().getPos()));
 
-        filter_list = new ItemFilterListWidget(Minecraft.getInstance(), 160, 75, 0, 20, getMenu()::getCarried);
+        filter_list = new ItemFilterListWidget(Minecraft.getInstance(), 161, 75, 0, 20, getMenu()::getCarried);
         filter_list.setPosition(getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 80, getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - 78);
         addRenderableWidget(filter_list);
     }
