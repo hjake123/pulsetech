@@ -133,4 +133,10 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
         super.renderTooltip(guiGraphics, x, y);
         filter_list.renderTooltip(guiGraphics, x, y);
     }
+
+    @Override
+    public void onClose() {
+        super.onClose();
+        PacketDistributor.sendToServer(new StorageModemGUIPayload(menu.getPos(), filter_list.getFilters()));
+    }
 }

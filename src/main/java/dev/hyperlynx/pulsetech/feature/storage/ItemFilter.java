@@ -6,12 +6,26 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 /// A single filter for a particular item. Used by the storage blocks to scan inventories for matching item stacks.
 public record ItemFilter(ItemStack item, boolean match_data) {
     public static final Codec<ItemFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ItemStack.SINGLE_ITEM_CODEC.fieldOf("item").forGetter(ItemFilter::item),
+            ItemStack.SINGLE_ITEM_CODEC.optionalFieldOf("item").forGetter(ItemFilter::itemToCodec),
             Codec.BOOL.fieldOf("match_data").forGetter(ItemFilter::match_data)
-    ).apply(instance, ItemFilter::new));
+    ).apply(instance, ItemFilter::fromCodec));
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private static ItemFilter fromCodec(Optional<ItemStack> potential_item, Boolean match_data) {
+        return new ItemFilter(potential_item.orElse(ItemStack.EMPTY), match_data);
+    }
+
+    private Optional<ItemStack> itemToCodec() {
+        if(item.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(item);
+    }
 
     public boolean matches(ItemStack stack) {
         if(!ItemStack.isSameItem(stack, item)) {
