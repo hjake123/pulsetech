@@ -134,9 +134,25 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
         }
     }
 
-    /// Sense the filter for the first item in storage and emit its id.
+    /// Sense the first matching filter for the first item in storage and emit its index.
+    /// (Yes, this is O(nm)... too bad! n is likely small, and m can't be above 256.)
     public void detectFilter() {
-
+        var input = getConnectedInventory();
+        if(input == null) {
+            return;
+        }
+        for(int i = 0; i < input.getSlots(); i++) {
+            if(!input.getStackInSlot(i).isEmpty()) {
+                // We've identified an item stack, so it's time to check the filter.
+                // There cannot be more than 256 filters, so this is safe.
+                for(byte n = 0; n < filters.size(); n++) {
+                    if(filters.get(n).matches(input.getStackInSlot(i))) {
+                        emit(Sequence.fromByte(n));
+                    }
+                }
+                return;
+            }
+        }
     }
 
     /// Get the inventory that the retriever is connected to (the inventory above it).
