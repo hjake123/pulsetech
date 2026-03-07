@@ -42,5 +42,6 @@ public class ModItems {
 
     public static final DeferredItem<Item> PULSE_MODULE = ITEMS.registerSimpleItem("pulse_module");
     public static final DeferredItem<Item> PROTOCOL_MODULE = ITEMS.registerSimpleItem("protocol_module");
+    public static final DeferredItem<Item> STORAGE_MODULE = ITEMS.registerSimpleItem("storage_module");
 
 }

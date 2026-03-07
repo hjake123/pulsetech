@@ -221,5 +221,32 @@ public class RecipeGenerator extends RecipeProvider {
                 .requires(Items.WHITE_DYE)
                 .unlockedBy("has_console", has(ModItems.CONSOLE))
                 .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModItems.RETRIEVER)
+                .pattern("crc")
+                .pattern(" H ")
+                .pattern("cmc")
+                .define('r', Items.REDSTONE)
+                .define('H', Items.HOPPER)
+                .define('c', Items.COPPER_INGOT)
+                .define('m', ModItems.STORAGE_MODULE)
+                .unlockedBy("has_storage_module", has(ModItems.STORAGE_MODULE))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModItems.STORAGE_MODEM)
+                .pattern("cmc")
+                .pattern("cmc")
+                .pattern("cmc")
+                .define('c', Items.COPPER_INGOT)
+                .define('m', ModItems.STORAGE_MODULE)
+                .unlockedBy("has_storage_module", has(ModItems.STORAGE_MODULE))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, ModItems.STORAGE_MODULE)
+                .requires(ModItems.PROTOCOL_MODULE)
+                .requires(Items.LAPIS_LAZULI)
+                .requires(Items.LAPIS_LAZULI)
+                .unlockedBy("has_pmod", has(ModItems.PROTOCOL_MODULE))
+                .save(output);
     }
 }

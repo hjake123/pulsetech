@@ -28,6 +28,9 @@ public record ItemFilter(ItemStack item, boolean match_data) {
     }
 
     public boolean matches(ItemStack stack) {
+        if(item.isEmpty()) {
+            return true;
+        }
         if(!ItemStack.isSameItem(stack, item)) {
             return false;
         }

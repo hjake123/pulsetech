@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class RetrieverBlockEntity extends ProtocolBlockEntity implements DebuggerInfoSource, FilterBearer {
-    private List<ItemFilter> filters = List.of();
+    private List<ItemFilter> filters = List.of(new ItemFilter(ItemStack.EMPTY, false));
     private int selected_filter_index = 0;
     private int flow_timer = 0;
 
@@ -198,7 +198,7 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
         StringBuilder status_builder = new StringBuilder();
         status_builder.append(Component.translatable("debugger.pulsetech.selected_filter").getString()).append(" ").append(selected_filter_index).append(" (").append(Component.translatable("debugger.pulsetech.max").getString()).append(" ").append(filters.size() - 1).append(")").append("\n\n");
         if(filters.size() > selected_filter_index) {
-            status_builder.append(Component.translatable("debugger.pulsetech.retriever_filter").getString()).append(filters.get(selected_filter_index).getFilterLabel());
+            status_builder.append(Component.translatable("debugger.pulsetech.retriever_filter").getString()).append(filters.get(selected_filter_index).getFilterLabel().getString());
         }
 
         return super.getDebuggerInfoManifest().append(new DebuggerInfoManifest.Entry(

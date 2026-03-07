@@ -5,21 +5,23 @@ import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.core.protocol.ExecutionContext;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommand;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
-import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.RepeaterBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class RetrieverBlock extends PulseBlock {
@@ -29,9 +31,9 @@ public class RetrieverBlock extends PulseBlock {
     protected static final VoxelShape SHAPE_EAST = Shapes.or(Block.box(5, 0, 5, 11, 16, 11), Block.box(0, 0, 0, 16, 2, 2), Block.box(0, 0, 2, 2, 2, 14), Block.box(12, 0, 2, 16, 4, 14), Block.box(0, 0, 14, 16, 2, 16), Block.box(0, 14, 0, 16, 16, 2), Block.box(0, 14, 2, 2, 16, 14), Block.box(14, 14, 2, 16, 16, 14), Block.box(0, 14, 14, 16, 16, 16), Block.box(6, 0, 4, 10, 16, 5), Block.box(6, 0, 11, 10, 16, 12), Block.box(6, 14, 12, 10, 16, 14), Block.box(6, 14, 2, 10, 16, 4), Block.box(6, 0, 12, 10, 2, 14), Block.box(6, 0, 2, 10, 2, 4));
 
     protected static final VoxelShape SHAPE_OPEN_NORTH = Shapes.or(Block.box(5, 0, 5, 11, 16, 11), Block.box(14, 0, 0, 16, 2, 16), Block.box(2, 0, 14, 14, 2, 16), Block.box(2, 0, 0, 14, 4, 4), Block.box(0, 0, 0, 2, 2, 16), Block.box(14, 14, 0, 16, 16, 16), Block.box(2, 14, 14, 14, 16, 16), Block.box(2, 14, 0, 14, 16, 2), Block.box(0, 14, 0, 2, 16, 16), Block.box(13, 0, 6, 14, 16, 10), Block.box(2, 0, 6, 3, 16, 10));
-    protected static final VoxelShape SHAPE_OPEN_EAST = Shapes.or(Block.box(5, 0, 5, 11, 16, 11), Block.box(0, 0, 14, 16, 2, 16), Block.box(14, 0, 2, 16, 2, 14), Block.box(0, 0, 2, 4, 4, 14), Block.box(0, 0, 0, 16, 2, 2), Block.box(0, 14, 14, 16, 16, 16), Block.box(14, 14, 2, 16, 16, 14), Block.box(0, 14, 2, 2, 16, 14), Block.box(0, 14, 0, 16, 16, 2), Block.box(6, 0, 13, 10, 16, 14), Block.box(6, 0, 2, 10, 16, 3));
+    protected static final VoxelShape SHAPE_OPEN_WEST = Shapes.or(Block.box(5, 0, 5, 11, 16, 11), Block.box(0, 0, 14, 16, 2, 16), Block.box(14, 0, 2, 16, 2, 14), Block.box(0, 0, 2, 4, 4, 14), Block.box(0, 0, 0, 16, 2, 2), Block.box(0, 14, 14, 16, 16, 16), Block.box(14, 14, 2, 16, 16, 14), Block.box(0, 14, 2, 2, 16, 14), Block.box(0, 14, 0, 16, 16, 2), Block.box(6, 0, 13, 10, 16, 14), Block.box(6, 0, 2, 10, 16, 3));
     protected static final VoxelShape SHAPE_OPEN_SOUTH = Shapes.or(Block.box(5, 0, 5, 11, 16, 11), Block.box(0, 0, 0, 2, 2, 16), Block.box(2, 0, 0, 14, 2, 2), Block.box(2, 0, 12, 14, 4, 16), Block.box(14, 0, 0, 16, 2, 16), Block.box(0, 14, 0, 2, 16, 16), Block.box(2, 14, 0, 14, 16, 2), Block.box(2, 14, 14, 14, 16, 16), Block.box(14, 14, 0, 16, 16, 16), Block.box(2, 0, 6, 3, 16, 10), Block.box(13, 0, 6, 14, 16, 10));
-    protected static final VoxelShape SHAPE_OPEN_WEST = Shapes.or(Block.box(5, 0, 5, 11, 16, 11), Block.box(0, 0, 0, 16, 2, 2), Block.box(0, 0, 2, 2, 2, 14), Block.box(12, 0, 2, 16, 4, 14), Block.box(0, 0, 14, 16, 2, 16), Block.box(0, 14, 0, 16, 16, 2), Block.box(0, 14, 2, 2, 16, 14), Block.box(14, 14, 2, 16, 16, 14), Block.box(0, 14, 14, 16, 16, 16), Block.box(6, 0, 2, 10, 16, 3), Block.box(6, 0, 13, 10, 16, 14));
+    protected static final VoxelShape SHAPE_OPEN_EAST = Shapes.or(Block.box(5, 0, 5, 11, 16, 11), Block.box(0, 0, 0, 16, 2, 2), Block.box(0, 0, 2, 2, 2, 14), Block.box(12, 0, 2, 16, 4, 14), Block.box(0, 0, 14, 16, 2, 16), Block.box(0, 14, 0, 16, 16, 2), Block.box(0, 14, 2, 2, 16, 14), Block.box(14, 14, 2, 16, 16, 14), Block.box(0, 14, 14, 16, 16, 16), Block.box(6, 0, 2, 10, 16, 3), Block.box(6, 0, 13, 10, 16, 14));
 
     protected static final BooleanProperty OPEN = BooleanProperty.create("open");
 
@@ -75,6 +77,12 @@ public class RetrieverBlock extends PulseBlock {
 
     public static void toggleOpen(Level level, BlockPos pos, BlockState state) {
         level.setBlock(pos, state.setValue(OPEN, !state.getValue(OPEN)), Block.UPDATE_CLIENTS);
+    }
+
+    @Override
+    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        toggleOpen(level, pos, state);
+        return InteractionResult.SUCCESS;
     }
 
     @Override
