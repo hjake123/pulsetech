@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.registration;
 
+import dev.hyperlynx.pulsetech.feature.console.remote.RemoteConsoleItem;
 import dev.hyperlynx.pulsetech.feature.datacell.DataCellItem;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerItem;
 import net.minecraft.world.item.BlockItem;
@@ -39,6 +40,9 @@ public class ModItems {
 
     public static final DeferredItem<DebuggerItem> DEBUGGER = ITEMS.registerItem("debugger",  (props) ->
             new DebuggerItem(props.stacksTo(1)));
+
+    public static final DeferredItem<RemoteConsoleItem> REMOTE_CONSOLE = ITEMS.registerItem("remote_console",  (props) ->
+            new RemoteConsoleItem(props.stacksTo(1)));
 
     public static final DeferredItem<Item> PULSE_MODULE = ITEMS.registerSimpleItem("pulse_module");
     public static final DeferredItem<Item> PROTOCOL_MODULE = ITEMS.registerSimpleItem("protocol_module");

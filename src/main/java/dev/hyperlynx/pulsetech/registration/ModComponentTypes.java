@@ -26,4 +26,9 @@ public class ModComponentTypes {
             DataComponentType.<BlockPos>builder()
                     .persistent(BlockPos.CODEC)
                     .build());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<BlockPos>> REMOTE_CONSOLE_LINK_POSITION = TYPES.register("remote_console_link_position", () ->
+            DataComponentType.<BlockPos>builder()
+                    .persistent(BlockPos.CODEC)
+                    .build());
 }

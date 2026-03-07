@@ -350,5 +350,7 @@
   "caption.pulsetech.scanner_miss": "Scanner seeks",
   "caption.pulsetech.beep": "Machine beeps",
   "menu.title.pulsetech.storage_modem": "Storage Modem",
-  "pulsetech.any_item": "Any Item"
+  "pulsetech.any_item": "Any Item",
+  "message.pulsetech.bind_console": "Remote Console bound to this block",
+  "message.pulsetech.console_out_of_range": "Can't reach the target console"
 }

@@ -45,9 +45,13 @@ public class ConsoleBlock extends PulseBlock implements EntityBlock {
     @Override
     protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (player instanceof ServerPlayer splayer && level.getBlockEntity(pos) instanceof ConsoleBlockEntity console) {
-            PacketDistributor.sendToPlayer(splayer, new OpenConsolePayload(pos, console.getPriorLinesOrEmpty(), console.getCommandBoxText(), console.getMacros().keySet().stream().filter(macro -> !console.getHiddenMacros().contains(macro)).toList()));
+            sendOpenConsolePayload(pos, splayer, console);
         }
         return InteractionResult.SUCCESS;
+    }
+
+    public static void sendOpenConsolePayload(BlockPos pos, ServerPlayer splayer, ConsoleBlockEntity console) {
+        PacketDistributor.sendToPlayer(splayer, new OpenConsolePayload(pos, console.getPriorLinesOrEmpty(), console.getCommandBoxText(), console.getMacros().keySet().stream().filter(macro -> !console.getHiddenMacros().contains(macro)).toList()));
     }
 
     @Override

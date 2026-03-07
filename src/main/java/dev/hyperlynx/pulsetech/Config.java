@@ -19,6 +19,7 @@ public class Config {
     public static final ModConfigSpec.IntValue SCANNER_RANGE;
     public static final ModConfigSpec.IntValue MAX_MACRO_UNWRAP_COUNT;
     public static final ModConfigSpec.IntValue ITEM_FLOW_INTERVAL;
+    public static final ModConfigSpec.IntValue REMOTE_CONSOLE_RANGE;
 
     private static final ModConfigSpec.Builder CLIENT = new ModConfigSpec.Builder();
     static final ModConfigSpec CLIENT_SPEC;
@@ -35,6 +36,7 @@ public class Config {
         ORB_SPEED = COMMON.comment("How far the Orb moves each movement tick in blocks. [Default: 0.12]").defineInRange("orbSpeed", 0.12, 0.01, 1.0);
         SCANNER_RANGE = COMMON.comment("The range of detection for the Scanner has a radius of this many blocks. [Default: 16]").defineInRange("scannerRange", 16, 4, 64);
         ITEM_FLOW_INTERVAL = COMMON.comment("How many ticks the Retriever rests between moving items while open. [Default: 3]").defineInRange("itemFlowInterval", 3, 1, 20);
+        REMOTE_CONSOLE_RANGE = COMMON.comment("The maximum distance in blocks that the Remote Console works over. The target block must still be loaded no matter the range. [Default: 64]").defineInRange("remoteConsoleRange", 64, 8, 512);
         COMMON_SPEC = COMMON.build();
 
         CONSOLE_AUTOCOMPLETE = CLIENT.comment("Whether the Console should attempt to autocomplete keywords. [Default: true]").define("consoleAutocomplete", true);
