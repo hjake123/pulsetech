@@ -21,6 +21,8 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
 
     private ItemFilterListWidget filter_list;
     private Button sync_button;
+    private Button add_button;
+    private Button remove_button;
 
     public StorageModemScreen(StorageModemMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -48,16 +50,34 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
                 );
         addRenderableWidget(sync_button);
 
-        Button add_button = Button.builder(Component.literal("+"), button -> {
+        add_button = Button.builder(Component.literal("+"), button -> {
             filter_list.addFilter(new ItemFilter(ItemStack.EMPTY, false));
+            if(filter_list.size() >= 256) {
+                add_button.active = false;
+            }
         }).build();
         add_button.setWidth(14);
         add_button.setHeight(14);
         add_button.setPosition(
-                leftPos + imageWidth - 20,
+                leftPos + imageWidth - 36,
                 topPos + 97
         );
         addRenderableWidget(add_button);
+
+        remove_button = Button.builder(Component.literal("-"), button -> {
+            if(!filter_list.removeEntry(filter_list.getSelected())) {
+                // Failed to remove the selected entry, so remove the last one instead.
+                filter_list.removeLast();
+            }
+            remove_button.active = false;
+        }).build();
+        remove_button.setWidth(14);
+        remove_button.setHeight(14);
+        remove_button.setPosition(
+                leftPos + imageWidth - 20,
+                topPos + 97
+        );
+        addRenderableWidget(remove_button);
 
         PacketDistributor.sendToServer(new StorageModemFiltersRequest(getMenu().getPos()));
 
@@ -90,6 +110,8 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
                 sync_button.active = true;
             }
         }
+        add_button.active = filter_list.size() < 256;
+        remove_button.active = filter_list.size() > 1;
     }
 
     @Override

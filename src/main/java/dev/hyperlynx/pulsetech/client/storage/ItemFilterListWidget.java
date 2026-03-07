@@ -5,9 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemFilterListWidget extends ObjectSelectionList<ItemFilterEntry> {
@@ -49,5 +48,21 @@ public class ItemFilterListWidget extends ObjectSelectionList<ItemFilterEntry> {
         super.renderItem(graphics, mouseX, mouseY, partialTick, index, left, top, width, height);
         int number_left = left + 30 + (index < 100 ? (index < 10 ? 6 : 2) : 0);
         graphics.drawScrollingString(Minecraft.getInstance().font, Component.literal(String.valueOf(index)), number_left, number_left + 20, top + 4, 0xFFFFFFFF);
+    }
+
+    @Override
+    public boolean removeEntry(@Nullable ItemFilterEntry entry) {
+        if(entry == null) {
+            return false;
+        }
+        return super.removeEntry(entry);
+    }
+
+    public int size() {
+        return children().size();
+    }
+
+    public void removeLast() {
+        children().removeLast();
     }
 }
