@@ -8,22 +8,24 @@ import dev.hyperlynx.pulsetech.core.protocol.Protocol;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolDataMap;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class StorageModemBlockEntity extends PulseBlockEntity implements FilterBearer {
     private final EmitterModule emitter = new EmitterModule();
-    private List<ItemFilter> filters = new ArrayList<>();
+    private List<ItemFilter> filters = new ArrayList<>(Collections.singleton(new ItemFilter(ItemStack.EMPTY, false)));
     private int sync_cooldown = 0;
 
     public StorageModemBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.STORAGE_MODEM.value(), pos, blockState);
-        // TODO debug
-        filters.add(new ItemFilter(Items.PAPER.getDefaultInstance(), false));
     }
 
     @Override
@@ -58,47 +60,48 @@ public class StorageModemBlockEntity extends PulseBlockEntity implements FilterB
 
     /// Register a sync code with [FilterSyncMan] and send it from the output, to be heard by retrievers.
     public void performFilterSync() {
+        short code = 0;
         try {
-            short code = FilterSyncMan.reserveSyncKey(getBlockPos(), filters);
-            if(code == 0) {
-                // This was a duplicate sync request. Don't proceed.
-                return;
-            }
-
-            assert level != null;
-            StorageModemBlock.setSyncing(level, getBlockPos(), getBlockState(), true);
-            sync_cooldown = FilterSyncMan.SYNC_COOLDOWN;
-
-            // Fetch the sequence for the Retriever's SYNC command. First, get the registry holder for the Retriever.
-            var retriever_registry_holder = ModBlockEntityTypes.RETRIEVER.get().builtInRegistryHolder();
-            if(retriever_registry_holder == null) {
-                Pulsetech.LOGGER.error("Can't find the registry holder for {}", ModBlockEntityTypes.RETRIEVER.get());
-                return;
-            }
-
-            // Next, get its Protocol.
-            Protocol retriever_protocol = retriever_registry_holder.getData(ProtocolDataMap.TYPE);
-            if(retriever_protocol == null || !retriever_protocol.getCommands().containsKey(RetrieverBlock.SYNC.get())) {
-                Pulsetech.LOGGER.error("Retriever has no valid protocol, so the sync operation will fail. Check your datapacks, reinstall Pulsetech, or report this as a bug!");
-                return;
-            }
-
-            // Finally, send the sequence for SYNC.
-            Sequence sync_sequence = retriever_protocol.getCommands().get(RetrieverBlock.SYNC.get());
-            emitter.enqueueTransmission(sync_sequence);
-
-            // Split the code into a pair of bytes for transmission
-            byte code_high = (byte) ((code & 0xFF00) >> 8);
-            byte code_low = (byte) (code & 0x00FF);
-
-            emitter.enqueueTransmission(Sequence.fromByte(code_low));
-            emitter.enqueueTransmission(Sequence.fromByte(code_high));
-            emitter.setActive(true);
+            code = FilterSyncMan.reserveSyncKey(getBlockPos(), filters);
         } catch (FilterSyncMan.NoFreeFilterSyncException e) {
             Pulsetech.LOGGER.warn("No free sync slots for storage modem filters; over 65,536 syncs are taking place at once.");
             Pulsetech.LOGGER.warn("That's way more then is reasonable, so I recommend checking into what's causing all those syncs.");
             Pulsetech.LOGGER.warn("If you can't find anything, please report this as a Pulsetech bug.");
         }
+        if(code == 0) {
+            // This was a duplicate sync request. Don't proceed.
+            return;
+        }
+
+        assert level != null;
+        StorageModemBlock.setSyncing(level, getBlockPos(), getBlockState(), true);
+        sync_cooldown = FilterSyncMan.SYNC_COOLDOWN;
+
+        // Fetch the sequence for the Retriever's SYNC command. First, get the registry holder for the Retriever.
+        var retriever_registry_holder = ModBlockEntityTypes.RETRIEVER.get().builtInRegistryHolder();
+        if(retriever_registry_holder == null) {
+            Pulsetech.LOGGER.error("Can't find the registry holder for {}", ModBlockEntityTypes.RETRIEVER.get());
+            return;
+        }
+
+        // Next, get its Protocol.
+        Protocol retriever_protocol = retriever_registry_holder.getData(ProtocolDataMap.TYPE);
+        if(retriever_protocol == null || !retriever_protocol.getCommands().containsKey(RetrieverBlock.SYNC.get())) {
+            Pulsetech.LOGGER.error("Retriever has no valid protocol, so the sync operation will fail. Check your datapacks, reinstall Pulsetech, or report this as a bug!");
+            return;
+        }
+
+        // Finally, send the sequence for SYNC.
+        Sequence sync_sequence = retriever_protocol.getCommands().get(RetrieverBlock.SYNC.get());
+        emitter.enqueueTransmission(sync_sequence);
+
+        // Split the code into a pair of bytes for transmission
+        byte code_high = (byte) ((code & 0xFF00) >> 8);
+        byte code_low = (byte) (code & 0x00FF);
+
+        emitter.enqueueTransmission(Sequence.fromByte(code_low));
+        emitter.enqueueTransmission(Sequence.fromByte(code_high));
+        emitter.setActive(true);
     }
 
     @Override
@@ -109,5 +112,17 @@ public class StorageModemBlockEntity extends PulseBlockEntity implements FilterB
     @Override
     public void setFilters(List<ItemFilter> filters) {
         this.filters = filters;
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        tag.put("Filters", ItemFilter.CODEC.listOf().encodeStart(NbtOps.INSTANCE, filters).getPartialOrThrow());
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        filters = ItemFilter.CODEC.listOf().decode(NbtOps.INSTANCE, tag.get("Filters")).getPartialOrThrow().getFirst();
     }
 }

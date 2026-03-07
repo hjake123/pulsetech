@@ -20,7 +20,7 @@ import java.util.concurrent.Semaphore;
 @EventBusSubscriber
 public class FilterSyncMan {
     private static final Map<Short, SyncEntry> active_sync_requests = new HashMap<>();
-    public static final int SYNC_COOLDOWN = 200;
+    public static final int SYNC_COOLDOWN = 400;
 
     private static final Semaphore sync_busy = new Semaphore(1);
 
