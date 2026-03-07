@@ -216,6 +216,8 @@
   "gui.pulsetech.number_too_small": "Value must be at least -128",
   "gui.pulsetech.copy_description": "Copy this Console's macros to the clipboard",
   "gui.pulsetech.paste_description": "Paste macros from the clipboard into this Console",
+  "gui.pulsetech.match_data": "Check for exact components",
+  "gui.pulsetech.no_match_data": "Ignore exact components",
   "debugger.pulsetech.input_buffer": "Input Buffer",
   "debugger.pulsetech.parameter_input_buffer": "Parameter Input Buffer",
   "debugger.pulsetech.command_input_buffer": "Protocol Input Buffer",

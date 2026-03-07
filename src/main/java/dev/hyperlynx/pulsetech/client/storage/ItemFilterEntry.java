@@ -12,6 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class ItemFilterEntry extends ObjectSelectionList.Entry<ItemFilterEntry> implements GuiEventListener {
     private static final ResourceLocation BACKGROUND = Pulsetech.location("filter_entry");
     private static final ResourceLocation BACKGROUND_SELECTED = Pulsetech.location("filter_entry_selected");
@@ -24,6 +26,11 @@ public class ItemFilterEntry extends ObjectSelectionList.Entry<ItemFilterEntry> 
 
     private final SpriteIconButton match_data_button;
     private final SpriteIconButton no_match_data_button;
+
+    private int item_left;
+    private int item_right;
+    private int toggle_left;
+    private int toggle_right;
 
     public ItemFilterEntry(ItemFilter filter, PlayerCarryingAccessor accessor) {
         this.filter = filter;
@@ -64,14 +71,19 @@ public class ItemFilterEntry extends ObjectSelectionList.Entry<ItemFilterEntry> 
 
     @Override
     public void render(GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovering, float partialTick) {
+        item_left = left + 49;
+        item_right = item_left + 16;
+        toggle_left = left + width - 50;
+        toggle_right = toggle_left + 18;
+
         graphics.blitSprite(focused ? BACKGROUND_SELECTED : BACKGROUND, left + 29, top - 2, 0, 160, 20);
         graphics.renderItem(filter.item(), left + 49, top);
         graphics.drawScrollingString(Minecraft.getInstance().font, filter.getFilterLabel(), left + 68, left + 150, top + 4, 0xFFFFFF);
         if(filter.match_data()) {
-            match_data_button.setPosition(left + width - 50, top - 1);
+            match_data_button.setPosition(toggle_left, top - 1);
             match_data_button.render(graphics, mouseX, mouseY, partialTick);
         } else {
-            no_match_data_button.setPosition(left + width - 50, top - 1);
+            no_match_data_button.setPosition(toggle_left, top - 1);
             no_match_data_button.render(graphics, mouseX, mouseY, partialTick);
         }
     }
@@ -103,5 +115,18 @@ public class ItemFilterEntry extends ObjectSelectionList.Entry<ItemFilterEntry> 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         return true;
+    }
+
+    public void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+        if (!isMouseOver(x, y)) {
+            return;
+        }
+        if (!filter.item().isEmpty() && x >= item_left && x <= item_right) {
+            guiGraphics.renderTooltip(Minecraft.getInstance().font, filter.item(), x, y);
+        } else if (x >= toggle_left && x <= toggle_right) {
+            guiGraphics.renderComponentTooltip(Minecraft.getInstance().font,
+                    List.of(filter.match_data() ? Component.translatable("gui.pulsetech.match_data") : Component.translatable("gui.pulsetech.no_match_data")),
+                    x, y);
+        }
     }
 }

@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -52,6 +53,10 @@ public class ItemFilterListWidget extends ObjectSelectionList<ItemFilterEntry> {
 
     @Override
     public boolean removeEntry(@Nullable ItemFilterEntry entry) {
+        if(children().size() == 1) {
+            resetFinalEntry();
+            return true;
+        }
         if(entry == null) {
             return false;
         }
@@ -63,6 +68,27 @@ public class ItemFilterListWidget extends ObjectSelectionList<ItemFilterEntry> {
     }
 
     public void removeLast() {
+        if(children().size() == 1) {
+            resetFinalEntry();
+            return;
+        }
         children().removeLast();
+    }
+
+    private void resetFinalEntry() {
+        children().getFirst().updateFilter(new ItemFilter(ItemStack.EMPTY, false));
+    }
+
+    public void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+        var entry = getEntryAtPosition(x, y);
+        if(entry == null) {
+            return;
+        }
+        entry.renderTooltip(guiGraphics, x, y);
+    }
+
+    /// Returns true if the only item in the filter list has a filter of Any Item.
+    public boolean isDevoidOfData() {
+        return children().size() < 2 && (children().isEmpty() || children().getFirst().getFilter().item().isEmpty());
     }
 }

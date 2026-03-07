@@ -111,7 +111,7 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
             }
         }
         add_button.active = filter_list.size() < 256;
-        remove_button.active = filter_list.size() > 1;
+        remove_button.active = filter_list.size() > 1 || !filter_list.isDevoidOfData();
     }
 
     @Override
@@ -126,5 +126,11 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+        super.renderTooltip(guiGraphics, x, y);
+        filter_list.renderTooltip(guiGraphics, x, y);
     }
 }
