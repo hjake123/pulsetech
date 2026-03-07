@@ -16,8 +16,10 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 
@@ -42,7 +44,7 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) { // TODO not loading data...?
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         filters = ItemFilter.CODEC.listOf().decode(NbtOps.INSTANCE, tag.get("Filters")).getPartialOrThrow().getFirst();
         selected_filter_index = tag.getInt("SelectedFilterIndex");
@@ -125,7 +127,7 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
         if(RetrieverBlock.isOpen(getBlockState())) {
             if(flow_timer < 0) {
                 flow_timer = Config.ITEM_FLOW_INTERVAL.get();
-                retrieveUpToCountMatching((byte) 64);
+                retrieveUpToCountMatching((byte) 1);
             }
             flow_timer--;
             setChanged();
@@ -143,7 +145,7 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
         return level.getCapability(Capabilities.ItemHandler.BLOCK, getBlockPos().above(), Direction.DOWN);
     }
 
-    private IItemHandler getOutputInventory() {
+    private @Nullable IItemHandler getOutputInventory() {
         assert level != null;
         return level.getCapability(Capabilities.ItemHandler.BLOCK, getBlockPos().below(), Direction.UP);
     }
@@ -152,6 +154,16 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
     private ItemStack sendToOutput(ItemStack stack) {
         var output = getOutputInventory();
         ItemStack to_move_stack = stack;
+        if(output == null) {
+            // There is no valid destination inventory below us.
+            if(!level.getBlockState(getBlockPos().below()).isSolidRender(level, getBlockPos().below())) {
+                // If the block below isn't a solid block, we can eject the item into the world.
+                dropBelowAsItem(stack);
+                return ItemStack.EMPTY;
+            }
+            // We can't eject the item, just return the whole stack.
+            return stack;
+        }
         for(int i = 0; i < output.getSlots(); i++) {
             if(output.isItemValid(i, stack)) {
                 to_move_stack = output.insertItem(i, stack, false);
@@ -161,6 +173,14 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
             }
         }
         return to_move_stack;
+    }
+
+    private void dropBelowAsItem(ItemStack stack) {
+        Vec3 drop_site = getBlockPos().below().getBottomCenter().add(0, 0.5, 0);
+        assert level != null;
+        var drop = new ItemEntity(level, drop_site.x, drop_site.y, drop_site.z, stack);
+        drop.setDeltaMovement(0, 0, 0);
+        level.addFreshEntity(drop);
     }
 
     private int getMatchingCount() {

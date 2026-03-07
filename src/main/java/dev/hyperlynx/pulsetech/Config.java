@@ -34,7 +34,7 @@ public class Config {
                 .define("orbCannotGrab",Lists.newArrayList("minecraft:ender_dragon", "minecraft:wither", "minecraft:warden"));
         ORB_SPEED = COMMON.comment("How far the Orb moves each movement tick in blocks. [Default: 0.12]").defineInRange("orbSpeed", 0.12, 0.01, 1.0);
         SCANNER_RANGE = COMMON.comment("The range of detection for the Scanner has a radius of this many blocks. [Default: 16]").defineInRange("scannerRange", 16, 4, 64);
-        ITEM_FLOW_INTERVAL = COMMON.comment("How many ticks the Retriever rests between moving stacks while open. [Default: 10]").defineInRange("itemFlowInterval", 10, 1, 100);
+        ITEM_FLOW_INTERVAL = COMMON.comment("How many ticks the Retriever rests between moving items while open. [Default: 3]").defineInRange("itemFlowInterval", 3, 1, 20);
         COMMON_SPEC = COMMON.build();
 
         CONSOLE_AUTOCOMPLETE = CLIENT.comment("Whether the Console should attempt to autocomplete keywords. [Default: true]").define("consoleAutocomplete", true);
