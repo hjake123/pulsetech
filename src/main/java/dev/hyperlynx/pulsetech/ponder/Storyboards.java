@@ -614,4 +614,35 @@ public class Storyboards {
             screen.sendUpdate();
         });
     }
+
+    public static void remoteConsole(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("remote_console", "Using a Remote Console");
+        scene.showBasePlate();
+        BlockPos pos = util.grid().at(2, 1, 2);
+        scene.world().showSection(util.select().position(pos), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay().showText(80)
+                .text("");
+        scene.idle(100);
+
+        scene.addKeyframe();
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getCenter());
+        scene.idle(80);
+        scene.overlay().showControls(pos.getCenter(), Pointing.DOWN, 40)
+                .rightClick()
+                .withItem(ModItems.REMOTE_CONSOLE.toStack());
+        scene.idle(20);
+        scene.effects().indicateSuccess(pos);
+        scene.idle(30);
+
+        scene.addKeyframe();
+        scene.overlay().showText(80)
+                .text("");
+        scene.idle(100);
+        scene.overlay().showText(80)
+                .text("");
+        scene.idle(100);
+    }
 }

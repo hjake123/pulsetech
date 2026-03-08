@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.ponder;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.feature.storage.StorageModemMenu;
 import dev.hyperlynx.pulsetech.registration.ModBlocks;
 import dev.hyperlynx.pulsetech.registration.ModItems;
 import net.createmod.ponder.api.registration.PonderPlugin;
@@ -58,6 +59,8 @@ public class PulsetechPonderPlugin implements PonderPlugin {
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/console_macros"), Storyboards::dataCellConsole);
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/processor"), Storyboards::processor);
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/scanner_pos"), Storyboards::dataCellScanner);
+
+        helper.addStoryBoard(ModItems.REMOTE_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::remoteConsole);
     }
 
     @Override
