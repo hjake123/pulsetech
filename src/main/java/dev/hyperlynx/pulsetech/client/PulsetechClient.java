@@ -14,6 +14,7 @@ import dev.hyperlynx.pulsetech.client.console.ConsoleScreen;
 import dev.hyperlynx.pulsetech.client.screen.ScreenBlockRenderer;
 import dev.hyperlynx.pulsetech.client.storage.StorageModemScreen;
 import dev.hyperlynx.pulsetech.core.PatternHolder;
+import dev.hyperlynx.pulsetech.feature.console.remote.RemoteConsoleItem;
 import dev.hyperlynx.pulsetech.feature.datacell.DataCellItem;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
@@ -111,6 +112,11 @@ public class PulsetechClient {
                     ModItems.DATA_CELL.get(),
                     Pulsetech.location("loaded"),
                     (stack, level, player, seed) -> DataCellItem.getLoadedProperty(stack)
+            );
+            ItemProperties.register(
+                    ModItems.REMOTE_CONSOLE.get(),
+                    Pulsetech.location("console_color"),
+                    (stack, level, player, seed) -> RemoteConsoleItem.getColorProperty(stack, level, player)
             );
             PonderIndex.addPlugin(new PulsetechPonderPlugin());
         });

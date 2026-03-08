@@ -24,6 +24,7 @@
   "item.pulsetech.pulse_module": "Pulse Module",
   "item.pulsetech.protocol_module": "Protocol Module",
   "item.pulsetech.storage_module": "Storage Module",
+  "item.pulsetech.remote_console": "Remote Console",
   "message.pulsetech.set_protocol": "Protocol has been updated",
   "message.pulsetech.no_protocol": "Please set a Protocol first",
   "pulsetech.needs_protocol": "Needs protocol",
