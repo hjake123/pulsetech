@@ -29,6 +29,7 @@ public class ModItems {
     public static final DeferredItem<BlockItem> CANNON = ITEMS.registerSimpleBlockItem("cannon", ModBlocks.CANNON);
     public static final DeferredItem<BlockItem> ORB = ITEMS.registerSimpleBlockItem("orb", ModBlocks.ORB);
     public static final DeferredItem<BlockItem> SCOPE = ITEMS.registerSimpleBlockItem("scope", ModBlocks.SCOPE);
+    public static final DeferredItem<BlockItem> PROGRAM_EMITTER = ITEMS.registerSimpleBlockItem("program_emitter", ModBlocks.PROCESSOR);
     public static final DeferredItem<BlockItem> RETRIEVER = ITEMS.registerSimpleBlockItem("retriever", ModBlocks.RETRIEVER);
     public static final DeferredItem<BlockItem> STORAGE_MODEM = ITEMS.registerSimpleBlockItem("storage_modem", ModBlocks.STORAGE_MODEM);
 
