@@ -49,7 +49,6 @@ public class DatasheetScreen extends Screen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
         graphics.drawString(Minecraft.getInstance().font, title, paper_top_x + 8, paper_top_y + 8, 0, false);
-        Block block = datasheet.block();
         graphics.renderItem(datasheet.block().asItem().getDefaultInstance(),paper_top_x + 157,paper_top_y + 8);
     }
 

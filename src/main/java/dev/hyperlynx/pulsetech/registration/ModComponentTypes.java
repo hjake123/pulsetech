@@ -4,6 +4,7 @@ import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -27,8 +28,8 @@ public class ModComponentTypes {
                     .persistent(BlockPos.CODEC)
                     .build());
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<BlockPos>> REMOTE_CONSOLE_LINK_POSITION = TYPES.register("remote_console_link_position", () ->
-            DataComponentType.<BlockPos>builder()
-                    .persistent(BlockPos.CODEC)
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<GlobalPos>> REMOTE_CONSOLE_LINK_POSITION = TYPES.register("remote_console_link_position", () ->
+            DataComponentType.<GlobalPos>builder()
+                    .persistent(GlobalPos.CODEC)
                     .build());
 }

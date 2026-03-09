@@ -7,6 +7,7 @@ import dev.hyperlynx.pulsetech.registration.ModBlocks;
 import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -17,8 +18,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 public class RemoteConsoleItem extends Item {
     public RemoteConsoleItem(Properties properties) {
@@ -29,7 +33,7 @@ public class RemoteConsoleItem extends Item {
     public InteractionResult useOn(UseOnContext context) {
         if(context.getLevel().getBlockState(context.getClickedPos()).getBlock() instanceof ConsoleBlock && context.getPlayer() != null) {
             ItemStack stack = context.getItemInHand();
-            stack.set(ModComponentTypes.REMOTE_CONSOLE_LINK_POSITION.get(), context.getClickedPos());
+            stack.set(ModComponentTypes.REMOTE_CONSOLE_LINK_POSITION.get(), GlobalPos.of(context.getLevel().dimension(), context.getClickedPos()));
             context.getPlayer().displayClientMessage(Component.translatable("message.pulsetech.bind_console"), true);
             return InteractionResult.SUCCESS;
         }
@@ -42,14 +46,19 @@ public class RemoteConsoleItem extends Item {
         if(!stack.has(ModComponentTypes.REMOTE_CONSOLE_LINK_POSITION)) {
             return InteractionResultHolder.pass(stack);
         }
-        BlockPos pos = stack.get(ModComponentTypes.REMOTE_CONSOLE_LINK_POSITION);
-        if(pos == null || !level.isLoaded(pos) || outOfRange(player.blockPosition(), pos)) {
+        GlobalPos global_pos = stack.get(ModComponentTypes.REMOTE_CONSOLE_LINK_POSITION);
+        if(global_pos == null || !level.dimension().equals(global_pos.dimension())) {
+            player.displayClientMessage(Component.translatable("message.pulsetech.console_out_of_range"), true);
+            return InteractionResultHolder.pass(stack);
+        }
+        BlockPos pos = global_pos.pos();
+        if(!level.isLoaded(pos) || outOfRange(player.blockPosition(), pos)) {
             player.displayClientMessage(Component.translatable("message.pulsetech.console_out_of_range"), true);
             return InteractionResultHolder.fail(stack);
         }
         if(!(level.getBlockEntity(pos) instanceof ConsoleBlockEntity console)) {
             stack.remove(ModComponentTypes.REMOTE_CONSOLE_LINK_POSITION);
-            player.displayClientMessage(Component.translatable("message.pulsetech.console_out_of_range"), true);
+            player.displayClientMessage(Component.translatable("message.pulsetech.console_missing"), true);
             return InteractionResultHolder.fail(stack);
         }
         if(!level.isClientSide()) {
@@ -59,6 +68,10 @@ public class RemoteConsoleItem extends Item {
     }
 
     private static boolean outOfRange(BlockPos player_pos, BlockPos console_pos) {
+        if(Config.REMOTE_CONSOLE_RANGE.get() == 0) {
+            // Special case to disable range check.
+            return false;
+        }
         return !(Mth.sqrt((float) player_pos.distSqr(console_pos)) <= Config.REMOTE_CONSOLE_RANGE.get());
     }
 
@@ -67,8 +80,12 @@ public class RemoteConsoleItem extends Item {
         if(!stack.has(ModComponentTypes.REMOTE_CONSOLE_LINK_POSITION)) {
             return 0;
         }
-        BlockPos pos = stack.get(ModComponentTypes.REMOTE_CONSOLE_LINK_POSITION.get());
-        if(pos == null || !level.isLoaded(pos) || outOfRange(player.blockPosition(), pos)) {
+        GlobalPos global_pos = stack.get(ModComponentTypes.REMOTE_CONSOLE_LINK_POSITION);
+        if(global_pos == null || !level.dimension().equals(global_pos.dimension())) {
+            return 0;
+        }
+        BlockPos pos = global_pos.pos();
+        if(!level.isLoaded(pos) || outOfRange(player.blockPosition(), pos)) {
             return 0;
         }
         if(!(level.getBlockState(pos).getBlock() instanceof ConsoleBlock console)) {
@@ -81,5 +98,13 @@ public class RemoteConsoleItem extends Item {
             case INDIGO -> 4;
             case WHITE -> 5;
         };
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        if(stack.has(ModComponentTypes.REMOTE_CONSOLE_LINK_POSITION)) {
+            tooltipComponents.add(Component.translatable("tooltip.pulsetech.remote_console_bound"));
+        }
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 }
