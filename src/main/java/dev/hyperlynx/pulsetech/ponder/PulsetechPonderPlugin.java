@@ -57,8 +57,8 @@ public class PulsetechPonderPlugin implements PonderPlugin {
 
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/screen_data"), Storyboards::dataCellScreen);
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/console_macros"), Storyboards::dataCellConsole);
-        helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/processor"), Storyboards::processor);
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/scanner_pos"), Storyboards::dataCellScanner);
+        helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/processor"), Storyboards::processor);
 
         helper.addStoryBoard(ModItems.REMOTE_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::remoteConsole);
         helper.addStoryBoard(ModItems.PROGRAM_EMITTER.getId(), Pulsetech.location("datacell/processor"), Storyboards::processor);

@@ -53,4 +53,11 @@ public record ItemFilter(ItemStack item, boolean match_data) {
                 match_data() ? item.getHoverName() : item.getItem().getName(item.getItem().getDefaultInstance());
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof ItemFilter(ItemStack other_item, boolean other_match_data))) {
+            return false;
+        }
+        return ItemStack.isSameItemSameComponents(this.item(), other_item) && this.match_data() == other_match_data;
+    }
 }

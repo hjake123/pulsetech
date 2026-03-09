@@ -382,5 +382,9 @@
   "pulsetech.any_item": "Any Item",
   "message.pulsetech.bind_console": "Remote Console bound to this block",
   "message.pulsetech.console_out_of_range": "Can't reach the target console",
-  "message.pulsetech.console_missing": "Console is absent from bound position; unbinding"
+  "message.pulsetech.console_missing": "Console is absent from bound position; unbinding",
+  "pulsetech.copied_filters": "Copied item filter set from modem",
+  "pulsetech.filters_already_match": "Item filters already up to date",
+  "pulsetech.pasted_filters": "Pasted item filter set to modem",
+  "pulsetech.swapped_filters": "Swapped item filter set with modem"
 }
