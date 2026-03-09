@@ -5,12 +5,15 @@ import dev.hyperlynx.pulsetech.feature.storage.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.SpriteIconButton;
 import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,11 +21,15 @@ import java.util.List;
 
 public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu> {
     private static final ResourceLocation BACKGROUND_LOCATION = Pulsetech.location("textures/gui/storage_modem.png");
+    private static final ResourceLocation UP_BUTTON = Pulsetech.location("up_button");
+    private static final ResourceLocation DOWN_BUTTON = Pulsetech.location("down_button");
 
     private ItemFilterListWidget filter_list;
     private Button sync_button;
     private Button add_button;
     private Button remove_button;
+    private Button up_button;
+    private Button down_button;
 
     public StorageModemScreen(StorageModemMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -37,9 +44,13 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
     @Override
     protected void init() {
         super.init();
-        sync_button = Button.builder(Component.literal("sync"), button -> {
-            PacketDistributor.sendToServer(new StorageModemSyncRequest(getMenu().getPos()));
+        sync_button = Button.builder(Component.translatable("gui.pulsetech.sync"), button -> {
+            PacketDistributor.sendToServer(new StorageModemGUIPayload(getMenu().getPos(), filter_list.getFilters()), new StorageModemSyncRequest(getMenu().getPos()));
             sync_button.active = false;
+            if(Minecraft.getInstance().level != null) {
+                Level level = Minecraft.getInstance().level;
+                StorageModemBlock.setSyncing(level, getMenu().getPos(), level.getBlockState(getMenu().getPos()), true);
+            }
         }).build();
         sync_button.active = syncAvailable();
         sync_button.setHeight(14);
@@ -79,10 +90,36 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
         );
         addRenderableWidget(remove_button);
 
+        up_button = SpriteIconButton.builder(Component.literal("^"), button -> {
+            if(filter_list.getSelected() != null) {
+                filter_list.moveEntry(filter_list.getSelected(), -1);
+            }
+        }, true).sprite(UP_BUTTON, 14, 14).build();
+        up_button.setWidth(14);
+        up_button.setHeight(14);
+        up_button.setPosition(
+                leftPos + imageWidth - 68,
+                topPos + 97
+        );
+        addRenderableWidget(up_button);
+
+        down_button = SpriteIconButton.builder(Component.literal("v"), button -> {
+            if(filter_list.getSelected() != null) {
+                filter_list.moveEntry(filter_list.getSelected(), 1);
+            }
+        }, true).sprite(DOWN_BUTTON, 14, 14).build();
+        down_button.setWidth(14);
+        down_button.setHeight(14);
+        down_button.setPosition(
+                leftPos + imageWidth - 52,
+                topPos + 97
+        );
+        addRenderableWidget(down_button);
+
         PacketDistributor.sendToServer(new StorageModemFiltersRequest(getMenu().getPos()));
 
-        filter_list = new ItemFilterListWidget(Minecraft.getInstance(), 161, 75, 0, 20, getMenu()::getCarried);
-        filter_list.setPosition(getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 80, getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - 78);
+        filter_list = new ItemFilterListWidget(Minecraft.getInstance(), 161, 77, 0, 20, getMenu()::getCarried);
+        filter_list.setPosition(getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 80, getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - 77);
         addRenderableWidget(filter_list);
     }
 
@@ -106,7 +143,7 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
     @Override
     public void containerTick() {
         if(!sync_button.active && Minecraft.getInstance().level != null) {
-            if (syncAvailable() ) {
+            if (syncAvailable()) {
                 sync_button.active = true;
             }
         }
@@ -138,5 +175,13 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
     public void onClose() {
         super.onClose();
         PacketDistributor.sendToServer(new StorageModemGUIPayload(menu.getPos(), filter_list.getFilters()));
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if(filter_list.mouseDragged(mouseX, mouseY, button, dragX, dragY)) {
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 }

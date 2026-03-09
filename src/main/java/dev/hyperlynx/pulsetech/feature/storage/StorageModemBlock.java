@@ -40,7 +40,7 @@ public class StorageModemBlock extends PulseBlock {
     }
 
     public static void setSyncing(Level level, BlockPos pos, BlockState state, boolean syncing) {
-        level.setBlock(pos, state.setValue(SYNCING, syncing), Block.UPDATE_ALL);
+        level.setBlock(pos, state.setValue(SYNCING, syncing), Block.UPDATE_ALL_IMMEDIATE);
     }
 
     @Override

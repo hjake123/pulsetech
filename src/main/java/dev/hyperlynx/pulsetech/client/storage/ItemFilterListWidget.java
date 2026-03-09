@@ -48,7 +48,7 @@ public class ItemFilterListWidget extends ObjectSelectionList<ItemFilterEntry> {
     @Override
     protected void renderItem(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int index, int left, int top, int width, int height) {
         super.renderItem(graphics, mouseX, mouseY, partialTick, index, left, top, width, height);
-        int number_left = left + 30 + (index < 100 ? (index < 10 ? 6 : 2) : 0);
+        int number_left = left + (index < 100 ? (index < 10 ? 6 : 2) : 0);
         graphics.drawScrollingString(Minecraft.getInstance().font, Component.literal(String.valueOf(index)), number_left, number_left + 20, top + 4, 0xFFFFFFFF);
     }
 
@@ -95,5 +95,17 @@ public class ItemFilterListWidget extends ObjectSelectionList<ItemFilterEntry> {
 
     public List<ItemFilter> getFilters() {
         return children().stream().map(ItemFilterEntry::getFilter).toList();
+    }
+
+    public void moveEntry(ItemFilterEntry entry, int offset) {
+        int prior_index = children().indexOf(entry);
+        int index = prior_index + offset;
+        children().remove(entry);
+        children().add(index, entry);
+    }
+
+    @Override
+    public int getRowWidth() {
+        return 160;
     }
 }

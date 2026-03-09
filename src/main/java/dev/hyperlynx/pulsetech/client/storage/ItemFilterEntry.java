@@ -71,14 +71,14 @@ public class ItemFilterEntry extends ObjectSelectionList.Entry<ItemFilterEntry> 
 
     @Override
     public void render(GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovering, float partialTick) {
-        item_left = left + 49;
+        item_left = left + 19;
         item_right = item_left + 16;
-        toggle_left = left + width - 50;
+        toggle_left = left + width - 20;
         toggle_right = toggle_left + 18;
 
-        graphics.blitSprite(focused ? BACKGROUND_SELECTED : BACKGROUND, left + 29, top - 2, 0, 160, 20);
-        graphics.renderItem(filter.item(), left + 49, top);
-        graphics.drawScrollingString(Minecraft.getInstance().font, filter.getFilterLabel(), left + 68, left + 150, top + 4, 0xFFFFFF);
+        graphics.blitSprite(focused ? BACKGROUND_SELECTED : BACKGROUND, left - 1, top - 2, 0, 160, 20);
+        graphics.renderItem(filter.item(), item_left, top);
+        graphics.drawScrollingString(Minecraft.getInstance().font, filter.getFilterLabel(), left + 40, left + 139, top + 4, 0xFFFFFF);
         if(filter.match_data()) {
             match_data_button.setPosition(toggle_left, top - 1);
             match_data_button.render(graphics, mouseX, mouseY, partialTick);
