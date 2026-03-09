@@ -44,6 +44,8 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
     @Override
     protected void init() {
         super.init();
+        getMenu().setQuickStackRoutine(this::onQuickStack);
+
         sync_button = Button.builder(Component.translatable("gui.pulsetech.sync"), button -> {
             PacketDistributor.sendToServer(new StorageModemGUIPayload(getMenu().getPos(), filter_list.getFilters()), new StorageModemSyncRequest(getMenu().getPos()));
             sync_button.active = false;
@@ -121,6 +123,10 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
         filter_list = new ItemFilterListWidget(Minecraft.getInstance(), 161, 77, 0, 20, getMenu()::getCarried);
         filter_list.setPosition(getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 80, getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - 77);
         addRenderableWidget(filter_list);
+    }
+
+    private void onQuickStack(ItemStack itemStack) {
+        filter_list.addFilter(new ItemFilter(itemStack, false));
     }
 
     @Override

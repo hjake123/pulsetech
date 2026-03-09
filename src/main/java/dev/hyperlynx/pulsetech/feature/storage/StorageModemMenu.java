@@ -11,8 +11,11 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.function.Consumer;
+
 public class StorageModemMenu extends AbstractContainerMenu {
     private final ContainerLevelAccess access;
+    private Consumer<ItemStack> quickStackRoutine;
 
     /// Network constructor to read the BlockPos from the network.
     public StorageModemMenu(int containerId, Inventory player_inventory, RegistryFriendlyByteBuf buf) {
@@ -34,8 +37,16 @@ public class StorageModemMenu extends AbstractContainerMenu {
         }
     }
 
+    public void setQuickStackRoutine(Consumer<ItemStack> routine) {
+        quickStackRoutine = routine;
+    }
+
     @Override
-    public ItemStack quickMoveStack(Player player, int i) {
+    public ItemStack quickMoveStack(Player player, int index) {
+        Slot quickMovedSlot = this.slots.get(index);
+        if(quickStackRoutine != null && quickMovedSlot.hasItem()) {
+            quickStackRoutine.accept(quickMovedSlot.getItem().copyWithCount(1));
+        }
         return ItemStack.EMPTY;
     }
 

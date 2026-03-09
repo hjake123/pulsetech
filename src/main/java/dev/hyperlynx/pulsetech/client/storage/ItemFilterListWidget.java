@@ -100,6 +100,9 @@ public class ItemFilterListWidget extends ObjectSelectionList<ItemFilterEntry> {
     public void moveEntry(ItemFilterEntry entry, int offset) {
         int prior_index = children().indexOf(entry);
         int index = prior_index + offset;
+        if(index < 0) {
+            index = 0;
+        }
         children().remove(entry);
         children().add(index, entry);
     }
