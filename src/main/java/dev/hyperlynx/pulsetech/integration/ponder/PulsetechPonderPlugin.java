@@ -1,7 +1,6 @@
-package dev.hyperlynx.pulsetech.ponder;
+package dev.hyperlynx.pulsetech.integration.ponder;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
-import dev.hyperlynx.pulsetech.feature.storage.StorageModemMenu;
 import dev.hyperlynx.pulsetech.registration.ModBlocks;
 import dev.hyperlynx.pulsetech.registration.ModItems;
 import net.createmod.ponder.api.registration.PonderPlugin;

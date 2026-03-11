@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.SpriteIconButton;
 import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -125,7 +126,10 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
         addRenderableWidget(filter_list);
     }
 
-    private void onQuickStack(ItemStack itemStack) {
+    public void onQuickStack(ItemStack itemStack) {
+        if(filter_list.isDevoidOfData()) {
+            filter_list.forceRemoveLast();
+        }
         filter_list.addFilter(new ItemFilter(itemStack, false));
     }
 
@@ -190,4 +194,9 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
         }
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
+
+    public List<Rect2i> getFilterSlotRectangles() {
+        return List.of(new Rect2i(filter_list.getX(), filter_list.getY(), filter_list.getWidth(), filter_list.getHeight()));
+    }
+
 }

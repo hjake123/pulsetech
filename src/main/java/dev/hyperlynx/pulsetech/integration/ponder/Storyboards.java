@@ -1,4 +1,4 @@
-package dev.hyperlynx.pulsetech.ponder;
+package dev.hyperlynx.pulsetech.integration.ponder;
 
 import dev.hyperlynx.pulsetech.core.program.Macros;
 import dev.hyperlynx.pulsetech.feature.orb.Orb;

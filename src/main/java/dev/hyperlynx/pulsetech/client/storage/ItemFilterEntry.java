@@ -95,9 +95,6 @@ public class ItemFilterEntry extends ObjectSelectionList.Entry<ItemFilterEntry> 
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(!isFocused()) {
-            return true;
-        }
         ItemStack carried_on_mouse = accessor.getCarrying();
         if(carried_on_mouse.isEmpty()) {
             // Check for button clicks.

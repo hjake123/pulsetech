@@ -147,7 +147,7 @@ dependencies {
             prefer flywheel_version
         }
     }
-    runtimeOnly("mezz.jei:jei-${mc_version}-neoforge:${jei_version}")
+    implementation("mezz.jei:jei-${mc_version}-neoforge:${jei_version}")
 
     // Create for recording Ponder scenes
 //    runtimeOnly("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
