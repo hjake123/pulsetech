@@ -112,6 +112,7 @@ public class StorageModemBlockEntity extends PulseBlockEntity implements FilterB
     @Override
     public void setFilters(List<ItemFilter> filters) {
         this.filters = filters;
+        setChanged();
     }
 
     @Override
