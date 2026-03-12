@@ -6,17 +6,59 @@ import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.core.protocol.ExecutionContext;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommand;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
+import dev.hyperlynx.pulsetech.registration.ModBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
 public class NumberBulbBlock extends PulseBlock {
+    private static final BooleanProperty IS_STACK_ADDON = BooleanProperty.create("is_stack_addon");
+
     public NumberBulbBlock(Properties properties, SideIO io) {
         super(properties, io, true);
+        registerDefaultState(defaultBlockState().setValue(IS_STACK_ADDON, false));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(IS_STACK_ADDON);
+    }
+
+    @Override
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+        boolean is_atop_another_bulb = level.getBlockState(pos.below()).is(ModBlocks.NUMBER_BULB);
+        if(is_atop_another_bulb != state.getValue(IS_STACK_ADDON)) {
+            level.setBlock(pos, state.setValue(IS_STACK_ADDON, is_atop_another_bulb), Block.UPDATE_ALL);
+            var entity = level.getBlockEntity(pos);
+            if(entity != null) {
+                entity.setRemoved();
+            }
+        }
+        super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
+    }
+
+    @Override
+    public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, @Nullable Direction direction) {
+        if(state.getValue(IS_STACK_ADDON)) {
+            return false;
+        }
+        return super.canConnectRedstone(state, level, pos, direction);
+    }
+
+    @Override
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        return defaultBlockState().setValue(IS_STACK_ADDON, context.getLevel().getBlockState(context.getClickedPos().below()).is(ModBlocks.NUMBER_BULB));
     }
 
     @Override
@@ -26,13 +68,21 @@ public class NumberBulbBlock extends PulseBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        // TODO: Try not providing a block entity if the block is an addon for stacking
+        if(blockState.getValue(IS_STACK_ADDON)) {
+            return null;
+        }
         return new NumberBulbBlockEntity(blockPos, blockState);
     }
 
     public static int getStackSize(Level level, BlockPos pos) {
         // Yet to implement multi-number stacks.
-        return 3;
+        int stack_size = 0;
+        BlockPos upward_cursor = pos;
+        while(level.getBlockState(upward_cursor).is(ModBlocks.NUMBER_BULB)) {
+            upward_cursor = upward_cursor.above();
+            stack_size += 1;
+        }
+        return stack_size;
     }
 
     public static final DeferredHolder<ProtocolCommand, ProtocolCommand> PUSH = ProtocolCommands.COMMANDS.register("number_bulb/push", () ->

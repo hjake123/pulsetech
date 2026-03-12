@@ -57,7 +57,7 @@ public class NumberBulbBlockEntity extends ProtocolBlockEntity implements Debugg
                 .append(new DebuggerInfoManifest.Entry(
                         Component.translatable("debugger.pulsetech.stack").getString(),
                         DebuggerInfoTypes.TEXT.get(),
-                        () -> new DebuggerTextInfo(numbers.reversed().toString()))
+                        () -> new DebuggerTextInfo(numbers.reversed().toString() + "\n\n" + Component.translatable("pulsetech.stack_size").getString() + NumberBulbBlock.getStackSize(level, getBlockPos())))
                 );
     }
 

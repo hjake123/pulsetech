@@ -387,5 +387,6 @@
   "pulsetech.copied_filters": "Copied item filter set from modem",
   "pulsetech.filters_already_match": "Item filters already up to date",
   "pulsetech.pasted_filters": "Pasted item filter set to modem",
-  "pulsetech.swapped_filters": "Swapped item filter set with modem"
+  "pulsetech.swapped_filters": "Swapped item filter set with modem",
+  "pulsetech.stack_size": "Max stack size: "
 }
