@@ -270,6 +270,7 @@
   "debugger.pulsetech.selected_filter": "Selected filter",
   "debugger.pulsetech.max": "max",
   "debugger.pulsetech.retriever_filter": "Filtering for ",
+  "debugger.pulsetech.stack": "Number Stack",
   "pulsetech.with": " with ",
   "pulsetech.components": " components",
   "pulsetech.ponder.pattern_emitter.header": "Using a Pattern Emitter",

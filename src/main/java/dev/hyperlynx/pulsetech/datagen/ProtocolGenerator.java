@@ -3,6 +3,7 @@ package dev.hyperlynx.pulsetech.datagen;
 import dev.hyperlynx.pulsetech.core.protocol.*;
 import dev.hyperlynx.pulsetech.feature.cannon.CannonBlock;
 import dev.hyperlynx.pulsetech.feature.controller.ControllerBlock;
+import dev.hyperlynx.pulsetech.feature.number.bulb.NumberBulbBlock;
 import dev.hyperlynx.pulsetech.feature.orb.OrbBlock;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlock;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlock;
@@ -85,7 +86,26 @@ public class ProtocolGenerator extends DataMapProvider {
                                 .add(RetrieverBlock.COUNT_STACKS)
                                 .add(RetrieverBlock.DETECT_FILTER)
                                 .build(), false
+                )
+                .add(ModBlockEntityTypes.NUMBER_BULB,
+                        ProtocolBuilder.builder(4)
+                                .add(NumberBulbBlock.PUSH)
+                                .add(NumberBulbBlock.PEEK)
+                                .add(NumberBulbBlock.POP)
+                                .add(NumberBulbBlock.DROP)
+                                .add(NumberBulbBlock.DUP)
+                                .add(NumberBulbBlock.SWAP)
+                                .add(NumberBulbBlock.ADD)
+                                .add(NumberBulbBlock.SUB)
+                                .add(NumberBulbBlock.MULT)
+                                .add(NumberBulbBlock.DIV)
+                                .add(NumberBulbBlock.REMAINDER)
+                                .add(NumberBulbBlock.COUNT)
+                                .add(NumberBulbBlock.LEFT_SHIFT)
+                                .add(NumberBulbBlock.RIGHT_SHIFT)
+                                .add(NumberBulbBlock.IS_ZERO)
+                                .add(NumberBulbBlock.IS_NEGATIVE)
+                                .build(), false
                 );
-
     }
 }

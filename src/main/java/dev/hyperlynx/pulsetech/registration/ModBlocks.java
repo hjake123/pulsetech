@@ -6,6 +6,7 @@ import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlock;
 import dev.hyperlynx.pulsetech.feature.controller.ControllerBlock;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlock;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberMonitorBlock;
+import dev.hyperlynx.pulsetech.feature.number.bulb.NumberBulbBlock;
 import dev.hyperlynx.pulsetech.feature.orb.OrbBlock;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternDetectorBlock;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternEmitterBlock;
@@ -79,5 +80,8 @@ public class ModBlocks {
 
     public static final DeferredBlock<StorageModemBlock> STORAGE_MODEM = BLOCKS.register("storage_modem", () ->
             new StorageModemBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK), PulseBlock.MAIN_OUTPUT_ONLY));
+
+    public static final DeferredBlock<NumberBulbBlock> NUMBER_BULB = BLOCKS.register("number_bulb", () ->
+            new NumberBulbBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK), PulseBlock.FRONT_OUT_OTHER_IN));
 
 }
