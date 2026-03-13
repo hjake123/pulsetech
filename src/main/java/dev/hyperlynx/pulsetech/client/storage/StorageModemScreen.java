@@ -5,7 +5,9 @@ import dev.hyperlynx.pulsetech.feature.storage.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.SpriteIconButton;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.navigation.ScreenAxis;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.Rect2i;
@@ -93,29 +95,29 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
         );
         addRenderableWidget(remove_button);
 
-        up_button = SpriteIconButton.builder(Component.literal("^"), button -> {
-            if(filter_list.getSelected() != null) {
-                filter_list.moveEntry(filter_list.getSelected(), -1);
-            }
-        }, true).sprite(UP_BUTTON, 14, 14).build();
-        up_button.setWidth(14);
-        up_button.setHeight(14);
-        up_button.setPosition(
+        up_button = new ImageButton(
                 leftPos + imageWidth - 68,
-                topPos + 97
+                topPos + 97,
+                14, 14,
+                new WidgetSprites(Pulsetech.location("up_button"), Pulsetech.location("up_button_focused")),
+                button -> {
+                    if(filter_list.getSelected() != null) {
+                        filter_list.moveEntry(filter_list.getSelected(), -1);
+                    }
+                }
         );
         addRenderableWidget(up_button);
 
-        down_button = SpriteIconButton.builder(Component.literal("v"), button -> {
-            if(filter_list.getSelected() != null) {
-                filter_list.moveEntry(filter_list.getSelected(), 1);
-            }
-        }, true).sprite(DOWN_BUTTON, 14, 14).build();
-        down_button.setWidth(14);
-        down_button.setHeight(14);
-        down_button.setPosition(
+        down_button = new ImageButton(
                 leftPos + imageWidth - 52,
-                topPos + 97
+                topPos + 97,
+                14, 14,
+                new WidgetSprites(Pulsetech.location("down_button"), Pulsetech.location("down_button_focused")),
+                button -> {
+                    if(filter_list.getSelected() != null) {
+                        filter_list.moveEntry(filter_list.getSelected(), 1);
+                    }
+                }
         );
         addRenderableWidget(down_button);
 
@@ -198,5 +200,4 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
     public List<Rect2i> getFilterSlotRectangles() {
         return List.of(new Rect2i(filter_list.getX(), filter_list.getY(), filter_list.getWidth(), filter_list.getHeight()));
     }
-
 }
