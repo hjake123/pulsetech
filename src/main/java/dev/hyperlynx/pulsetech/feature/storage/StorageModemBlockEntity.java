@@ -24,6 +24,7 @@ public class StorageModemBlockEntity extends PulseBlockEntity implements FilterB
     private final EmitterModule emitter = new EmitterModule();
     private List<ItemFilter> filters = new ArrayList<>(Collections.singleton(new ItemFilter(ItemStack.EMPTY, false)));
     private int sync_cooldown = 0;
+    private boolean gui_sync_needed = false; // Stores whether the Request button in the GUI should work, or if the Sync button should be required first
 
     public StorageModemBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntityTypes.STORAGE_MODEM.value(), pos, blockState);
@@ -151,11 +152,21 @@ public class StorageModemBlockEntity extends PulseBlockEntity implements FilterB
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.put("Filters", ItemFilter.CODEC.listOf().encodeStart(NbtOps.INSTANCE, filters).getPartialOrThrow());
+        tag.putBoolean("NeedsSync", gui_sync_needed);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         filters = ItemFilter.CODEC.listOf().decode(NbtOps.INSTANCE, tag.get("Filters")).getPartialOrThrow().getFirst();
+        gui_sync_needed = tag.getBoolean("NeedsSync");
+    }
+
+    public void rememberGUISyncRequired(boolean sync_required) {
+        gui_sync_needed = sync_required;
+    }
+
+    public boolean isGUISyncNeeded() {
+        return gui_sync_needed;
     }
 }

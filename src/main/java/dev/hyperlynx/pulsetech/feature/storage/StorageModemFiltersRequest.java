@@ -25,7 +25,7 @@ public record StorageModemFiltersRequest(BlockPos pos) implements CustomPacketPa
 
     public void serverHandler(IPayloadContext context) {
         if(context.player().level().getBlockEntity(pos) instanceof StorageModemBlockEntity modem) {
-            PacketDistributor.sendToPlayer((ServerPlayer) context.player(), new StorageModemGUIPayload(pos, modem.getFilters()));
+            PacketDistributor.sendToPlayer((ServerPlayer) context.player(), new StorageModemGUIPayload(pos, modem.getFilters(), modem.isGUISyncNeeded()));
         }
     }
 }

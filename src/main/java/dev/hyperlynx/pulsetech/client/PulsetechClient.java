@@ -135,7 +135,6 @@ public class PulsetechClient {
     }
 
     public void registerScreens(RegisterMenuScreensEvent event) {
-        // This is the modern replacement for MenuScreens.register
         event.register(ModMenuTypes.STORAGE_MODEM.get(), StorageModemScreen::new);
     }
 
@@ -184,9 +183,10 @@ public class PulsetechClient {
         }
     }
 
-    public static void updateStorageModemScreen(List<ItemFilter> filters) {
+    public static void updateStorageModemScreen(List<ItemFilter> filters, boolean sync_required) {
         if(Minecraft.getInstance().level != null && Minecraft.getInstance().screen instanceof StorageModemScreen screen) {
             screen.setFilters(filters);
+            screen.setGUISyncRequired(sync_required);
         }
     }
 }

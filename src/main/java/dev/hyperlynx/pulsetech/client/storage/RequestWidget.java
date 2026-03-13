@@ -19,6 +19,7 @@ public class RequestWidget extends AbstractContainerWidget {
     private final Button request_button;
     private boolean focused = false;
     public boolean request_can_activate = false;
+    public boolean filters_changed_since_sync = false;
 
     @Override
     public List<? extends GuiEventListener> children() {
@@ -51,6 +52,11 @@ public class RequestWidget extends AbstractContainerWidget {
     }
 
     private void updateRequestStatus(String count_box_message) {
+        if(filters_changed_since_sync) {
+            request_button.active = false;
+            request_button.setTooltip(Tooltip.create(Component.translatable("gui.pulsetech.sync_warning")));
+            return;
+        }
         try {
             var number = Byte.parseByte(count_box_message);
             if(number < 0) {

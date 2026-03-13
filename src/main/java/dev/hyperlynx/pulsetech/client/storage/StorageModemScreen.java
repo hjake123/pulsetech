@@ -54,12 +54,14 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
         addRenderableWidget(filter_list);
 
         sync_button = Button.builder(Component.translatable("gui.pulsetech.sync"), button -> {
-            PacketDistributor.sendToServer(new StorageModemGUIPayload(getMenu().getPos(), filter_list.getFilters()), new StorageModemSyncRequest(getMenu().getPos()));
+            PacketDistributor.sendToServer(new StorageModemGUIPayload(getMenu().getPos(), filter_list.getFilters(), false), new StorageModemSyncRequest(getMenu().getPos()));
             sync_button.active = false;
             if(Minecraft.getInstance().level != null) {
                 Level level = Minecraft.getInstance().level;
                 StorageModemBlock.setSyncing(level, getMenu().getPos(), level.getBlockState(getMenu().getPos()), true);
             }
+            request_submenu.filters_changed_since_sync = false;
+            request_submenu.updateRequestStatus();
         }).build();
         sync_button.active = syncAvailable();
         sync_button.setHeight(14);
@@ -72,9 +74,11 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
 
         add_button = Button.builder(Component.literal("+"), button -> {
             filter_list.addFilter(new ItemFilter(ItemStack.EMPTY, false));
-            if(filter_list.size() >= 256) {
+            if(filter_list.size() >= 128) {
                 add_button.active = false;
             }
+            request_submenu.filters_changed_since_sync = true;
+            request_submenu.updateRequestStatus();
         }).build();
         add_button.setWidth(14);
         add_button.setHeight(14);
@@ -90,6 +94,8 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
                 filter_list.removeLast();
             }
             remove_button.active = false;
+            request_submenu.filters_changed_since_sync = true;
+            request_submenu.updateRequestStatus();
         }).build();
         remove_button.setWidth(14);
         remove_button.setHeight(14);
@@ -107,6 +113,8 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
                 button -> {
                     if (filter_list.getSelected() != null) {
                         filter_list.moveEntry(filter_list.getSelected(), -1);
+                        request_submenu.filters_changed_since_sync = true;
+                        request_submenu.updateRequestStatus();
                     }
                 }
         );
@@ -120,6 +128,8 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
                 button -> {
                     if (filter_list.getSelected() != null) {
                         filter_list.moveEntry(filter_list.getSelected(), 1);
+                        request_submenu.filters_changed_since_sync = true;
+                        request_submenu.updateRequestStatus();
                     }
                 }
         );
@@ -147,6 +157,7 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
             PacketDistributor.sendToServer(new StorageModemRetrieveRequest(menu.getPos(), filter_list.getSelectedIndex(), count));
         });
         request_submenu.visible = false;
+        request_submenu.updateRequestStatus();
         addRenderableWidget(request_submenu);
     }
 
@@ -216,7 +227,7 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
     @Override
     public void onClose() {
         super.onClose();
-        PacketDistributor.sendToServer(new StorageModemGUIPayload(menu.getPos(), filter_list.getFilters()));
+        PacketDistributor.sendToServer(new StorageModemGUIPayload(menu.getPos(), filter_list.getFilters(), request_submenu.filters_changed_since_sync));
     }
 
     @Override
@@ -229,5 +240,9 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
 
     public List<Rect2i> getFilterSlotRectangles() {
         return List.of(new Rect2i(filter_list.getX(), filter_list.getY(), filter_list.getWidth(), filter_list.getHeight()));
+    }
+
+    public void setGUISyncRequired(boolean syncRequired) {
+        request_submenu.filters_changed_since_sync = syncRequired;
     }
 }

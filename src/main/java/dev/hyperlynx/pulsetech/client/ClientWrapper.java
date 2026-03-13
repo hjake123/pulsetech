@@ -72,7 +72,7 @@ public class ClientWrapper {
         PulsetechClient.acceptConsoleCompletionData(pos, macros);
     }
 
-    public static void updateStorageModemScreen(List<ItemFilter> filters) {
-        PulsetechClient.updateStorageModemScreen(filters);
+    public static void updateStorageModemScreen(List<ItemFilter> filters, boolean sync_required) {
+        PulsetechClient.updateStorageModemScreen(filters, sync_required);
     }
 }
