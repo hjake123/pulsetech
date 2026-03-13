@@ -1,0 +1,58 @@
+{
+  "variants": {
+    "facing=west,is_stack_addon=false,count=0": {
+      "model": "pulsetech:block/number_bulb_off",
+      "y": 90
+    },
+    "facing=south,is_stack_addon=false,count=0": {
+      "model": "pulsetech:block/number_bulb_off"
+    },
+    "facing=north,is_stack_addon=false,count=0": {
+      "model": "pulsetech:block/number_bulb_off",
+      "y": 180
+    },
+    "facing=east,is_stack_addon=false,count=0": {
+      "model": "pulsetech:block/number_bulb_off",
+      "y": 270
+    },
+    "facing=west,is_stack_addon=false,count=1": {
+      "model": "pulsetech:block/number_bulb_on",
+      "y": 90
+    },
+    "facing=south,is_stack_addon=false,count=1": {
+      "model": "pulsetech:block/number_bulb_on"
+    },
+    "facing=north,is_stack_addon=false,count=1": {
+      "model": "pulsetech:block/number_bulb_on",
+      "y": 180
+    },
+    "facing=east,is_stack_addon=false,count=1": {
+      "model": "pulsetech:block/number_bulb_on",
+      "y": 270
+    },
+    "facing=west,is_stack_addon=false,count=2": {
+      "model": "pulsetech:block/number_bulb_on",
+      "y": 90
+    },
+    "facing=south,is_stack_addon=false,count=2": {
+      "model": "pulsetech:block/number_bulb_on"
+    },
+    "facing=north,is_stack_addon=false,count=2": {
+      "model": "pulsetech:block/number_bulb_on",
+      "y": 180
+    },
+    "facing=east,is_stack_addon=false,count=2": {
+      "model": "pulsetech:block/number_bulb_on",
+      "y": 270
+    },
+    "is_stack_addon=true,count=0": {
+      "model": "pulsetech:block/number_stack_off"
+    },
+    "is_stack_addon=true,count=1": {
+      "model": "pulsetech:block/number_stack_half_on"
+    },
+    "is_stack_addon=true,count=2": {
+      "model": "pulsetech:block/number_stack_on"
+    }
+  }
+}

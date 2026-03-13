@@ -18,21 +18,26 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public class NumberBulbBlock extends PulseBlock {
     private static final BooleanProperty IS_STACK_ADDON = BooleanProperty.create("is_stack_addon");
+    private static final IntegerProperty STORED_VALUES = IntegerProperty.create("count", 0, 2);
 
     public NumberBulbBlock(Properties properties, SideIO io) {
         super(properties, io, true);
-        registerDefaultState(defaultBlockState().setValue(IS_STACK_ADDON, false));
+        registerDefaultState(defaultBlockState().setValue(IS_STACK_ADDON, false).setValue(STORED_VALUES, 0));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(IS_STACK_ADDON);
+        builder.add(STORED_VALUES);
     }
 
     @Override
@@ -49,6 +54,24 @@ public class NumberBulbBlock extends PulseBlock {
     }
 
     @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        super.onRemove(state, level, pos, newState, movedByPiston);
+        if(newState.is(ModBlocks.NUMBER_BULB)) {
+            return;
+        }
+        // Scan down to find the Number Bulb block entity.
+        BlockPos downward_cursor = pos.below();
+        while(level.getBlockState(downward_cursor).is(ModBlocks.NUMBER_BULB)) {
+            if(level.getBlockEntity(downward_cursor) instanceof NumberBulbBlockEntity bulb) {
+                bulb.fitToSize((byte) getStackSize(level, downward_cursor));
+                break;
+            }
+            downward_cursor = downward_cursor.below();
+        }
+        updateValueLights(level, pos.above(), 0);
+    }
+
+    @Override
     public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, @Nullable Direction direction) {
         if(state.getValue(IS_STACK_ADDON)) {
             return false;
@@ -58,7 +81,7 @@ public class NumberBulbBlock extends PulseBlock {
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(IS_STACK_ADDON, context.getLevel().getBlockState(context.getClickedPos().below()).is(ModBlocks.NUMBER_BULB));
+        return Objects.requireNonNull(super.getStateForPlacement(context)).setValue(IS_STACK_ADDON, context.getLevel().getBlockState(context.getClickedPos().below()).is(ModBlocks.NUMBER_BULB));
     }
 
     @Override
@@ -76,13 +99,36 @@ public class NumberBulbBlock extends PulseBlock {
 
     public static int getStackSize(Level level, BlockPos pos) {
         // Yet to implement multi-number stacks.
-        int stack_size = 0;
+        int stack_size = -1;
         BlockPos upward_cursor = pos;
         while(level.getBlockState(upward_cursor).is(ModBlocks.NUMBER_BULB)) {
             upward_cursor = upward_cursor.above();
-            stack_size += 1;
+            stack_size += 2;
         }
         return stack_size;
+    }
+
+    public static void updateValueLights(Level level, BlockPos pos, int count) {
+        int unlit_numbers = count;
+        BlockPos upward_cursor = pos;
+        while(level.getBlockState(upward_cursor).is(ModBlocks.NUMBER_BULB)) {
+            BlockState state = level.getBlockState(upward_cursor);
+            if(state.getValue(IS_STACK_ADDON)) {
+                if(unlit_numbers >= 2) {
+                    level.setBlock(upward_cursor, state.setValue(STORED_VALUES, 2), Block.UPDATE_ALL);
+                    unlit_numbers -= 2;
+                } else if(unlit_numbers == 1) {
+                    level.setBlock(upward_cursor, state.setValue(STORED_VALUES, 1), Block.UPDATE_ALL);
+                    unlit_numbers--;
+                } else {
+                    level.setBlock(upward_cursor, state.setValue(STORED_VALUES, 0), Block.UPDATE_ALL);
+                }
+            } else {
+                level.setBlock(upward_cursor, state.setValue(STORED_VALUES, unlit_numbers > 0 ? 1 : 0), Block.UPDATE_ALL);
+                unlit_numbers--;
+            }
+            upward_cursor = upward_cursor.above();
+        }
     }
 
     public static final DeferredHolder<ProtocolCommand, ProtocolCommand> PUSH = ProtocolCommands.COMMANDS.register("number_bulb/push", () ->

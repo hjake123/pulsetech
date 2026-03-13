@@ -44,6 +44,12 @@ public class NumberBulbBlockEntity extends ProtocolBlockEntity implements Debugg
     }
 
     @Override
+    public void setChanged() {
+        super.setChanged();
+        NumberBulbBlock.updateValueLights(level, getBlockPos(), stackSize());
+    }
+
+    @Override
     public DebuggerInfoManifest getDebuggerInfoManifest() {
         if(NumberBulbBlock.getStackSize(level, getBlockPos()) == 1) {
             return super.getDebuggerInfoManifest()
@@ -116,5 +122,12 @@ public class NumberBulbBlockEntity extends ProtocolBlockEntity implements Debugg
         if(test.apply(peek())) {
             emitRaw(new Sequence(true, false));
         }
+    }
+
+    public void fitToSize(byte new_stack_size) {
+        if(new_stack_size < 0 || stackSize() < new_stack_size) {
+            return;
+        }
+        dropCount((byte) (stackSize() - new_stack_size));
     }
 }
