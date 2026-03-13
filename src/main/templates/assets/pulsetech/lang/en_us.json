@@ -388,5 +388,7 @@
   "pulsetech.filters_already_match": "Item filters already up to date",
   "pulsetech.pasted_filters": "Pasted item filter set to modem",
   "pulsetech.swapped_filters": "Swapped item filter set with modem",
-  "pulsetech.stack_size": "Max stack size: "
+  "pulsetech.stack_size": "Max stack size: ",
+  "gui.pulsetech.request": "Request",
+  "gui.pulsetech.please_select_filter": "Select a filter from the list"
 }

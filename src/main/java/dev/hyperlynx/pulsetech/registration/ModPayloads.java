@@ -14,6 +14,7 @@ import dev.hyperlynx.pulsetech.feature.pattern.SequenceSelectPayload;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenUpdatePayload;
 import dev.hyperlynx.pulsetech.feature.storage.StorageModemFiltersRequest;
 import dev.hyperlynx.pulsetech.feature.storage.StorageModemGUIPayload;
+import dev.hyperlynx.pulsetech.feature.storage.StorageModemRetrieveRequest;
 import dev.hyperlynx.pulsetech.feature.storage.StorageModemSyncRequest;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -151,6 +152,12 @@ public class ModPayloads {
                 StorageModemFiltersRequest.TYPE,
                 StorageModemFiltersRequest.STREAM_CODEC,
                 StorageModemFiltersRequest::serverHandler
+        );
+
+        registrar.playToServer(
+                StorageModemRetrieveRequest.TYPE,
+                StorageModemRetrieveRequest.STREAM_CODEC,
+                StorageModemRetrieveRequest::serverHandler
         );
     }
 }

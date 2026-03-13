@@ -104,15 +104,6 @@ public class NumberBulbBlockEntity extends ProtocolBlockEntity implements Debugg
         push(number2);
     }
 
-    public void flipStackUpsideDown() {
-        List<Byte> number_copy = numbers.stream().toList();
-        numbers.clear();
-        for(byte b : number_copy) {
-            numbers.addFirst(b);
-        }
-        setChanged();
-    }
-
     /// Perform an arbitrary operation on the top two numbers, returning one new number which is pushed back onto the stack.
     public void operate(BiFunction<Byte, Byte, Byte> operation) {
         byte x = pop();

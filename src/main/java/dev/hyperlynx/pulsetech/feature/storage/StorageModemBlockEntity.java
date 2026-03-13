@@ -14,6 +14,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,6 +59,23 @@ public class StorageModemBlockEntity extends PulseBlockEntity implements FilterB
         return emitter.getDelay() > 0;
     }
 
+    private static @Nullable Protocol getRetrieverProtocol() {
+        // Fetch the sequence for the Retriever's commands. First, get the registry holder for the Retriever.
+        var retriever_registry_holder = ModBlockEntityTypes.RETRIEVER.get().builtInRegistryHolder();
+        if(retriever_registry_holder == null) {
+            Pulsetech.LOGGER.error("Can't find the registry holder for {}", ModBlockEntityTypes.RETRIEVER.get());
+            return null;
+        }
+
+        // Next, get its Protocol.
+        Protocol retriever_protocol = retriever_registry_holder.getData(ProtocolDataMap.TYPE);
+        if(retriever_protocol == null || !retriever_protocol.getCommands().containsKey(RetrieverBlock.SYNC.get())) {
+            Pulsetech.LOGGER.error("Retriever has no valid protocol, so this Storage Modem operation will fail. Check your datapacks, reinstall Pulsetech, or report this as a bug!");
+            return null;
+        }
+        return retriever_protocol;
+    }
+
     /// Register a sync code with [FilterSyncMan] and send it from the output, to be heard by retrievers.
     public void performFilterSync() {
         short code = 0;
@@ -77,21 +95,10 @@ public class StorageModemBlockEntity extends PulseBlockEntity implements FilterB
         StorageModemBlock.setSyncing(level, getBlockPos(), getBlockState(), true);
         sync_cooldown = FilterSyncMan.SYNC_COOLDOWN;
 
-        // Fetch the sequence for the Retriever's SYNC command. First, get the registry holder for the Retriever.
-        var retriever_registry_holder = ModBlockEntityTypes.RETRIEVER.get().builtInRegistryHolder();
-        if(retriever_registry_holder == null) {
-            Pulsetech.LOGGER.error("Can't find the registry holder for {}", ModBlockEntityTypes.RETRIEVER.get());
-            return;
-        }
+        Protocol retriever_protocol = getRetrieverProtocol();
+        if (retriever_protocol == null) return;
 
-        // Next, get its Protocol.
-        Protocol retriever_protocol = retriever_registry_holder.getData(ProtocolDataMap.TYPE);
-        if(retriever_protocol == null || !retriever_protocol.getCommands().containsKey(RetrieverBlock.SYNC.get())) {
-            Pulsetech.LOGGER.error("Retriever has no valid protocol, so the sync operation will fail. Check your datapacks, reinstall Pulsetech, or report this as a bug!");
-            return;
-        }
-
-        // Finally, send the sequence for SYNC.
+        // Send the sequence for SYNC.
         Sequence sync_sequence = retriever_protocol.getCommands().get(RetrieverBlock.SYNC.get());
         emitter.enqueueTransmission(sync_sequence);
 
@@ -101,6 +108,31 @@ public class StorageModemBlockEntity extends PulseBlockEntity implements FilterB
 
         emitter.enqueueTransmission(Sequence.fromByte(code_low));
         emitter.enqueueTransmission(Sequence.fromByte(code_high));
+        emitter.setActive(true);
+    }
+
+    public void sendRetrieveCommand(byte filterIndex, byte count) {
+        Protocol retriever_protocol = getRetrieverProtocol();
+        if (retriever_protocol == null) return;
+
+        // Send the sequence for SELECT FILTER.
+        emitter.enqueueTransmission(retriever_protocol.getCommands().get(RetrieverBlock.SELECT_FILTER.get()));
+
+        // Send the filter to select.
+        emitter.enqueueTransmission(Sequence.fromByte(filterIndex));
+
+        if(count == 0) {
+            // 0 count requests just set the filter, so we stop here.
+            return;
+        }
+
+        // Send the sequence for RETRIEVE.
+        emitter.enqueueTransmission(retriever_protocol.getCommands().get(RetrieverBlock.RETRIEVE.get()));
+
+        // Send the count to retrieve.
+        emitter.enqueueTransmission(Sequence.fromByte(count));
+
+        // Start transmitting.
         emitter.setActive(true);
     }
 

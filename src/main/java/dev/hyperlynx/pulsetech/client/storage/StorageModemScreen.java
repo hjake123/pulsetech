@@ -24,15 +24,14 @@ import java.util.List;
 
 public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu> {
     private static final ResourceLocation BACKGROUND_LOCATION = Pulsetech.location("textures/gui/storage_modem.png");
-    private static final ResourceLocation UP_BUTTON = Pulsetech.location("up_button");
-    private static final ResourceLocation DOWN_BUTTON = Pulsetech.location("down_button");
 
     private ItemFilterListWidget filter_list;
     private Button sync_button;
     private Button add_button;
     private Button remove_button;
-    private Button up_button;
-    private Button down_button;
+    private Button request_submenu_tab;
+    private RequestWidget request_submenu;
+    private boolean anything_was_selected = false;
 
     public StorageModemScreen(StorageModemMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -48,6 +47,11 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
     protected void init() {
         super.init();
         getMenu().setQuickStackRoutine(this::onQuickStack);
+
+        PacketDistributor.sendToServer(new StorageModemFiltersRequest(getMenu().getPos()));
+        filter_list = new ItemFilterListWidget(Minecraft.getInstance(), 161, 77, 0, 20, getMenu()::getCarried);
+        filter_list.setPosition(getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 80, getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - 77);
+        addRenderableWidget(filter_list);
 
         sync_button = Button.builder(Component.translatable("gui.pulsetech.sync"), button -> {
             PacketDistributor.sendToServer(new StorageModemGUIPayload(getMenu().getPos(), filter_list.getFilters()), new StorageModemSyncRequest(getMenu().getPos()));
@@ -95,37 +99,55 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
         );
         addRenderableWidget(remove_button);
 
-        up_button = new ImageButton(
+        Button up_button = new ImageButton(
                 leftPos + imageWidth - 68,
                 topPos + 97,
                 14, 14,
                 new WidgetSprites(Pulsetech.location("up_button"), Pulsetech.location("up_button_focused")),
                 button -> {
-                    if(filter_list.getSelected() != null) {
+                    if (filter_list.getSelected() != null) {
                         filter_list.moveEntry(filter_list.getSelected(), -1);
                     }
                 }
         );
         addRenderableWidget(up_button);
 
-        down_button = new ImageButton(
+        Button down_button = new ImageButton(
                 leftPos + imageWidth - 52,
                 topPos + 97,
                 14, 14,
                 new WidgetSprites(Pulsetech.location("down_button"), Pulsetech.location("down_button_focused")),
                 button -> {
-                    if(filter_list.getSelected() != null) {
+                    if (filter_list.getSelected() != null) {
                         filter_list.moveEntry(filter_list.getSelected(), 1);
                     }
                 }
         );
         addRenderableWidget(down_button);
 
-        PacketDistributor.sendToServer(new StorageModemFiltersRequest(getMenu().getPos()));
+        request_submenu_tab = new ImageButton(
+                filter_list.getX() - 14, filter_list.getY(),
+                8, 60,
+                new WidgetSprites(Pulsetech.location("storage_modem_request_tab"), Pulsetech.location("storage_modem_request_tab")),
+                button -> {
+                    if(!request_submenu.visible) {
+                        // We are opening the submenu. Move the tab to the left to make room.
+                        request_submenu_tab.setX(filter_list.getX() - 86);
+                    } else {
+                        // We are closing the submenu. Move the tab to the right to fill the space.
+                        request_submenu_tab.setX(filter_list.getX() - 14);
+                    }
+                    // Toggle the visibility of the submenu.
+                    request_submenu.visible = !request_submenu.visible;
+                }
+        );
+        addRenderableWidget(request_submenu_tab);
 
-        filter_list = new ItemFilterListWidget(Minecraft.getInstance(), 161, 77, 0, 20, getMenu()::getCarried);
-        filter_list.setPosition(getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - 80, getRectangle().getCenterInAxis(ScreenAxis.VERTICAL) - 77);
-        addRenderableWidget(filter_list);
+        request_submenu = new RequestWidget(filter_list.getX() - 86, filter_list.getY(), (count) -> {
+            PacketDistributor.sendToServer(new StorageModemRetrieveRequest(menu.getPos(), filter_list.getSelectedIndex(), count));
+        });
+        request_submenu.visible = false;
+        addRenderableWidget(request_submenu);
     }
 
     public void onQuickStack(ItemStack itemStack) {
@@ -159,8 +181,16 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
                 sync_button.active = true;
             }
         }
-        add_button.active = filter_list.size() < 256;
+        add_button.active = filter_list.size() < 127;
         remove_button.active = filter_list.size() > 1 || !filter_list.isDevoidOfData();
+        if(request_submenu.visible) {
+            boolean anything_is_selected = filter_list.getSelected() != null;
+            if(anything_is_selected != anything_was_selected) {
+                request_submenu.request_can_activate = anything_is_selected;
+                request_submenu.updateRequestStatus();
+                anything_was_selected = anything_is_selected;
+            }
+        }
     }
 
     @Override

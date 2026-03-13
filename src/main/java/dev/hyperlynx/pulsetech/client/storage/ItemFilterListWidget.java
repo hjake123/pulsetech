@@ -116,4 +116,8 @@ public class ItemFilterListWidget extends ObjectSelectionList<ItemFilterEntry> {
     public void forceRemoveLast() {
         children().removeLast();
     }
+
+    public byte getSelectedIndex() {
+        return (byte) children().indexOf(getSelected());
+    }
 }
