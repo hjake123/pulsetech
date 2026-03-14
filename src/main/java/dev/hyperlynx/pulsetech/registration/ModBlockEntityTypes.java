@@ -4,6 +4,7 @@ import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.feature.cannon.CannonBlockEntity;
 import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlockEntity;
 import dev.hyperlynx.pulsetech.feature.controller.ControllerBlockEntity;
+import dev.hyperlynx.pulsetech.feature.number.block.AnalogNumberEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberMonitorBlockEntity;
 import dev.hyperlynx.pulsetech.feature.number.bulb.NumberBulbBlockEntity;
@@ -89,4 +90,8 @@ public class ModBlockEntityTypes {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NumberBulbBlockEntity>> NUMBER_BULB =
             TYPES.register("number_bulb", () ->
                     BlockEntityType.Builder.of(NumberBulbBlockEntity::new, ModBlocks.NUMBER_BULB.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AnalogNumberEmitterBlockEntity>> ANALOG_NUMBER_EMITTER =
+            TYPES.register("analog_number_emitter", () ->
+                    BlockEntityType.Builder.of(AnalogNumberEmitterBlockEntity::new, ModBlocks.ANALOG_NUMBER_EMITTER.get()).build(null));
 }

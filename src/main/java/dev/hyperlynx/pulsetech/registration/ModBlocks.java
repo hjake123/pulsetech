@@ -4,6 +4,7 @@ import dev.hyperlynx.pulsetech.feature.cannon.CannonBlock;
 import dev.hyperlynx.pulsetech.feature.console.ConsoleColor;
 import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlock;
 import dev.hyperlynx.pulsetech.feature.controller.ControllerBlock;
+import dev.hyperlynx.pulsetech.feature.number.block.AnalogNumberEmitterBlock;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlock;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberMonitorBlock;
 import dev.hyperlynx.pulsetech.feature.number.bulb.NumberBulbBlock;
@@ -83,5 +84,8 @@ public class ModBlocks {
 
     public static final DeferredBlock<NumberBulbBlock> NUMBER_BULB = BLOCKS.register("number_bulb", () ->
             new NumberBulbBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK), PulseBlock.FRONT_OUT_OTHER_IN));
+
+    public static final DeferredBlock<PulseBlock> ANALOG_NUMBER_EMITTER = BLOCKS.register("analog_number_emitter", () ->
+            new AnalogNumberEmitterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER), PulseBlock.FRONT_OUT_BACK_IN));
 
 }
