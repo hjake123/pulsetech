@@ -32,7 +32,7 @@ public class NumberBulbBlockEntity extends ProtocolBlockEntity implements Debugg
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         numbers.clear();
-        for(Byte b : Codec.list(Codec.BYTE).decode(NbtOps.INSTANCE, tag.get("number")).getPartialOrThrow().getFirst()) {
+        for(Byte b : Codec.list(Codec.BYTE).decode(NbtOps.INSTANCE, tag.get("numbers")).getPartialOrThrow().getFirst()) {
             numbers.addLast(b);
         }
     }
