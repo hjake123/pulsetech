@@ -19,6 +19,7 @@
   "block.pulsetech.retriever": "Retriever",
   "block.pulsetech.storage_modem": "Storage Modem",
   "block.pulsetech.number_bulb": "Number Bulb",
+  "block.pulsetech.analog_number_emitter": "Analog Number Emitter",
   "item.pulsetech.datasheet": "Datasheet",
   "item.pulsetech.data_cell": "Data Cell",
   "item.pulsetech.debugger": "Debugger",

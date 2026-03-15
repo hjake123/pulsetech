@@ -248,5 +248,33 @@ public class RecipeGenerator extends RecipeProvider {
                 .requires(Items.LAPIS_LAZULI)
                 .unlockedBy("has_pmod", has(ModItems.PROTOCOL_MODULE))
                 .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModItems.NUMBER_BULB)
+                .pattern("clc")
+                .pattern("cmc")
+                .pattern("   ")
+                .define('c', Items.COPPER_INGOT)
+                .define('l', Items.REDSTONE_LAMP)
+                .define('m', ModItems.PROTOCOL_MODULE)
+                .unlockedBy("has_module", has(ModItems.PROTOCOL_MODULE))
+                .save(output);
+
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, ModItems.ANALOG_NUMBER_EMITTER)
+                .requires(ModItems.NUMBER_EMITTER)
+                .requires(Items.QUARTZ)
+                .unlockedBy("has_num_emitter", has(ModItems.NUMBER_EMITTER))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModItems.REMOTE_CONSOLE)
+                .pattern(" l ")
+                .pattern("mc ")
+                .pattern("cg ")
+                .define('c', Items.COPPER_INGOT)
+                .define('l', Items.LIGHTNING_ROD)
+                .define('m', ModItems.PULSE_MODULE)
+                .define('g', Items.TINTED_GLASS)
+                .unlockedBy("has_module", has(ModItems.PULSE_MODULE))
+                .save(output);
     }
 }
