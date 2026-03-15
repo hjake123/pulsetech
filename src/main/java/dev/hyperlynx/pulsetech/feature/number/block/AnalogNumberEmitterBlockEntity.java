@@ -58,7 +58,7 @@ public class AnalogNumberEmitterBlockEntity extends PulseBlockEntity implements 
         if(level == null) {
             return 0;
         }
-        return (byte) Math.max(level.getDirectSignalTo(getBlockPos().relative(left)), level.getDirectSignalTo(getBlockPos().relative(right)));
+        return (byte) Math.max(level.getSignal(getBlockPos().relative(left), left), level.getSignal(getBlockPos().relative(right), right));
     }
 
     @Override
