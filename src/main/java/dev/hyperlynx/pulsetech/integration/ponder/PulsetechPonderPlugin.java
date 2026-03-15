@@ -65,6 +65,8 @@ public class PulsetechPonderPlugin implements PonderPlugin {
 
         helper.addStoryBoard(ModItems.ANALOG_NUMBER_EMITTER.getId(), Pulsetech.location("number/analog_numbers"), Storyboards::analogEmitter);
         helper.addStoryBoard(ModItems.ANALOG_NUMBER_EMITTER.getId(), Pulsetech.location("number/analog_numbers"), Storyboards::numberMonitorAnalog);
+
+        helper.addStoryBoard(ModItems.NUMBER_BULB.getId(), Pulsetech.location("number/bulb"), Storyboards::numberBulb);
     }
 
     @Override
@@ -83,6 +85,10 @@ public class PulsetechPonderPlugin implements PonderPlugin {
         helper.addTagToComponent(ModItems.SCANNER.getId(), feature_tag);
         helper.addTagToComponent(ModItems.SCREEN.getId(), feature_tag);
         helper.addTagToComponent(ModItems.DATA_CELL.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.REMOTE_CONSOLE.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.PROGRAM_EMITTER.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.ANALOG_NUMBER_EMITTER.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.NUMBER_BULB.getId(), feature_tag);
         builder.addToIndex();
         builder.register();
     }

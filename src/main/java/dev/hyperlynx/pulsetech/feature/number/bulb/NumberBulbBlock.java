@@ -26,7 +26,7 @@ import java.util.Objects;
 
 public class NumberBulbBlock extends PulseBlock {
     private static final BooleanProperty IS_STACK_ADDON = BooleanProperty.create("is_stack_addon");
-    private static final IntegerProperty STORED_VALUES = IntegerProperty.create("count", 0, 2);
+    public static final IntegerProperty STORED_VALUES = IntegerProperty.create("count", 0, 2);
 
     public NumberBulbBlock(Properties properties, SideIO io) {
         super(properties, io, true);

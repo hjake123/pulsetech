@@ -1,6 +1,7 @@
 package dev.hyperlynx.pulsetech.integration.ponder;
 
 import dev.hyperlynx.pulsetech.core.program.Macros;
+import dev.hyperlynx.pulsetech.feature.number.bulb.NumberBulbBlock;
 import dev.hyperlynx.pulsetech.feature.orb.Orb;
 import dev.hyperlynx.pulsetech.feature.orb.OrbBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
@@ -714,5 +715,61 @@ public class Storyboards {
                 .text("")
                 .pointAt(util.grid().at(3, 1, 3).getBottomCenter());
         scene.idle(100);
+    }
+
+    public static void numberBulb(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("number_bulb", "Using a Number Bulb");
+        scene.showBasePlate();
+        BlockPos pos = util.grid().at(2, 1, 2);
+        scene.world().showSection(util.select().fromTo(0, 1, 0, 4, 1, 4), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay().showOutlineWithText(util.select().position(pos), 80)
+                .text("");
+        scene.idle(100);
+        scene.overlay().showText(60)
+                .pointAt(util.select().position(pos).getCenter())
+                .text("");
+        scene.idle(80);
+
+        scene.addKeyframe();
+        scene.effects().indicateRedstone(util.grid().at(4, 1, 1));
+        scene.idle(10);
+        scene.effects().indicateSuccess(pos);
+        scene.world().modifyBlock(pos, state -> state.setValue(NumberBulbBlock.STORED_VALUES, 1), false);
+        scene.idle(40);
+
+        scene.addKeyframe();
+        scene.world().showSection(util.select().fromTo(2, 2, 2, 2, 4, 2), Direction.DOWN);
+        scene.overlay().showText(80)
+                .pointAt(util.select().position(pos).getCenter())
+                .text("");
+        scene.idle(100);
+        scene.overlay().showText(60)
+                .pointAt(util.select().position(pos).getCenter())
+                .text("");
+        scene.idle(10);
+        scene.world().modifyBlock(pos.above(), state -> state.setValue(NumberBulbBlock.STORED_VALUES, 1), false);
+        scene.idle(10);
+        scene.world().modifyBlock(pos.above(), state -> state.setValue(NumberBulbBlock.STORED_VALUES, 2), false);
+        scene.idle(10);
+        scene.world().modifyBlock(pos.above(2), state -> state.setValue(NumberBulbBlock.STORED_VALUES, 1), false);
+        scene.idle(10);
+        scene.world().modifyBlock(pos.above(2), state -> state.setValue(NumberBulbBlock.STORED_VALUES, 2), false);
+        scene.idle(10);
+        scene.world().modifyBlock(pos.above(2), state -> state.setValue(NumberBulbBlock.STORED_VALUES, 1), false);
+        scene.idle(30);
+
+        scene.addKeyframe();
+        scene.overlay().showText(80)
+                .pointAt(util.select().position(pos).getCenter())
+                .text("");
+        scene.idle(100);
+        scene.overlay().showText(60)
+                .pointAt(util.select().position(pos).getCenter())
+                .text("");
+        scene.idle(20);
+        scene.overlay().showControls(pos.getCenter(), Pointing.DOWN, 40)
+                .rightClick().withItem(ModItems.DATASHEET.toStack());
+        scene.idle(60);
     }
 }
