@@ -249,7 +249,7 @@ public class RecipeGenerator extends RecipeProvider {
                 .unlockedBy("has_pmod", has(ModItems.PROTOCOL_MODULE))
                 .save(output);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModItems.NUMBER_BULB)
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModItems.NUMBER_BULB.get().getDefaultInstance().copyWithCount(2))
                 .pattern("clc")
                 .pattern("cmc")
                 .pattern("   ")

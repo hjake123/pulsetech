@@ -645,4 +645,74 @@ public class Storyboards {
                 .text("");
         scene.idle(100);
     }
+
+    public static void analogEmitter(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("analog_emitter", "Using an Analog Number Emitter");
+        scene.showBasePlate();
+        BlockPos pos = util.grid().at(3, 1, 3);
+        scene.world().showSection(util.select().position(pos), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay().showOutlineWithText(util.select().position(pos), 80)
+                .text("");
+        scene.idle(100);
+
+        scene.addKeyframe();
+        scene.world().showSection(util.select().fromTo(0, 1, 4, 5, 1, 5), Direction.DOWN);
+        scene.world().showSection(util.select().fromTo(4, 1, 3, 6, 1, 4), Direction.DOWN);
+        scene.world().showSection(util.select().fromTo(0, 1, 3, 2, 1, 4), Direction.DOWN);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getCenter());
+        scene.idle(80);
+        scene.overlay().showText(40)
+                .text("")
+                .pointAt(util.grid().at(3, 1, 4).getBottomCenter())
+                .placeNearTarget();
+        scene.idle(60);
+
+        scene.addKeyframe();
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getCenter());
+        scene.idle(80);
+        scene.effects().indicateRedstone(util.grid().at(5, 1, 3));
+        scene.overlay().showText(40)
+                .text("")
+                .pointAt(util.grid().at(0, 1, 3).getCenter())
+                .placeNearTarget();
+        scene.idle(60);
+
+        scene.addKeyframe();
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getCenter());
+        scene.world().showSection(util.select().fromTo(0, 1, 0, 6, 1, 2), Direction.DOWN);
+        scene.idle(80);
+    }
+
+    public static void numberMonitorAnalog(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("analog_monitor", "Getting an analog signal from a Number Monitor");
+        scene.showBasePlate();
+        scene.world().showSection(util.select().fromTo(0, 1, 0, 6, 1, 2), Direction.DOWN);
+        scene.overlay().showText(80)
+                .text("")
+                .pointAt(util.grid().at(4, 1, 1).getBottomCenter());
+        scene.idle(100);
+        scene.overlay().showText(40)
+                .text("")
+                .pointAt(util.grid().at(3, 1, 1).getBottomCenter())
+                .placeNearTarget();
+        scene.idle(60);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(util.grid().at(4, 1, 1).getBottomCenter());
+        scene.idle(80);
+
+        scene.addKeyframe();
+        scene.world().showSection(util.select().fromTo(0, 1, 3, 6, 1, 3), Direction.DOWN);
+        scene.overlay().showText(80)
+                .text("")
+                .pointAt(util.grid().at(3, 1, 3).getBottomCenter());
+        scene.idle(100);
+    }
 }

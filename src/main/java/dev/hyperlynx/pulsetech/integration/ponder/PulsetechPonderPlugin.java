@@ -22,9 +22,10 @@ public class PulsetechPonderPlugin implements PonderPlugin {
 
         helper.addStoryBoard(ModBlocks.PATTERN_DETECTOR.getId(), Pulsetech.location("pattern/pattern_detector"), Storyboards::patternDetector);
 
-        helper.addStoryBoard(ModBlocks.NUMBER_EMITTER.getId(), Pulsetech.location("numbers"), Storyboards::numbers);
+        helper.addStoryBoard(ModBlocks.NUMBER_EMITTER.getId(), Pulsetech.location("number/numbers"), Storyboards::numbers);
 
-        helper.addStoryBoard(ModBlocks.NUMBER_MONITOR.getId(), Pulsetech.location("numbers"), Storyboards::numbers);
+        helper.addStoryBoard(ModBlocks.NUMBER_MONITOR.getId(), Pulsetech.location("number/numbers"), Storyboards::numbers);
+        helper.addStoryBoard(ModItems.NUMBER_MONITOR.getId(), Pulsetech.location("number/analog_numbers"), Storyboards::numberMonitorAnalog);
 
         helper.addStoryBoard(ModBlocks.CONTROLLER.getId(), Pulsetech.location("protocol/controller"), Storyboards::controller);
         helper.addStoryBoard(ModBlocks.CONTROLLER.getId(), Pulsetech.location("protocol_blocks_showcase"), Storyboards::protocolBlocks);
@@ -61,6 +62,9 @@ public class PulsetechPonderPlugin implements PonderPlugin {
 
         helper.addStoryBoard(ModItems.REMOTE_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::remoteConsole);
         helper.addStoryBoard(ModItems.PROGRAM_EMITTER.getId(), Pulsetech.location("datacell/processor"), Storyboards::processor);
+
+        helper.addStoryBoard(ModItems.ANALOG_NUMBER_EMITTER.getId(), Pulsetech.location("number/analog_numbers"), Storyboards::analogEmitter);
+        helper.addStoryBoard(ModItems.ANALOG_NUMBER_EMITTER.getId(), Pulsetech.location("number/analog_numbers"), Storyboards::numberMonitorAnalog);
     }
 
     @Override
