@@ -85,7 +85,7 @@ public class RemoteConsoleItem extends Item {
             return 0;
         }
         BlockPos pos = global_pos.pos();
-        if(!level.isLoaded(pos) || outOfRange(player.blockPosition(), pos)) {
+        if(!level.isLoaded(pos) || player != null && outOfRange(player.blockPosition(), pos)) {
             return 0;
         }
         if(!(level.getBlockState(pos).getBlock() instanceof ConsoleBlock console)) {
