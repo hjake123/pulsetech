@@ -5,9 +5,17 @@ import dev.hyperlynx.pulsetech.core.PulseBlock;
 import dev.hyperlynx.pulsetech.core.protocol.ExecutionContext;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommand;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolCommands;
+import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
+import dev.hyperlynx.pulsetech.registration.ModItems;
+import dev.hyperlynx.pulsetech.registration.ModSounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -23,6 +31,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class RetrieverBlock extends PulseBlock {
     protected static final VoxelShape SHAPE_NORTH = Shapes.or(Block.box(5, 0, 5, 11, 16, 11), Block.box(14, 0, 0, 16, 2, 16), Block.box(2, 0, 14, 14, 2, 16), Block.box(2, 0, 0, 14, 4, 4), Block.box(0, 0, 0, 2, 2, 16), Block.box(14, 14, 0, 16, 16, 16), Block.box(2, 14, 14, 14, 16, 16), Block.box(2, 14, 0, 14, 16, 2), Block.box(0, 14, 0, 2, 16, 16), Block.box(11, 0, 6, 12, 16, 10), Block.box(4, 0, 6, 5, 16, 10), Block.box(2, 14, 6, 4, 16, 10), Block.box(12, 14, 6, 14, 16, 10), Block.box(2, 0, 6, 4, 2, 10), Block.box(12, 0, 6, 14, 2, 10));
@@ -83,6 +93,22 @@ public class RetrieverBlock extends PulseBlock {
     protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         toggleOpen(level, pos, state);
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if(stack.is(ModItems.DATA_CELL) && stack.has(ModComponentTypes.ITEM_FILTERS) && level.getBlockEntity(pos) instanceof RetrieverBlockEntity retriever) {
+            level.playSound(null, pos, ModSounds.BEEP.value(), SoundSource.PLAYERS, 1.0F, 1.0F + level.random.nextFloat() * 0.05F);
+            List<ItemFilter> stored_filters = stack.get(ModComponentTypes.ITEM_FILTERS);
+            if(retriever.getFilters().equals(stored_filters)) {
+                player.displayClientMessage(Component.translatable("pulsetech.filters_already_match"), true);
+                return ItemInteractionResult.FAIL;
+            }
+            retriever.setFilters(stack.get(ModComponentTypes.ITEM_FILTERS));
+            player.displayClientMessage(Component.translatable("pulsetech.filters_updated"), true);
+            return ItemInteractionResult.SUCCESS;
+        }
+        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
     @Override

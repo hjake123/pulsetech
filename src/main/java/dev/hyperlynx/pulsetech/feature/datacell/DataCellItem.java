@@ -81,6 +81,10 @@ public class DataCellItem extends Item {
             tooltip.add(Component.literal(macros.macros().size() + " ").append(Component.translatable("pulsetech.macros_stored")).withStyle(ChatFormatting.GRAY));
             data = true;
         }
+        if(stack.has(ModComponentTypes.ITEM_FILTERS)) {
+            tooltip.add(Component.translatable("pulsetech.contains_item_filters").withStyle(ChatFormatting.GRAY));
+            data = true;
+        }
         if(stack.has(ModComponentTypes.SCREEN_DATA)) {
             tooltip.add(Component.translatable("pulsetech.contains_screen_data").withStyle(ChatFormatting.GRAY));
             data = true;

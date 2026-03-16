@@ -166,6 +166,8 @@ public class StorageModemScreen extends AbstractContainerScreen<StorageModemMenu
             filter_list.forceRemoveLast();
         }
         filter_list.addFilter(new ItemFilter(itemStack, false));
+        request_submenu.filters_changed_since_sync = true;
+        request_submenu.updateRequestStatus();
     }
 
     @Override

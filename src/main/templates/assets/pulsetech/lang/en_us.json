@@ -460,5 +460,7 @@
   "pulsetech.stack_size": "Max stack size: ",
   "gui.pulsetech.request": "Request",
   "gui.pulsetech.please_select_filter": "Select a filter from the list",
-  "gui.pulsetech.sync_warning": "Filter list was changed and must be synced first"
+  "gui.pulsetech.sync_warning": "Filter list was changed and must be synced first",
+  "pulsetech.filters_updated": "Item filters updated",
+  "pulsetech.contains_item_filters": "Contains item filter data"
 }

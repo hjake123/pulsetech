@@ -749,14 +749,19 @@ public class Storyboards {
                 .text("");
         scene.idle(10);
         scene.world().modifyBlock(pos.above(), state -> state.setValue(NumberBulbBlock.STORED_VALUES, 1), false);
+        scene.effects().indicateRedstone(util.grid().at(4, 1, 1));
         scene.idle(10);
         scene.world().modifyBlock(pos.above(), state -> state.setValue(NumberBulbBlock.STORED_VALUES, 2), false);
+        scene.effects().indicateRedstone(util.grid().at(4, 1, 1));
         scene.idle(10);
         scene.world().modifyBlock(pos.above(2), state -> state.setValue(NumberBulbBlock.STORED_VALUES, 1), false);
+        scene.effects().indicateRedstone(util.grid().at(4, 1, 1));
         scene.idle(10);
         scene.world().modifyBlock(pos.above(2), state -> state.setValue(NumberBulbBlock.STORED_VALUES, 2), false);
+        scene.effects().indicateRedstone(util.grid().at(4, 1, 1));
         scene.idle(10);
         scene.world().modifyBlock(pos.above(2), state -> state.setValue(NumberBulbBlock.STORED_VALUES, 1), false);
+        scene.effects().indicateRedstone(util.grid().at(4, 1, 1));
         scene.idle(30);
 
         scene.addKeyframe();

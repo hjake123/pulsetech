@@ -252,5 +252,6 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
     @Override
     public void setFilters(List<ItemFilter> filters) {
         this.filters = filters;
+        setChanged();
     }
 }
