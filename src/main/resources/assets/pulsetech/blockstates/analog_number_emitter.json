@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,active=false": {
+      "model": "pulsetech:block/number_emitter_analog",
+      "y": 270
+    },
+    "facing=north,active=false": {
+      "model": "pulsetech:block/number_emitter_analog",
+      "y": 180
+    },
+    "facing=south,active=false": {
+      "model": "pulsetech:block/number_emitter_analog"
+    },
+    "facing=west,active=false": {
+      "model": "pulsetech:block/number_emitter_analog",
+      "y": 90
+    },
+    "facing=east,active=true": {
+      "model": "pulsetech:block/number_emitter_analog_active",
+      "y": 270
+    },
+    "facing=north,active=true": {
+      "model": "pulsetech:block/number_emitter_analog_active",
+      "y": 180
+    },
+    "facing=south,active=true": {
+      "model": "pulsetech:block/number_emitter_analog_active"
+    },
+    "facing=west,active=true": {
+      "model": "pulsetech:block/number_emitter_analog_active",
+      "y": 90
+    }
+  }
+}

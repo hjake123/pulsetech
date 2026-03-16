@@ -1,5 +1,6 @@
 package dev.hyperlynx.pulsetech.registration;
 
+import dev.hyperlynx.pulsetech.feature.console.remote.RemoteConsoleItem;
 import dev.hyperlynx.pulsetech.feature.datacell.DataCellItem;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerItem;
 import net.minecraft.world.item.BlockItem;
@@ -22,12 +23,17 @@ public class ModItems {
     public static final DeferredItem<BlockItem> PATTERN_EMITTER = ITEMS.registerSimpleBlockItem("pattern_emitter", ModBlocks.PATTERN_EMITTER);
     public static final DeferredItem<BlockItem> NUMBER_MONITOR = ITEMS.registerSimpleBlockItem("number_monitor", ModBlocks.NUMBER_MONITOR);
     public static final DeferredItem<BlockItem> NUMBER_EMITTER = ITEMS.registerSimpleBlockItem("number_emitter", ModBlocks.NUMBER_EMITTER);
+    public static final DeferredItem<BlockItem> ANALOG_NUMBER_EMITTER = ITEMS.registerSimpleBlockItem("analog_number_emitter", ModBlocks.ANALOG_NUMBER_EMITTER);
+    public static final DeferredItem<BlockItem> SCOPE = ITEMS.registerSimpleBlockItem("scope", ModBlocks.SCOPE);
     public static final DeferredItem<BlockItem> CONTROLLER = ITEMS.registerSimpleBlockItem("controller", ModBlocks.CONTROLLER);
     public static final DeferredItem<BlockItem> SCANNER = ITEMS.registerSimpleBlockItem("scanner", ModBlocks.SCANNER);
     public static final DeferredItem<BlockItem> SCREEN = ITEMS.registerSimpleBlockItem("screen", ModBlocks.SCREEN);
     public static final DeferredItem<BlockItem> CANNON = ITEMS.registerSimpleBlockItem("cannon", ModBlocks.CANNON);
     public static final DeferredItem<BlockItem> ORB = ITEMS.registerSimpleBlockItem("orb", ModBlocks.ORB);
-    public static final DeferredItem<BlockItem> SCOPE = ITEMS.registerSimpleBlockItem("scope", ModBlocks.SCOPE);
+    public static final DeferredItem<BlockItem> PROGRAM_EMITTER = ITEMS.registerSimpleBlockItem("program_emitter", ModBlocks.PROCESSOR);
+    public static final DeferredItem<BlockItem> NUMBER_BULB = ITEMS.registerSimpleBlockItem("number_bulb", ModBlocks.NUMBER_BULB);
+    public static final DeferredItem<BlockItem> RETRIEVER = ITEMS.registerSimpleBlockItem("retriever", ModBlocks.RETRIEVER);
+    public static final DeferredItem<BlockItem> STORAGE_MODEM = ITEMS.registerSimpleBlockItem("storage_modem", ModBlocks.STORAGE_MODEM);
 
     public static final DeferredItem<DatasheetItem> DATASHEET = ITEMS.registerItem("datasheet",  (props) ->
             new DatasheetItem(props.stacksTo(1)));
@@ -38,7 +44,11 @@ public class ModItems {
     public static final DeferredItem<DebuggerItem> DEBUGGER = ITEMS.registerItem("debugger",  (props) ->
             new DebuggerItem(props.stacksTo(1)));
 
+    public static final DeferredItem<RemoteConsoleItem> REMOTE_CONSOLE = ITEMS.registerItem("remote_console",  (props) ->
+            new RemoteConsoleItem(props.stacksTo(1)));
+
     public static final DeferredItem<Item> PULSE_MODULE = ITEMS.registerSimpleItem("pulse_module");
     public static final DeferredItem<Item> PROTOCOL_MODULE = ITEMS.registerSimpleItem("protocol_module");
+    public static final DeferredItem<Item> STORAGE_MODULE = ITEMS.registerSimpleItem("storage_module");
 
 }

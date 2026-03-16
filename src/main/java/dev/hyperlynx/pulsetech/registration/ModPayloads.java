@@ -12,6 +12,10 @@ import dev.hyperlynx.pulsetech.feature.number.NumberSelectPayload;
 import dev.hyperlynx.pulsetech.feature.pattern.OpenSequenceChooserPayload;
 import dev.hyperlynx.pulsetech.feature.pattern.SequenceSelectPayload;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenUpdatePayload;
+import dev.hyperlynx.pulsetech.feature.storage.StorageModemFiltersRequest;
+import dev.hyperlynx.pulsetech.feature.storage.StorageModemGUIPayload;
+import dev.hyperlynx.pulsetech.feature.storage.StorageModemRetrieveRequest;
+import dev.hyperlynx.pulsetech.feature.storage.StorageModemSyncRequest;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -127,6 +131,33 @@ public class ModPayloads {
                 ConsoleCompletionDataPayload.TYPE,
                 ConsoleCompletionDataPayload.STREAM_CODEC,
                 ConsoleCompletionDataPayload::clientHandler
+        );
+
+        registrar.playBidirectional(
+                StorageModemGUIPayload.TYPE,
+                StorageModemGUIPayload.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(
+                        StorageModemGUIPayload::clientHandler,
+                        StorageModemGUIPayload::serverHandler
+                )
+        );
+
+        registrar.playToServer(
+                StorageModemSyncRequest.TYPE,
+                StorageModemSyncRequest.STREAM_CODEC,
+                StorageModemSyncRequest::serverHandler
+        );
+
+        registrar.playToServer(
+                StorageModemFiltersRequest.TYPE,
+                StorageModemFiltersRequest.STREAM_CODEC,
+                StorageModemFiltersRequest::serverHandler
+        );
+
+        registrar.playToServer(
+                StorageModemRetrieveRequest.TYPE,
+                StorageModemRetrieveRequest.STREAM_CODEC,
+                StorageModemRetrieveRequest::serverHandler
         );
     }
 }

@@ -1,9 +1,11 @@
-package dev.hyperlynx.pulsetech.ponder;
+package dev.hyperlynx.pulsetech.integration.ponder;
 
 import dev.hyperlynx.pulsetech.core.program.Macros;
+import dev.hyperlynx.pulsetech.feature.number.bulb.NumberBulbBlock;
 import dev.hyperlynx.pulsetech.feature.orb.Orb;
 import dev.hyperlynx.pulsetech.feature.orb.OrbBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
+import dev.hyperlynx.pulsetech.feature.storage.RetrieverBlock;
 import dev.hyperlynx.pulsetech.registration.ModBlocks;
 import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
 import dev.hyperlynx.pulsetech.registration.ModItems;
@@ -613,5 +615,309 @@ public class Storyboards {
             screen.setBackgroundColor(new Color(0, 80, 200));
             screen.sendUpdate();
         });
+    }
+
+    public static void remoteConsole(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("remote_console", "Using a Remote Console");
+        scene.showBasePlate();
+        BlockPos pos = util.grid().at(2, 1, 2);
+        scene.world().showSection(util.select().position(pos), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay().showText(80)
+                .text("");
+        scene.idle(100);
+
+        scene.addKeyframe();
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getCenter());
+        scene.idle(80);
+        scene.overlay().showControls(pos.getCenter(), Pointing.DOWN, 40)
+                .rightClick()
+                .withItem(ModItems.REMOTE_CONSOLE.toStack());
+        scene.idle(20);
+        scene.effects().indicateSuccess(pos);
+        scene.idle(30);
+
+        scene.addKeyframe();
+        scene.overlay().showText(80)
+                .text("");
+        scene.idle(100);
+        scene.overlay().showText(80)
+                .text("");
+        scene.idle(100);
+    }
+
+    public static void analogEmitter(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("analog_emitter", "Using an Analog Number Emitter");
+        scene.showBasePlate();
+        BlockPos pos = util.grid().at(3, 1, 3);
+        scene.world().showSection(util.select().position(pos), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay().showOutlineWithText(util.select().position(pos), 80)
+                .text("");
+        scene.idle(100);
+
+        scene.addKeyframe();
+        scene.world().showSection(util.select().fromTo(0, 1, 4, 5, 1, 5), Direction.DOWN);
+        scene.world().showSection(util.select().fromTo(4, 1, 3, 6, 1, 4), Direction.DOWN);
+        scene.world().showSection(util.select().fromTo(0, 1, 3, 2, 1, 4), Direction.DOWN);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getCenter());
+        scene.idle(80);
+        scene.overlay().showText(40)
+                .text("")
+                .pointAt(util.grid().at(3, 1, 4).getBottomCenter())
+                .placeNearTarget();
+        scene.idle(60);
+
+        scene.addKeyframe();
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getCenter());
+        scene.idle(80);
+        scene.effects().indicateRedstone(util.grid().at(5, 1, 3));
+        scene.overlay().showText(40)
+                .text("")
+                .pointAt(util.grid().at(0, 1, 3).getCenter())
+                .placeNearTarget();
+        scene.idle(60);
+
+        scene.addKeyframe();
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(pos.getCenter());
+        scene.world().showSection(util.select().fromTo(0, 1, 0, 6, 1, 2), Direction.DOWN);
+        scene.idle(80);
+    }
+
+    public static void numberMonitorAnalog(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("analog_monitor", "Getting an analog signal from a Number Monitor");
+        scene.showBasePlate();
+        scene.world().showSection(util.select().fromTo(0, 1, 0, 6, 1, 2), Direction.DOWN);
+        scene.overlay().showText(80)
+                .text("")
+                .pointAt(util.grid().at(4, 1, 1).getBottomCenter());
+        scene.idle(100);
+        scene.overlay().showText(40)
+                .text("")
+                .pointAt(util.grid().at(3, 1, 1).getBottomCenter())
+                .placeNearTarget();
+        scene.idle(60);
+        scene.overlay().showText(60)
+                .text("")
+                .pointAt(util.grid().at(4, 1, 1).getBottomCenter());
+        scene.idle(80);
+
+        scene.addKeyframe();
+        scene.world().showSection(util.select().fromTo(0, 1, 3, 6, 1, 3), Direction.DOWN);
+        scene.overlay().showText(80)
+                .text("")
+                .pointAt(util.grid().at(3, 1, 3).getBottomCenter());
+        scene.idle(100);
+    }
+
+    public static void numberBulb(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("number_bulb", "Using a Number Bulb");
+        scene.showBasePlate();
+        BlockPos pos = util.grid().at(2, 1, 2);
+        scene.world().showSection(util.select().fromTo(0, 1, 0, 4, 1, 4), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay().showOutlineWithText(util.select().position(pos), 80)
+                .text("");
+        scene.idle(100);
+        scene.overlay().showText(60)
+                .pointAt(util.select().position(pos).getCenter())
+                .text("");
+        scene.idle(80);
+
+        scene.addKeyframe();
+        scene.effects().indicateRedstone(util.grid().at(4, 1, 1));
+        scene.idle(10);
+        scene.effects().indicateSuccess(pos);
+        scene.world().modifyBlock(pos, state -> state.setValue(NumberBulbBlock.STORED_VALUES, 1), false);
+        scene.idle(40);
+
+        scene.addKeyframe();
+        scene.world().showSection(util.select().fromTo(2, 2, 2, 2, 4, 2), Direction.DOWN);
+        scene.overlay().showText(80)
+                .pointAt(util.select().position(pos).getCenter())
+                .text("");
+        scene.idle(100);
+        scene.overlay().showText(60)
+                .pointAt(util.select().position(pos).getCenter())
+                .text("");
+        scene.idle(10);
+        scene.world().modifyBlock(pos.above(), state -> state.setValue(NumberBulbBlock.STORED_VALUES, 1), false);
+        scene.effects().indicateRedstone(util.grid().at(4, 1, 1));
+        scene.idle(10);
+        scene.world().modifyBlock(pos.above(), state -> state.setValue(NumberBulbBlock.STORED_VALUES, 2), false);
+        scene.effects().indicateRedstone(util.grid().at(4, 1, 1));
+        scene.idle(10);
+        scene.world().modifyBlock(pos.above(2), state -> state.setValue(NumberBulbBlock.STORED_VALUES, 1), false);
+        scene.effects().indicateRedstone(util.grid().at(4, 1, 1));
+        scene.idle(10);
+        scene.world().modifyBlock(pos.above(2), state -> state.setValue(NumberBulbBlock.STORED_VALUES, 2), false);
+        scene.effects().indicateRedstone(util.grid().at(4, 1, 1));
+        scene.idle(10);
+        scene.world().modifyBlock(pos.above(2), state -> state.setValue(NumberBulbBlock.STORED_VALUES, 1), false);
+        scene.effects().indicateRedstone(util.grid().at(4, 1, 1));
+        scene.idle(30);
+
+        scene.addKeyframe();
+        scene.overlay().showText(80)
+                .pointAt(util.select().position(pos).getCenter())
+                .text("");
+        scene.idle(100);
+        scene.overlay().showText(60)
+                .pointAt(util.select().position(pos).getCenter())
+                .text("");
+        scene.idle(20);
+        scene.overlay().showControls(pos.getCenter(), Pointing.DOWN, 40)
+                .rightClick().withItem(ModItems.DATASHEET.toStack());
+        scene.idle(60);
+    }
+
+    public static void storageSystem(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("storage", "Using the storage system");
+        scene.showBasePlate();
+        scene.overlay().showText( 160)
+                .text("Two blocks work together to form an item filtering system you can use to help automate your storage systems:");
+        scene.idle(40);
+
+        BlockPos retriever_pos = util.grid().at(2, 2, 2);
+        BlockPos modem_pos = util.grid().at(2, 2, 0);
+
+        scene.world().showSection(util.select().position(retriever_pos), Direction.DOWN);
+        scene.idle(10);
+        scene.overlay().showOutlineWithText(util.select().position(retriever_pos), 40)
+                        .text("The Retriever...");
+        scene.idle(60);
+        scene.world().showSection(util.select().position(modem_pos), Direction.DOWN);
+        scene.idle(10);
+        scene.overlay().showOutlineWithText(util.select().position(modem_pos), 40)
+                        .text("...and the Storage Modem");
+        scene.idle(80);
+
+        scene.addKeyframe();
+        scene.world().hideSection(util.select().position(modem_pos), Direction.DOWN);
+        scene.world().showSection(util.select().position(retriever_pos.above()), Direction.DOWN);
+        scene.overlay().showText(80)
+                .pointAt(retriever_pos.getCenter())
+                .text("The Retriever can take items from the inventory above it");
+        scene.idle(100);
+        scene.overlay().showText(80)
+                .pointAt(retriever_pos.getCenter())
+                .text("and move them below itself");
+        scene.idle(40);
+        scene.effects().indicateSuccess(retriever_pos);
+        scene.world().createItemEntity(retriever_pos.below().getCenter(), Vec3.ZERO, Items.REDSTONE.getDefaultInstance());
+        scene.idle(60);
+
+        scene.addKeyframe();
+        scene.overlay().showText(80)
+                .pointAt(retriever_pos.getCenter())
+                .text("Right clicking will open the Retriever, letting items flow through it automatically");
+        scene.idle(100);
+        scene.overlay().showControls(retriever_pos.getCenter(), Pointing.DOWN, 40)
+                        .rightClick();
+        scene.idle(20);
+        scene.world().modifyBlock(retriever_pos, state -> state.setValue(RetrieverBlock.OPEN, true), false);
+        scene.world().createItemEntity(retriever_pos.below().getCenter(), Vec3.ZERO, Items.REDSTONE.getDefaultInstance());
+        scene.idle(3);
+        scene.world().createItemEntity(retriever_pos.below().getCenter(), Vec3.ZERO, Items.REDSTONE.getDefaultInstance());
+        scene.idle(3);
+        scene.world().createItemEntity(retriever_pos.below().getCenter(), Vec3.ZERO, Items.REDSTONE.getDefaultInstance());
+        scene.idle(3);
+        scene.world().createItemEntity(retriever_pos.below().getCenter(), Vec3.ZERO, Items.REDSTONE.getDefaultInstance());
+        scene.idle(3);
+        scene.world().modifyBlock(retriever_pos, state -> state.setValue(RetrieverBlock.OPEN, false), false);
+        scene.idle(40);
+        scene.addKeyframe();
+        scene.world().showSection(util.select().position(retriever_pos.below()), Direction.NORTH);
+        scene.world().modifyEntities(ItemEntity.class, Entity::kill);
+        scene.overlay().showText(80)
+                .pointAt(retriever_pos.below().getCenter())
+                .text("The Retriever will also transfer to an inventory below itself if there is one");
+        scene.idle(100);
+
+        scene.addKeyframe();
+        scene.world().showSection(util.select().fromTo(0, 1, 0, 2, 5, 1), Direction.DOWN);
+        scene.overlay().showText(80)
+                .text("By default, the Retriever will move any item, but with a Storage Modem, an Item Filter can be applied to the Retriever");
+        scene.idle(100);
+        scene.overlay().showText(60)
+                .pointAt(modem_pos.getCenter())
+                .text("Right click on the Storage Modem to access its menu");
+        scene.overlay().showControls(modem_pos.getCenter(), Pointing.DOWN, 60)
+                        .rightClick();
+        scene.idle(80);
+        scene.overlay().showText(80)
+                .pointAt(modem_pos.getCenter())
+                .text("You can create Item Filters with items in your inventory or by dragging items from JEI");
+        scene.idle(100);
+        scene.overlay().showText(80)
+                .text("Once you've set up some Item Filters, connect the Storage Modem to the Retriever and press \"Sync\" inside the Storage Modem's menu");
+        scene.idle(100);
+        scene.effects().indicateRedstone(modem_pos.south());
+        scene.idle(20);
+        scene.effects().indicateSuccess(retriever_pos);
+        scene.idle(20);
+        scene.overlay().showText(80)
+                .text("This will transmit the Item Filters to all connected Retrievers");
+        scene.idle(100);
+        scene.addKeyframe();
+        scene.overlay().showText(80)
+                .text("");
+        scene.idle(100);
+        scene.overlay().showText(80)
+                .text("");
+        scene.idle(100);
+        scene.overlay().showText(80)
+                .text("The Retriever also has commands to retrieve only a set number of matching items, to count matching items in the above inventory, and more. Check its datasheet for details");
+        scene.idle(60);
+        scene.overlay().showControls(retriever_pos.getCenter(), Pointing.DOWN, 60)
+                .rightClick().withItem(ModItems.DATASHEET.toStack());
+        scene.idle(80);
+    }
+
+    public static void dataCellStorageModem(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("datacell_item_filters", "Copying Item Filters with a Data Cell");
+        scene.showBasePlate();
+        scene.world().showSection(util.select().layersFrom(1), Direction.DOWN);
+        scene.overlay().showText(80)
+                .text("The Data Cell can copy Item Filters between Storage Modems");
+        scene.idle(100);
+        scene.addKeyframe();
+        scene.overlay().showControls(util.grid().at(3, 1, 2).getCenter(), Pointing.DOWN, 30)
+                .rightClick().withItem(ModItems.DATA_CELL.toStack());
+        scene.idle(50);
+        scene.overlay().showControls(util.grid().at(1, 1, 2).getCenter(), Pointing.DOWN, 30)
+                .rightClick().withItem(loadedDataCell());
+        scene.idle(20);
+        scene.effects().indicateSuccess(util.grid().at(1, 1, 2));
+    }
+
+    public static void dataCellRetriever(SceneBuilder scene, SceneBuildingUtil util) {
+        scene.title("datacell_retriever", "Setting a Retriever's Item Filters with a Data Cell");
+        scene.showBasePlate();
+        scene.world().showSection(util.select().column(2, 2), Direction.DOWN);
+        scene.world().showSection(util.select().column(2, 0), Direction.DOWN);
+        scene.overlay().showText(80)
+                .text("The Data Cell can copy Item Filters into a Retriever");
+        scene.idle(100);
+        scene.addKeyframe();
+        scene.overlay().showControls(util.grid().at(2, 2, 0).getCenter(), Pointing.DOWN, 30)
+                .rightClick().withItem(ModItems.DATA_CELL.toStack());
+        scene.idle(50);
+        scene.overlay().showControls(util.grid().at(2, 2, 2).getCenter(), Pointing.DOWN, 30)
+                .rightClick().withItem(loadedDataCell());
+        scene.idle(20);
+        scene.effects().indicateSuccess(util.grid().at(2, 2, 2));
+        scene.addKeyframe();
+        scene.overlay().showText(80)
+                .text("This has the same effect as the Storage Modem's \"Sync\" button, but forgoes the need to connect the two blocks");
+        scene.idle(100);
     }
 }

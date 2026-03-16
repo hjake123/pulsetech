@@ -13,7 +13,7 @@ public class DebuggerTextPage extends DebuggerPage {
         super(pos, id, title, x, y);
         this.text_box = new MultiLineTextWidget(Component.empty(), Minecraft.getInstance().font);
         text_box.setPosition(x, y + 10);
-        text_box.setMaxWidth(127);
+        text_box.setMaxWidth(160);
         text_box.setMaxRows(5);
     }
 

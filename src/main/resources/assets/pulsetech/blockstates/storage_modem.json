@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "pulsetech:block/storage_modem",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "pulsetech:block/storage_modem"
+    },
+    "facing=south": {
+      "model": "pulsetech:block/storage_modem",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "pulsetech:block/storage_modem",
+      "y": 270
+    }
+  }
+}

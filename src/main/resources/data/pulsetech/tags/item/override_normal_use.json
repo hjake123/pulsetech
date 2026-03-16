@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "pulsetech:datasheet",
-    "pulsetech:debugger"
+    "pulsetech:debugger",
+    "pulsetech:remote_console"
   ]
 }

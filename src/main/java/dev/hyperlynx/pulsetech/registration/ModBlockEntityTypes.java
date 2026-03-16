@@ -4,8 +4,10 @@ import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.feature.cannon.CannonBlockEntity;
 import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlockEntity;
 import dev.hyperlynx.pulsetech.feature.controller.ControllerBlockEntity;
+import dev.hyperlynx.pulsetech.feature.number.block.AnalogNumberEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberMonitorBlockEntity;
+import dev.hyperlynx.pulsetech.feature.number.bulb.NumberBulbBlockEntity;
 import dev.hyperlynx.pulsetech.feature.orb.OrbBlockEntity;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternDetectorBlockEntity;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternEmitterBlockEntity;
@@ -13,6 +15,8 @@ import dev.hyperlynx.pulsetech.feature.processor.ProcessorBlockEntity;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlockEntity;
 import dev.hyperlynx.pulsetech.feature.scope.ScopeBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
+import dev.hyperlynx.pulsetech.feature.storage.RetrieverBlockEntity;
+import dev.hyperlynx.pulsetech.feature.storage.StorageModemBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -74,4 +78,20 @@ public class ModBlockEntityTypes {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProcessorBlockEntity>> PROCESSOR =
             TYPES.register("processor", () ->
                     BlockEntityType.Builder.of(ProcessorBlockEntity::new, ModBlocks.PROCESSOR.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RetrieverBlockEntity>> RETRIEVER =
+            TYPES.register("retriever", () ->
+                    BlockEntityType.Builder.of(RetrieverBlockEntity::new, ModBlocks.RETRIEVER.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<StorageModemBlockEntity>> STORAGE_MODEM =
+            TYPES.register("storage_modem", () ->
+                    BlockEntityType.Builder.of(StorageModemBlockEntity::new, ModBlocks.STORAGE_MODEM.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NumberBulbBlockEntity>> NUMBER_BULB =
+            TYPES.register("number_bulb", () ->
+                    BlockEntityType.Builder.of(NumberBulbBlockEntity::new, ModBlocks.NUMBER_BULB.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AnalogNumberEmitterBlockEntity>> ANALOG_NUMBER_EMITTER =
+            TYPES.register("analog_number_emitter", () ->
+                    BlockEntityType.Builder.of(AnalogNumberEmitterBlockEntity::new, ModBlocks.ANALOG_NUMBER_EMITTER.get()).build(null));
 }

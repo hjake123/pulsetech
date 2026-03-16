@@ -29,6 +29,7 @@ public class DataCellItem extends Item {
         return stack.has(ModComponentTypes.MACROS)
                 || stack.has(ModComponentTypes.SCREEN_DATA)
                 || stack.has(ModComponentTypes.SCANNER_LINK_POSITION)
+                || stack.has(ModComponentTypes.ITEM_FILTERS)
                 ? 1.0F : 0.0F;
     }
 
@@ -39,6 +40,7 @@ public class DataCellItem extends Item {
             stack.remove(ModComponentTypes.MACROS);
             stack.remove(ModComponentTypes.SCREEN_DATA);
             stack.remove(ModComponentTypes.SCANNER_LINK_POSITION);
+            stack.remove(ModComponentTypes.ITEM_FILTERS);
             player.playSound(ModSounds.BEEP.get(), 1.0F, 0.5F);
             return InteractionResultHolder.success(stack);
         }
@@ -77,6 +79,10 @@ public class DataCellItem extends Item {
             Macros macros = stack.get(ModComponentTypes.MACROS);
             assert macros != null;
             tooltip.add(Component.literal(macros.macros().size() + " ").append(Component.translatable("pulsetech.macros_stored")).withStyle(ChatFormatting.GRAY));
+            data = true;
+        }
+        if(stack.has(ModComponentTypes.ITEM_FILTERS)) {
+            tooltip.add(Component.translatable("pulsetech.contains_item_filters").withStyle(ChatFormatting.GRAY));
             data = true;
         }
         if(stack.has(ModComponentTypes.SCREEN_DATA)) {

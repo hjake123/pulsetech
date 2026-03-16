@@ -12,7 +12,9 @@ import dev.hyperlynx.pulsetech.client.blocktag.NumberBlockRenderer;
 import dev.hyperlynx.pulsetech.client.blocktag.PatternBlockRenderer;
 import dev.hyperlynx.pulsetech.client.console.ConsoleScreen;
 import dev.hyperlynx.pulsetech.client.screen.ScreenBlockRenderer;
+import dev.hyperlynx.pulsetech.client.storage.StorageModemScreen;
 import dev.hyperlynx.pulsetech.core.PatternHolder;
+import dev.hyperlynx.pulsetech.feature.console.remote.RemoteConsoleItem;
 import dev.hyperlynx.pulsetech.feature.datacell.DataCellItem;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.debugger.DebuggerInfoManifest;
@@ -23,10 +25,12 @@ import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerTextInfo;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlockEntity;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
-import dev.hyperlynx.pulsetech.ponder.PulsetechPonderPlugin;
+import dev.hyperlynx.pulsetech.feature.storage.ItemFilter;
+import dev.hyperlynx.pulsetech.integration.ponder.PulsetechPonderPlugin;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModEntityTypes;
 import dev.hyperlynx.pulsetech.registration.ModItems;
+import dev.hyperlynx.pulsetech.registration.ModMenuTypes;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -38,6 +42,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
@@ -54,6 +59,7 @@ public class PulsetechClient {
         bus.addListener(this::onClientSetup);
         bus.addListener(this::registerEntityRenderers);
         bus.addListener(this::registerLayerDefinitions);
+        bus.addListener(this::registerScreens);
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 
@@ -105,6 +111,11 @@ public class PulsetechClient {
                     Pulsetech.location("loaded"),
                     (stack, level, player, seed) -> DataCellItem.getLoadedProperty(stack)
             );
+            ItemProperties.register(
+                    ModItems.REMOTE_CONSOLE.get(),
+                    Pulsetech.location("console_color"),
+                    (stack, level, player, seed) -> RemoteConsoleItem.getColorProperty(stack, level, player)
+            );
             PonderIndex.addPlugin(new PulsetechPonderPlugin());
         });
     }
@@ -121,6 +132,10 @@ public class PulsetechClient {
 
     protected void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(OrbModel.LAYER_LOCATION, OrbModel::createBodyLayer);
+    }
+
+    public void registerScreens(RegisterMenuScreensEvent event) {
+        event.register(ModMenuTypes.STORAGE_MODEM.get(), StorageModemScreen::new);
     }
 
     protected static void openConsoleScreen(BlockPos pos, String prior_lines, String command_box_text, List<String> extra_names) {
@@ -165,6 +180,13 @@ public class PulsetechClient {
     public static void updateScreenBlock(ScreenData screenData, BlockPos pos) {
         if(Minecraft.getInstance().level.getBlockEntity(pos) instanceof ScreenBlockEntity screen) {
             screen.setScreenData(screenData);
+        }
+    }
+
+    public static void updateStorageModemScreen(List<ItemFilter> filters, boolean sync_required) {
+        if(Minecraft.getInstance().level != null && Minecraft.getInstance().screen instanceof StorageModemScreen screen) {
+            screen.setFilters(filters);
+            screen.setGUISyncRequired(sync_required);
         }
     }
 }

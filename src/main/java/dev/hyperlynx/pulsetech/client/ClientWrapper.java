@@ -7,6 +7,7 @@ import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerPosInfo;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerSequenceInfo;
 import dev.hyperlynx.pulsetech.feature.debugger.infotype.DebuggerTextInfo;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenUpdatePayload;
+import dev.hyperlynx.pulsetech.feature.storage.ItemFilter;
 import net.minecraft.core.BlockPos;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -69,5 +70,9 @@ public class ClientWrapper {
 
     public static void acceptConsoleCompletionData(BlockPos pos, List<String> macros) {
         PulsetechClient.acceptConsoleCompletionData(pos, macros);
+    }
+
+    public static void updateStorageModemScreen(List<ItemFilter> filters, boolean sync_required) {
+        PulsetechClient.updateStorageModemScreen(filters, sync_required);
     }
 }

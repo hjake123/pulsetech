@@ -147,10 +147,14 @@ dependencies {
             prefer flywheel_version
         }
     }
-    runtimeOnly("mezz.jei:jei-${mc_version}-neoforge:${jei_version}")
-//    runtimeOnly("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
-//    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")
-//    runtimeOnly("com.tterrag.registrate:Registrate:${registrate_version}")
+    implementation("mezz.jei:jei-${mc_version}-neoforge:${jei_version}")
+
+    // Create for recording Ponder scenes
+    runtimeOnly("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
+    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")
+    runtimeOnly("com.tterrag.registrate:Registrate:${registrate_version}")
+
+    // Compatibility mods
 //    runtimeOnly("jar.alternate_current:alternate_current:mc1.21-1.9.0")
 }
 

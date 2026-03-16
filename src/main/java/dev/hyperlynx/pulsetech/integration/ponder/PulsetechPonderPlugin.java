@@ -1,4 +1,4 @@
-package dev.hyperlynx.pulsetech.ponder;
+package dev.hyperlynx.pulsetech.integration.ponder;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.registration.ModBlocks;
@@ -22,9 +22,10 @@ public class PulsetechPonderPlugin implements PonderPlugin {
 
         helper.addStoryBoard(ModBlocks.PATTERN_DETECTOR.getId(), Pulsetech.location("pattern/pattern_detector"), Storyboards::patternDetector);
 
-        helper.addStoryBoard(ModBlocks.NUMBER_EMITTER.getId(), Pulsetech.location("numbers"), Storyboards::numbers);
+        helper.addStoryBoard(ModBlocks.NUMBER_EMITTER.getId(), Pulsetech.location("number/numbers"), Storyboards::numbers);
 
-        helper.addStoryBoard(ModBlocks.NUMBER_MONITOR.getId(), Pulsetech.location("numbers"), Storyboards::numbers);
+        helper.addStoryBoard(ModBlocks.NUMBER_MONITOR.getId(), Pulsetech.location("number/numbers"), Storyboards::numbers);
+        helper.addStoryBoard(ModItems.NUMBER_MONITOR.getId(), Pulsetech.location("number/analog_numbers"), Storyboards::numberMonitorAnalog);
 
         helper.addStoryBoard(ModBlocks.CONTROLLER.getId(), Pulsetech.location("protocol/controller"), Storyboards::controller);
         helper.addStoryBoard(ModBlocks.CONTROLLER.getId(), Pulsetech.location("protocol_blocks_showcase"), Storyboards::protocolBlocks);
@@ -54,10 +55,27 @@ public class PulsetechPonderPlugin implements PonderPlugin {
         helper.addStoryBoard(ModBlocks.WHITE_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::console);
         helper.addStoryBoard(ModBlocks.WHITE_CONSOLE.getId(), Pulsetech.location("datacell/console_macros"), Storyboards::dataCellConsole);
 
-        helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/screen_data"), Storyboards::dataCellScreen);
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/console_macros"), Storyboards::dataCellConsole);
-        helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/processor"), Storyboards::processor);
+        helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/screen_data"), Storyboards::dataCellScreen);
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/scanner_pos"), Storyboards::dataCellScanner);
+        helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/two_storage_modems"), Storyboards::dataCellStorageModem);
+        helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("retriever_system"), Storyboards::dataCellRetriever);
+        helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/processor"), Storyboards::processor);
+
+        helper.addStoryBoard(ModItems.REMOTE_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::remoteConsole);
+        helper.addStoryBoard(ModItems.PROGRAM_EMITTER.getId(), Pulsetech.location("datacell/processor"), Storyboards::processor);
+
+        helper.addStoryBoard(ModItems.ANALOG_NUMBER_EMITTER.getId(), Pulsetech.location("number/analog_numbers"), Storyboards::analogEmitter);
+        helper.addStoryBoard(ModItems.ANALOG_NUMBER_EMITTER.getId(), Pulsetech.location("number/analog_numbers"), Storyboards::numberMonitorAnalog);
+
+        helper.addStoryBoard(ModItems.NUMBER_BULB.getId(), Pulsetech.location("number/bulb"), Storyboards::numberBulb);
+
+        helper.addStoryBoard(ModItems.RETRIEVER.getId(), Pulsetech.location("retriever_system"), Storyboards::storageSystem);
+        helper.addStoryBoard(ModItems.RETRIEVER.getId(), Pulsetech.location("retriever_system"), Storyboards::dataCellRetriever);
+
+        helper.addStoryBoard(ModItems.STORAGE_MODEM.getId(), Pulsetech.location("retriever_system"), Storyboards::storageSystem);
+        helper.addStoryBoard(ModItems.STORAGE_MODEM.getId(), Pulsetech.location("datacell/two_storage_modems"), Storyboards::dataCellStorageModem);
+
     }
 
     @Override
@@ -76,6 +94,12 @@ public class PulsetechPonderPlugin implements PonderPlugin {
         helper.addTagToComponent(ModItems.SCANNER.getId(), feature_tag);
         helper.addTagToComponent(ModItems.SCREEN.getId(), feature_tag);
         helper.addTagToComponent(ModItems.DATA_CELL.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.REMOTE_CONSOLE.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.PROGRAM_EMITTER.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.ANALOG_NUMBER_EMITTER.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.NUMBER_BULB.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.STORAGE_MODEM.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.RETRIEVER.getId(), feature_tag);
         builder.addToIndex();
         builder.register();
     }

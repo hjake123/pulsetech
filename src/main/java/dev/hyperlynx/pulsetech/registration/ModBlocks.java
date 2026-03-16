@@ -4,8 +4,10 @@ import dev.hyperlynx.pulsetech.feature.cannon.CannonBlock;
 import dev.hyperlynx.pulsetech.feature.console.ConsoleColor;
 import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlock;
 import dev.hyperlynx.pulsetech.feature.controller.ControllerBlock;
+import dev.hyperlynx.pulsetech.feature.number.block.AnalogNumberEmitterBlock;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberEmitterBlock;
 import dev.hyperlynx.pulsetech.feature.number.block.NumberMonitorBlock;
+import dev.hyperlynx.pulsetech.feature.number.bulb.NumberBulbBlock;
 import dev.hyperlynx.pulsetech.feature.orb.OrbBlock;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternDetectorBlock;
 import dev.hyperlynx.pulsetech.feature.pattern.block.PatternEmitterBlock;
@@ -15,6 +17,8 @@ import dev.hyperlynx.pulsetech.feature.processor.ProcessorBlock;
 import dev.hyperlynx.pulsetech.feature.scanner.ScannerBlock;
 import dev.hyperlynx.pulsetech.feature.scope.ScopeBlock;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenBlock;
+import dev.hyperlynx.pulsetech.feature.storage.RetrieverBlock;
+import dev.hyperlynx.pulsetech.feature.storage.StorageModemBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -71,4 +75,17 @@ public class ModBlocks {
 
     public static final DeferredBlock<ProcessorBlock> PROCESSOR = BLOCKS.register("processor", () ->
             new ProcessorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COMPARATOR), PulseBlock.FRONT_OUT_OTHER_IN));
+
+    public static final DeferredBlock<RetrieverBlock> RETRIEVER = BLOCKS.register("retriever", () ->
+            new RetrieverBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK), PulseBlock.FRONT_OUT_OTHER_IN));
+
+    public static final DeferredBlock<StorageModemBlock> STORAGE_MODEM = BLOCKS.register("storage_modem", () ->
+            new StorageModemBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK), PulseBlock.MAIN_OUTPUT_ONLY));
+
+    public static final DeferredBlock<NumberBulbBlock> NUMBER_BULB = BLOCKS.register("number_bulb", () ->
+            new NumberBulbBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK), PulseBlock.FRONT_OUT_OTHER_IN));
+
+    public static final DeferredBlock<PulseBlock> ANALOG_NUMBER_EMITTER = BLOCKS.register("analog_number_emitter", () ->
+            new AnalogNumberEmitterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REPEATER), PulseBlock.FRONT_OUT_BACK_IN));
+
 }

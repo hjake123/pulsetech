@@ -1,0 +1,40 @@
+{
+  "overrides": [
+    {
+      "predicate": {
+        "pulsetech:console_color": 0
+      },
+      "model": "pulsetech:item/remote_console_off"
+    },
+    {
+      "predicate": {
+        "pulsetech:console_color": 1
+      },
+      "model": "pulsetech:item/remote_console_amber"
+    },
+    {
+      "predicate": {
+        "pulsetech:console_color": 2
+      },
+      "model": "pulsetech:item/remote_console_red"
+    },
+    {
+      "predicate": {
+        "pulsetech:console_color": 3
+      },
+      "model": "pulsetech:item/remote_console_green"
+    },
+    {
+      "predicate": {
+        "pulsetech:console_color": 4
+      },
+      "model": "pulsetech:item/remote_console_indigo"
+    },
+    {
+      "predicate": {
+        "pulsetech:console_color": 5
+      },
+      "model": "pulsetech:item/remote_console_white"
+    }
+  ]
+}
