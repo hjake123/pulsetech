@@ -58,6 +58,8 @@ public class PulsetechPonderPlugin implements PonderPlugin {
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/console_macros"), Storyboards::dataCellConsole);
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/screen_data"), Storyboards::dataCellScreen);
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/scanner_pos"), Storyboards::dataCellScanner);
+        helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/two_storage_modems"), Storyboards::dataCellStorageModem);
+        helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("retriever_system"), Storyboards::dataCellRetriever);
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/processor"), Storyboards::processor);
 
         helper.addStoryBoard(ModItems.REMOTE_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::remoteConsole);
@@ -67,6 +69,13 @@ public class PulsetechPonderPlugin implements PonderPlugin {
         helper.addStoryBoard(ModItems.ANALOG_NUMBER_EMITTER.getId(), Pulsetech.location("number/analog_numbers"), Storyboards::numberMonitorAnalog);
 
         helper.addStoryBoard(ModItems.NUMBER_BULB.getId(), Pulsetech.location("number/bulb"), Storyboards::numberBulb);
+
+        helper.addStoryBoard(ModItems.RETRIEVER.getId(), Pulsetech.location("retriever_system"), Storyboards::storageSystem);
+        helper.addStoryBoard(ModItems.RETRIEVER.getId(), Pulsetech.location("retriever_system"), Storyboards::dataCellRetriever);
+
+        helper.addStoryBoard(ModItems.STORAGE_MODEM.getId(), Pulsetech.location("retriever_system"), Storyboards::storageSystem);
+        helper.addStoryBoard(ModItems.STORAGE_MODEM.getId(), Pulsetech.location("datacell/two_storage_modems"), Storyboards::dataCellStorageModem);
+
     }
 
     @Override
@@ -89,6 +98,8 @@ public class PulsetechPonderPlugin implements PonderPlugin {
         helper.addTagToComponent(ModItems.PROGRAM_EMITTER.getId(), feature_tag);
         helper.addTagToComponent(ModItems.ANALOG_NUMBER_EMITTER.getId(), feature_tag);
         helper.addTagToComponent(ModItems.NUMBER_BULB.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.STORAGE_MODEM.getId(), feature_tag);
+        helper.addTagToComponent(ModItems.RETRIEVER.getId(), feature_tag);
         builder.addToIndex();
         builder.register();
     }
