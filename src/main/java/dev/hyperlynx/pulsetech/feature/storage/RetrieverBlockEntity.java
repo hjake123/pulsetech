@@ -148,6 +148,7 @@ public class RetrieverBlockEntity extends ProtocolBlockEntity implements Debugge
                 for(byte n = 0; n < filters.size(); n++) {
                     if(filters.get(n).matches(input.getStackInSlot(i))) {
                         emit(Sequence.fromByte(n));
+                        break; // ONLY EMIT ONE FILTER! Fixes #77
                     }
                 }
                 return;
