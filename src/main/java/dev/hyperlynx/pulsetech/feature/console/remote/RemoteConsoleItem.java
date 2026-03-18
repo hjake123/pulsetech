@@ -31,7 +31,7 @@ public class RemoteConsoleItem extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        if(context.getLevel().getBlockState(context.getClickedPos()).getBlock() instanceof ConsoleBlock && context.getPlayer() != null) {
+        if(context.getLevel().getBlockEntity(context.getClickedPos()) instanceof RemoteConsoleOpenable && context.getPlayer() != null) {
             ItemStack stack = context.getItemInHand();
             stack.set(ModComponentTypes.REMOTE_CONSOLE_LINK_POSITION.get(), GlobalPos.of(context.getLevel().dimension(), context.getClickedPos()));
             context.getPlayer().displayClientMessage(Component.translatable("message.pulsetech.bind_console"), true);
@@ -56,13 +56,13 @@ public class RemoteConsoleItem extends Item {
             player.displayClientMessage(Component.translatable("message.pulsetech.console_out_of_range"), true);
             return InteractionResultHolder.fail(stack);
         }
-        if(!(level.getBlockEntity(pos) instanceof ConsoleBlockEntity console)) {
+        if(!(level.getBlockEntity(pos) instanceof RemoteConsoleOpenable openable)) {
             stack.remove(ModComponentTypes.REMOTE_CONSOLE_LINK_POSITION);
             player.displayClientMessage(Component.translatable("message.pulsetech.console_missing"), true);
             return InteractionResultHolder.fail(stack);
         }
         if(!level.isClientSide()) {
-            ConsoleBlock.sendOpenConsolePayload(pos, (ServerPlayer) player, console);
+            openable.openScreen(pos, (ServerPlayer) player);
         }
         return InteractionResultHolder.success(stack);
     }
@@ -75,7 +75,7 @@ public class RemoteConsoleItem extends Item {
         return !(Mth.sqrt((float) player_pos.distSqr(console_pos)) <= Config.REMOTE_CONSOLE_RANGE.get());
     }
 
-    /// Color properties should be arranged by the sequence in [dev.hyperlynx.pulsetech.feature.console.ConsoleColor]
+    /// Color properties are documented in [RemoteConsoleOpenable]
     public static float getColorProperty(ItemStack stack, ClientLevel level, LivingEntity player) {
         if(!stack.has(ModComponentTypes.REMOTE_CONSOLE_LINK_POSITION)) {
             return 0;
@@ -88,16 +88,10 @@ public class RemoteConsoleItem extends Item {
         if(!level.isLoaded(pos) || player != null && outOfRange(player.blockPosition(), pos)) {
             return 0;
         }
-        if(!(level.getBlockState(pos).getBlock() instanceof ConsoleBlock console)) {
+        if(!(level.getBlockEntity(pos) instanceof RemoteConsoleOpenable openable)) {
             return 0;
         }
-        return switch(console.getColor()) {
-            case AMBER -> 1;
-            case REDSTONE -> 2;
-            case GREEN -> 3;
-            case INDIGO -> 4;
-            case WHITE -> 5;
-        };
+        return openable.getColorCode();
     }
 
     @Override

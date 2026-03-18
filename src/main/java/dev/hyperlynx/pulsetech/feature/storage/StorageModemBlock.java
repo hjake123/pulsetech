@@ -71,6 +71,11 @@ public class StorageModemBlock extends PulseBlock {
         if(!(level.getBlockEntity(pos) instanceof StorageModemBlockEntity modem)) {
             return InteractionResult.SUCCESS;
         }
+        openMenu(level, player, modem);
+        return InteractionResult.SUCCESS;
+    }
+
+    public static void openMenu(Level level, Player player, StorageModemBlockEntity modem) {
         player.openMenu(new MenuProvider() {
             @Override
             public Component getDisplayName() {
@@ -82,7 +87,6 @@ public class StorageModemBlock extends PulseBlock {
                 return new StorageModemMenu(id, inventory, ContainerLevelAccess.create(level, modem.getBlockPos()));
             }
         }, buf -> buf.writeBlockPos(modem.getBlockPos()));
-        return InteractionResult.SUCCESS;
     }
 
     @Override

@@ -35,6 +35,12 @@
         "pulsetech:console_color": 5
       },
       "model": "pulsetech:item/remote_console_white"
+    },
+    {
+      "predicate": {
+        "pulsetech:console_color": 6
+      },
+      "model": "pulsetech:item/remote_console_storage"
     }
   ]
 }

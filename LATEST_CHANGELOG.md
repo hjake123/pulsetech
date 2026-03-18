@@ -1,3 +1,6 @@
 - The Datasheet will now save the last info readout you viewed and show it again if you click elsewhere
+- Added a button to the Console's screen to show the last Datasheet you viewed
+- Allowed the Remote Console to bind to the Storage Modem
 - Fixed a few situational crashes with the Datasheet GUI
 - Fixed the Retriever's DETECT FILTER command emitting multiple numbers if multiple filters match the same item
+- Fixed missing translations for new config entries

@@ -52,7 +52,7 @@ public class StorageModemMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return AbstractContainerMenu.stillValid(access, player, ModBlocks.STORAGE_MODEM.get());
+        return access.evaluate((level, blockPos) -> level.getBlockEntity(blockPos) instanceof StorageModemBlockEntity).orElse(true);
     }
 
     public BlockPos getPos() {

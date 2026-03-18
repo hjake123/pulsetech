@@ -8,6 +8,7 @@ import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.PulseBlockEntity;
 import dev.hyperlynx.pulsetech.core.program.*;
 import dev.hyperlynx.pulsetech.feature.console.ConsoleCompletionDataPayload;
+import dev.hyperlynx.pulsetech.feature.console.remote.RemoteConsoleOpenable;
 import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetEntry;
 import dev.hyperlynx.pulsetech.feature.datasheet.DatasheetProvider;
@@ -34,7 +35,7 @@ import java.util.*;
 
 /// The Console is one of two [ProgramExecutor]s. These blocks use the [ProgramInterpreter] to run programs written in the mod's
 /// scripting language.
-public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetProvider, ProgramExecutor, DebuggerInfoSource {
+public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetProvider, ProgramExecutor, DebuggerInfoSource, RemoteConsoleOpenable {
     ProgramEmitterModule emitter = new ProgramEmitterModule();
     private CommandMode command_mode = CommandMode.PARSE;
     private String saved_lines = "";
@@ -275,5 +276,22 @@ public class ConsoleBlockEntity extends PulseBlockEntity implements DatasheetPro
         if(current_user != null) {
             PacketDistributor.sendToPlayer(current_user, new ConsoleCompletionDataPayload(getBlockPos(), macros.keySet().stream().toList()));
         }
+    }
+
+    @Override
+    public void openScreen(BlockPos pos, ServerPlayer player) {
+        ConsoleBlock.sendOpenConsolePayload(pos, player, this);
+    }
+
+    @Override
+    public int getColorCode() {
+        ConsoleBlock block = (ConsoleBlock) getBlockState().getBlock();
+        return switch(block.getColor()) {
+            case AMBER -> 1;
+            case REDSTONE -> 2;
+            case GREEN -> 3;
+            case INDIGO -> 4;
+            case WHITE -> 5;
+        };
     }
 }

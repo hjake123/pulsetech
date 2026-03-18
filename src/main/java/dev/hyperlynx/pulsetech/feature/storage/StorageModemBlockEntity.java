@@ -6,12 +6,14 @@ import dev.hyperlynx.pulsetech.core.Sequence;
 import dev.hyperlynx.pulsetech.core.module.EmitterModule;
 import dev.hyperlynx.pulsetech.core.protocol.Protocol;
 import dev.hyperlynx.pulsetech.core.protocol.ProtocolDataMap;
+import dev.hyperlynx.pulsetech.feature.console.remote.RemoteConsoleOpenable;
 import dev.hyperlynx.pulsetech.registration.ModBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class StorageModemBlockEntity extends PulseBlockEntity implements FilterBearer {
+public class StorageModemBlockEntity extends PulseBlockEntity implements FilterBearer, RemoteConsoleOpenable {
     private final EmitterModule emitter = new EmitterModule();
     private List<ItemFilter> filters = new ArrayList<>(Collections.singleton(new ItemFilter(ItemStack.EMPTY, false)));
     private int sync_cooldown = 0;
@@ -168,5 +170,15 @@ public class StorageModemBlockEntity extends PulseBlockEntity implements FilterB
 
     public boolean isGUISyncNeeded() {
         return gui_sync_needed;
+    }
+
+    @Override
+    public void openScreen(BlockPos ignored, ServerPlayer player) {
+        StorageModemBlock.openMenu(player.level(), player, this);
+    }
+
+    @Override
+    public int getColorCode() {
+        return 6;
     }
 }
