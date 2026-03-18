@@ -1,8 +1,11 @@
 package dev.hyperlynx.pulsetech.client.console;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
+import dev.hyperlynx.pulsetech.client.datasheet.DatasheetScreen;
 import dev.hyperlynx.pulsetech.feature.console.*;
 import dev.hyperlynx.pulsetech.feature.console.block.ConsoleBlock;
+import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
+import dev.hyperlynx.pulsetech.registration.ModComponentTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.*;
@@ -11,9 +14,12 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -95,8 +101,26 @@ public class ConsoleScreen extends Screen {
         );
         paste_macro_button.setPosition(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (console_width / 2) - 13, prior_line_y + console_height - 14);
         paste_macro_button.setTooltip(Tooltip.create(Component.translatable("gui.pulsetech.paste_description")));
-
         addRenderableWidget(paste_macro_button);
+
+        ImageButton open_datasheet_button = new ImageButton(
+                20,
+                20,
+                new WidgetSprites(Pulsetech.location("datasheet_button"), Pulsetech.location("datasheet_button_focused")),
+                button -> {
+                    Datasheet datasheet = getLastViewedDatasheet();
+                    if(datasheet != null) {
+                        Minecraft.getInstance().pushGuiLayer(new DatasheetScreen(datasheet));
+                    }
+                    force_focus_timer = 10;
+                },
+                Component.empty()
+        );
+        open_datasheet_button.setPosition(this.getRectangle().getCenterInAxis(ScreenAxis.HORIZONTAL) - (console_width / 2) - 22, prior_line_y + console_height + 3);
+        open_datasheet_button.setTooltip(Tooltip.create(Component.translatable("gui.pulsetech.datasheet_description")));
+        open_datasheet_button.active = getLastViewedDatasheet() != null;
+        open_datasheet_button.visible = getLastViewedDatasheet() != null;
+        addRenderableWidget(open_datasheet_button);
     }
 
     @Override
@@ -111,6 +135,15 @@ public class ConsoleScreen extends Screen {
 
     private ResourceLocation getFocusedSprite(String beginning) {
         return Pulsetech.location(beginning + color.name().toLowerCase());
+    }
+
+    private @Nullable Datasheet getLastViewedDatasheet() {
+        Player player = Minecraft.getInstance().player;
+        if(player == null) {
+            return null;
+        }
+        var datasheet_stack = player.getInventory().items.stream().filter(stack -> stack.has(ModComponentTypes.DATASHEET)).findFirst();
+        return datasheet_stack.map(stack -> stack.get(ModComponentTypes.DATASHEET)).orElse(null);
     }
 
     private static final int AMBER_COLOR = 0xFFE09E;
