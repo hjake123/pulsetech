@@ -46,14 +46,19 @@ public class PulsetechPonderPlugin implements PonderPlugin {
 
         helper.addStoryBoard(ModBlocks.CONSOLE.getId(), Pulsetech.location("console"), Storyboards::console);
         helper.addStoryBoard(ModBlocks.CONSOLE.getId(), Pulsetech.location("datacell/console_macros"), Storyboards::dataCellConsole);
+        helper.addStoryBoard(ModBlocks.CONSOLE.getId(), Pulsetech.location("console"), Storyboards::remoteConsole);
         helper.addStoryBoard(ModBlocks.GREEN_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::console);
         helper.addStoryBoard(ModBlocks.GREEN_CONSOLE.getId(), Pulsetech.location("datacell/console_macros"), Storyboards::dataCellConsole);
+        helper.addStoryBoard(ModBlocks.GREEN_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::remoteConsole);
         helper.addStoryBoard(ModBlocks.INDIGO_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::console);
         helper.addStoryBoard(ModBlocks.INDIGO_CONSOLE.getId(), Pulsetech.location("datacell/console_macros"), Storyboards::dataCellConsole);
+        helper.addStoryBoard(ModBlocks.INDIGO_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::remoteConsole);
         helper.addStoryBoard(ModBlocks.RED_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::console);
         helper.addStoryBoard(ModBlocks.RED_CONSOLE.getId(), Pulsetech.location("datacell/console_macros"), Storyboards::dataCellConsole);
+        helper.addStoryBoard(ModBlocks.RED_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::remoteConsole);
         helper.addStoryBoard(ModBlocks.WHITE_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::console);
         helper.addStoryBoard(ModBlocks.WHITE_CONSOLE.getId(), Pulsetech.location("datacell/console_macros"), Storyboards::dataCellConsole);
+        helper.addStoryBoard(ModBlocks.WHITE_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::remoteConsole);
 
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/console_macros"), Storyboards::dataCellConsole);
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/screen_data"), Storyboards::dataCellScreen);
@@ -62,8 +67,10 @@ public class PulsetechPonderPlugin implements PonderPlugin {
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("retriever_system"), Storyboards::dataCellRetriever);
         helper.addStoryBoard(ModItems.DATA_CELL.getId(), Pulsetech.location("datacell/processor"), Storyboards::processor);
 
-        helper.addStoryBoard(ModItems.REMOTE_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::remoteConsole);
         helper.addStoryBoard(ModItems.PROGRAM_EMITTER.getId(), Pulsetech.location("datacell/processor"), Storyboards::processor);
+
+        helper.addStoryBoard(ModItems.REMOTE_CONSOLE.getId(), Pulsetech.location("console"), Storyboards::remoteConsole);
+        helper.addStoryBoard(ModItems.REMOTE_CONSOLE.getId(), Pulsetech.location("storage_modem"), Storyboards::remoteConsoleStorageModem);
 
         helper.addStoryBoard(ModItems.ANALOG_NUMBER_EMITTER.getId(), Pulsetech.location("number/analog_numbers"), Storyboards::analogEmitter);
         helper.addStoryBoard(ModItems.ANALOG_NUMBER_EMITTER.getId(), Pulsetech.location("number/analog_numbers"), Storyboards::numberMonitorAnalog);
@@ -75,7 +82,7 @@ public class PulsetechPonderPlugin implements PonderPlugin {
 
         helper.addStoryBoard(ModItems.STORAGE_MODEM.getId(), Pulsetech.location("retriever_system"), Storyboards::storageSystem);
         helper.addStoryBoard(ModItems.STORAGE_MODEM.getId(), Pulsetech.location("datacell/two_storage_modems"), Storyboards::dataCellStorageModem);
-
+        helper.addStoryBoard(ModItems.STORAGE_MODEM.getId(), Pulsetech.location("storage_modem"), Storyboards::remoteConsoleStorageModem);
     }
 
     @Override
