@@ -60,6 +60,9 @@ public class DatasheetScreen extends Screen {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if(list == null) {
+            return false;
+        }
         if(list.mouseDragged(mouseX, mouseY, button, dragX, dragY)) {
             return true;
         }

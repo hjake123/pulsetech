@@ -2,6 +2,7 @@ package dev.hyperlynx.pulsetech.registration;
 
 import dev.hyperlynx.pulsetech.Pulsetech;
 import dev.hyperlynx.pulsetech.core.program.Macros;
+import dev.hyperlynx.pulsetech.feature.datasheet.Datasheet;
 import dev.hyperlynx.pulsetech.feature.screen.ScreenData;
 import dev.hyperlynx.pulsetech.feature.storage.ItemFilter;
 import net.minecraft.core.BlockPos;
@@ -39,5 +40,11 @@ public class ModComponentTypes {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemFilter>>> ITEM_FILTERS = TYPES.register("item_filters", () ->
             DataComponentType.<List<ItemFilter>>builder()
                     .persistent(ItemFilter.CODEC.listOf())
+                    .build());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Datasheet>> DATASHEET = TYPES.register("datasheet", () ->
+            DataComponentType.<Datasheet>builder()
+                    .persistent(Datasheet.CODEC)
+                    .networkSynchronized(Datasheet.STREAM_CODEC)
                     .build());
 }
