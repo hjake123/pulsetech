@@ -86,6 +86,9 @@ public class NumberBulbBlockEntity extends ProtocolBlockEntity implements Debugg
     }
 
     public byte peek() {
+        if(numbers.isEmpty()) {
+            return 0;
+        }
         return numbers.peek();
     }
 
