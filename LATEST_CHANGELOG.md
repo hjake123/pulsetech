@@ -1,1 +1,1 @@
-- Fixed a crash when peeking from an empty Number Bulb stack
+- Fixed a crash when dividing or taking remainder by zero using the Number Bulb

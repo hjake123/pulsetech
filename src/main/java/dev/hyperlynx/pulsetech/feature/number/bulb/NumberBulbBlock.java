@@ -236,7 +236,12 @@ public class NumberBulbBlock extends PulseBlock {
                 @Override
                 public void run(ExecutionContext context) {
                     if(context.block() instanceof NumberBulbBlockEntity bulb) {
-                        bulb.operate((a, b) -> (byte) (a / b));
+                        bulb.operate((a, b) -> {
+                            if(b == 0) {
+                                return (byte) 0;
+                            }
+                            return (byte) (a / b);
+                        });
                     }
                 }
             });
@@ -246,7 +251,12 @@ public class NumberBulbBlock extends PulseBlock {
                 @Override
                 public void run(ExecutionContext context) {
                     if(context.block() instanceof NumberBulbBlockEntity bulb) {
-                        bulb.operate((a, b) -> (byte) (a % b));
+                        bulb.operate((a, b) -> {
+                            if(b == 0) {
+                                return (byte) a;
+                            }
+                            return (byte) (a % b);
+                        });
                     }
                 }
             });
