@@ -1,1 +1,2 @@
-- Fixed a crash when dividing or taking remainder by zero using the Number Bulb
+- The Orb Projector's Orb now disappears when the Orb Projector is removed
+- (Internal) Bumped packaged Ponder version to `1.0.85`
